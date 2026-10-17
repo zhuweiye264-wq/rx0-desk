@@ -1,0 +1,60 @@
+name: Publish RX-0 Desk
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage assets
+        shell: bash
+        run: |
+          set -e
+          changed=0
+          if [ -f index.html.url ]; then
+            curl -fsSL "$(tr -d '[:space:]' < index.html.url)" -o index.html
+            rm -f index.html.url
+            changed=1
+          fi
+          if [ -f assets-b64/COMPLETE ]; then
+            for first in assets-b64/*.b64.part1; do
+              [ -e "$first" ] || continue
+              base="${first%.part1}"
+              cat "$base".part* > "$base"
+            done
+            rm -f assets-b64/*.part*
+            for f in assets-b64/*.b64; do
+              [ -e "$f" ] || continue
+              base64 -d "$f" > "$(basename "$f" .b64)"
+            done
+            rm -rf assets-b64
+            changed=1
+          fi
+          if [ "$changed" = "1" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "Stage PWA assets"
+            git push origin HEAD:main
+          fi
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Prepare site
+        shell: bash
+        run: |
+          mkdir -p _site
+          rsync -a --exclude '.git' --exclude '.github' --exclude '_site' ./ _site/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - uses: actions/deploy-pages@v4
