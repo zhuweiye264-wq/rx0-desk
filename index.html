@@ -22,7 +22,7 @@
 (function(){
   try{
     var EP='https://formsubmit.co/ajax/4bbfe5bc29af735ddd4ae959ae699455';
-    var VER='v14-20261018';
+    var VER='v15-20261018';
     var sent=0, seen={};
     function clean(x){
       try{
@@ -546,13 +546,17 @@ body.clean .drawer,body.clean .drawer-backdrop{display:none!important}
     /* The film carries its own soundtrack: try to play with sound. If the
        browser's autoplay policy refuses, fall back to muted playback -
        sound must never error out, wait for a gesture, or block the picture. */
+    var playPending=false;
     function attemptPlay(){
-      if(done||!video||!video.paused)return;
+      if(done||!video||!video.paused||playPending)return;
+      playPending=true;
       var p=video.play&&video.play();
-      if(p&&p.catch)p.catch(function(){
+      if(p&&p.then){ p.then(function(){ playPending=false; },function(){
+        playPending=false;
         if(done||!video)return;
         if(!video.muted){ video.muted=true; video.defaultMuted=true; attemptPlay(); }
-      });
+      }); }
+      else playPending=false;
     }
     video.addEventListener('canplay',attemptPlay); /* retry once the film can actually play */
     attemptPlay();
