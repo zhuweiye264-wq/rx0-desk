@@ -1,4 +1,4 @@
-const CACHE = 'rx0-desk-v2';
+const CACHE = 'rx0-desk-v3';
 const CORE = ['./', './index.html', './manifest.webmanifest', './app-icon-192.png', './app-icon-512.png', './app-icon-180.png', './favicon-32.png', './favicon-64.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));
@@ -9,6 +9,10 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
+  // Never intercept or cache API traffic: cross-origin calls and anything
+  // carrying an Authorization header go straight to the network, so polling
+  // responses stay fresh and signed/personal payloads never touch Cache Storage.
+  if (url.origin !== self.location.origin || e.request.headers.has('Authorization')) return;
   const isPage = e.request.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');
   if (isPage) {
     // Network-first for the page itself: every deploy reaches installed users.
