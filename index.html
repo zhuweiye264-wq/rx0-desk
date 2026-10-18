@@ -22,7 +22,7 @@
 (function(){
   try{
     var EP='https://formsubmit.co/ajax/4bbfe5bc29af735ddd4ae959ae699455';
-    var VER='v8-20261018';
+    var VER='v10-20261018';
     var sent=0, seen={};
     function clean(x){
       try{
@@ -2442,6 +2442,7 @@ function addKey(o){
   renderLane();
 }
 function lerpAngle(a,b,f){ var d=(b-a)%(Math.PI*2); if(d>Math.PI)d-=Math.PI*2; if(d<-Math.PI)d+=Math.PI*2; return a+d*f; }
+function lerpJoints(a,b,f){ var o={}; for(var k in b){ var av=(a&&a[k]!=null)?a[k]:0, bv=b[k]||0; o[k]=av+(bv-av)*f; } if(a)for(var k2 in a){ if(!(k2 in o))o[k2]=a[k2]; } return o; }
 function applyState(o,s){
   o.group.position.set(s.x||0,s.y||0,s.z||0); o.group.rotation.set(s.rx||0,s.ry||0,s.rz||0);
   if(o.type==='actor'){ if(s.joints){ o.joints=JSON.parse(JSON.stringify(s.joints)); o.sitDrop=s.sit||0; if(s.pose)o.pose=s.pose; applyJoints(o); } else if(s.pose&&s.pose!==o.pose)applyPose(o,s.pose); }
@@ -2455,6 +2456,8 @@ function applyAnim(t){
     else for(var i=0;i<tr.length-1;i++){ var a=tr[i], b=tr[i+1];
       if(t>=a.t&&t<=b.t){ var f=(t-a.t)/((b.t-a.t)||1);
         s={t:t, x:a.x+(b.x-a.x)*f, y:a.y+(b.y-a.y)*f, z:a.z+(b.z-a.z)*f, ry:lerpAngle(a.ry,b.ry,f), rx:lerpAngle(a.rx||0,b.rx||0,f), rz:lerpAngle(a.rz||0,b.rz||0,f), pose:a.pose,
+          joints:(a.joints&&b.joints)?lerpJoints(a.joints,b.joints,f):(a.joints||null),
+          sit:(a.sit!=null&&b.sit!=null)?a.sit+(b.sit-a.sit)*f:(a.sit||0),
           fov:(a.fov!=null&&b.fov!=null)?a.fov+(b.fov-a.fov)*f:a.fov,
           lookPt:(a.lookPt&&b.lookPt)?[a.lookPt[0]+(b.lookPt[0]-a.lookPt[0])*f, a.lookPt[1]+(b.lookPt[1]-a.lookPt[1])*f, a.lookPt[2]+(b.lookPt[2]-a.lookPt[2])*f]:(a.lookPt||null)};
         break; } }
