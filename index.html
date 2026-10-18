@@ -22,7 +22,7 @@
 (function(){
   try{
     var EP='https://formsubmit.co/ajax/4bbfe5bc29af735ddd4ae959ae699455';
-    var VER='v10-20261018';
+    var VER='v11-20261018';
     var sent=0, seen={};
     function clean(x){
       try{
@@ -548,11 +548,21 @@ body.clean .drawer,body.clean .drawer-backdrop{display:none!important}
       var p=video.play&&video.play();
       if(p&&p.catch)p.catch(function(){
         if(done||!video)return;
-        if(!video.muted){ video.muted=true; attemptPlay(); }
+        if(!video.muted){ video.muted=true; video.defaultMuted=true; attemptPlay(); }
       });
     }
     video.addEventListener('canplay',attemptPlay); /* retry once the film can actually play */
     attemptPlay();
+    /* If the browser still refuses every attempt (iOS low power mode blocks
+       even muted autoplay), never sit on a black frame with the system's
+       play button: retry for about 3s, then go straight into the console. */
+    var tries=0;
+    var iv=setInterval(function(){
+      if(done||!video){ clearInterval(iv); return; }
+      if(!video.paused){ clearInterval(iv); return; }
+      if(++tries>6){ clearInterval(iv); finish(); return; }
+      attemptPlay();
+    },500);
   }
   setTimeout(finish,12000); /* hard backstop: into the console within 12s, whatever happens */
   window.addEventListener('pointerdown',finish,true);
