@@ -467,18 +467,34 @@ body.clean .drawer,body.clean .drawer-backdrop{display:none!important}
     setTimeout(kill,650);
   }
   if(video){
+    /* The published shell rewrites authored src attributes into
+       data-hatch-src and only restores them asynchronously, after a
+       handshake with the host frame - far too late for a boot film that
+       must start on the first frame, and this script would race an empty
+       element (play() rejects with no source; the element can already sit
+       in the NO_SOURCE state, which must not be mistaken for a failure).
+       Restore the source ourselves, synchronously, and drop the rewritten
+       attribute so the shell's later sweep cannot restart the film. */
+    if(!video.getAttribute('src')){
+      var ds=video.getAttribute('data-hatch-src');
+      if(ds){ try{ video.src=ds; }catch(e){} video.removeAttribute('data-hatch-src'); }
+    }
     video.addEventListener('ended',finish);  /* film over: cross-dissolve into the console */
     video.addEventListener('error',finish);  /* film failed to load: never sit on black */
-    if(video.error||(video.readyState===0&&video.networkState===3))finish();
+    if(video.error)finish();
     /* The film carries its own soundtrack: try to play with sound. If the
        browser's autoplay policy refuses, fall back to muted playback -
        sound must never error out, wait for a gesture, or block the picture. */
-    var p=video.play&&video.play();
-    if(p&&p.catch)p.catch(function(){
-      if(done)return;
-      video.muted=true;
-      var p2=video.play&&video.play(); if(p2&&p2.catch)p2.catch(function(){});
-    });
+    function attemptPlay(){
+      if(done||!video||!video.paused)return;
+      var p=video.play&&video.play();
+      if(p&&p.catch)p.catch(function(){
+        if(done||!video)return;
+        if(!video.muted){ video.muted=true; attemptPlay(); }
+      });
+    }
+    video.addEventListener('canplay',attemptPlay); /* retry once the film can actually play */
+    attemptPlay();
   }
   setTimeout(finish,10000); /* hard backstop: into the console within 10s, whatever happens */
   window.addEventListener('pointerdown',finish,true);
