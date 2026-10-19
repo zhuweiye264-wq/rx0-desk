@@ -23,7 +23,7 @@
 (function(){
   try{
     var EP='https://formsubmit.co/ajax/4bbfe5bc29af735ddd4ae959ae699455';
-    var VER='v21-20261019';
+    var VER='v22-20261019';
     var MAX=3, sent=0, seen={}, booted=false;
     window.addEventListener('load',function(){ booted=true; });
     function clean(s){
@@ -260,6 +260,10 @@ img.u-lock,.u-lock img{pointer-events:none}
 .fover .shade{position:absolute;background:rgba(0,0,0,.58);display:none}
 .fover .frame-box{position:absolute;border:1.5px solid rgba(255,64,50,.85);box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 8px rgba(224,27,27,.25);display:none}
 .fover .safe-box{position:absolute;border:1px solid rgba(255,255,255,.5);display:none}
+.fover .v916-box{position:absolute;border:1.5px dashed rgba(201,162,94,.92);box-shadow:0 0 0 1px rgba(0,0,0,.35),inset 0 0 0 1px rgba(0,0,0,.22);display:none}
+.fover .v916-tag{position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;letter-spacing:.14em;color:#0a0b11;background:rgba(201,162,94,.94);padding:1px 6px 2px;border-radius:2px;white-space:nowrap}
+#foverPip .v916-tag{font-size:9px;padding:0 4px 1px;letter-spacing:.08em}
+.fover .v916-thirds{position:absolute;inset:0;display:none;background:linear-gradient(to right,transparent calc(33.33% - .5px),rgba(201,162,94,.38) calc(33.33% - .5px),rgba(201,162,94,.38) calc(33.33% + .5px),transparent calc(33.33% + .5px)),linear-gradient(to right,transparent calc(66.66% - .5px),rgba(201,162,94,.38) calc(66.66% - .5px),rgba(201,162,94,.38) calc(66.66% + .5px),transparent calc(66.66% + .5px)),linear-gradient(to bottom,transparent calc(33.33% - .5px),rgba(201,162,94,.38) calc(33.33% - .5px),rgba(201,162,94,.38) calc(33.33% + .5px),transparent calc(33.33% + .5px)),linear-gradient(to bottom,transparent calc(66.66% - .5px),rgba(201,162,94,.38) calc(66.66% - .5px),rgba(201,162,94,.38) calc(66.66% + .5px),transparent calc(66.66% + .5px))}
 .thirds-box{position:absolute;pointer-events:none;display:none;background:linear-gradient(to right,transparent calc(33.33% - .5px),rgba(255,255,255,.26) calc(33.33% - .5px),rgba(255,255,255,.26) calc(33.33% + .5px),transparent calc(33.33% + .5px)),linear-gradient(to right,transparent calc(66.66% - .5px),rgba(255,255,255,.26) calc(66.66% - .5px),rgba(255,255,255,.26) calc(66.66% + .5px),transparent calc(66.66% + .5px)),linear-gradient(to bottom,transparent calc(33.33% - .5px),rgba(255,255,255,.26) calc(33.33% - .5px),rgba(255,255,255,.26) calc(33.33% + .5px),transparent calc(33.33% + .5px)),linear-gradient(to bottom,transparent calc(66.66% - .5px),rgba(255,255,255,.26) calc(66.66% - .5px),rgba(255,255,255,.26) calc(66.66% + .5px),transparent calc(66.66% + .5px))}
 #thirdsMain{z-index:2}
 .stage-wrap.plan #foverMain,.stage-wrap.plan #thirdsMain{display:none!important}
@@ -894,6 +898,7 @@ body.clean .drawer,body.clean .drawer-backdrop{display:none!important}
         <span class="qb-cust" id="custWrap"><input type="number" id="custW" min="1" max="99" step="1" value="21" aria-label="自定义宽"><span>:</span><input type="number" id="custH" min="1" max="99" step="1" value="9" aria-label="自定义高"></span>
         <button class="qb-btn is-on" id="qbThirds" type="button" aria-pressed="true"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-thirds"></use></svg>三分法</button>
         <button class="qb-btn" id="qbSafe" type="button" aria-pressed="false"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-safe"></use></svg>安全框</button>
+        <button class="qb-btn" id="qbV916" type="button" aria-pressed="false"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-frame"></use></svg>9:16框</button>
         <span class="qb-sep"></span>
         <span class="qb-lab">舞台</span>
         <button class="qb-btn" id="qbWhite" type="button" aria-pressed="false"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-clay"></use></svg>白模</button>
@@ -913,7 +918,7 @@ body.clean .drawer,body.clean .drawer-backdrop{display:none!important}
         <button class="qb-btn" id="qbClean" type="button" aria-pressed="false"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-eye"></use></svg>纯净</button>
         <button class="qb-btn" id="qbFull" type="button" aria-pressed="false"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-fullscr"></use></svg>全屏</button>
       </div>
-      <div class="fover" id="foverMain" aria-hidden="true"><div class="shade"></div><div class="shade"></div><div class="shade"></div><div class="shade"></div><div class="frame-box"></div><div class="safe-box"></div></div>
+      <div class="fover" id="foverMain" aria-hidden="true"><div class="shade"></div><div class="shade"></div><div class="shade"></div><div class="shade"></div><div class="frame-box"></div><div class="safe-box"></div><div class="v916-box"><span class="v916-tag">9:16 竖屏</span><div class="v916-thirds"></div></div></div>
       <div class="thirds-box" id="thirdsMain" aria-hidden="true"></div>
       <div id="planWrap">
         <canvas id="planCanvas"></canvas>
@@ -938,7 +943,7 @@ body.clean .drawer,body.clean .drawer-backdrop{display:none!important}
       <div class="pip" id="pip">
         <div class="pip-label"><span class="pip-title"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-camera"></use></svg><span id="pipName">机位预览</span></span><span class="rec"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-rec"></use></svg>REC 预览</span></div>
         <div class="guides" id="pipGuides"></div>
-        <div class="fover" id="foverPip" aria-hidden="true"><div class="shade"></div><div class="shade"></div><div class="shade"></div><div class="shade"></div><div class="frame-box"></div><div class="safe-box"></div></div>
+        <div class="fover" id="foverPip" aria-hidden="true"><div class="shade"></div><div class="shade"></div><div class="shade"></div><div class="shade"></div><div class="frame-box"></div><div class="safe-box"></div><div class="v916-box"><span class="v916-tag">9:16</span></div></div>
         <div id="pipStage" style="position:absolute;inset:0"></div>
       </div>
     </section>
@@ -1037,7 +1042,7 @@ orbit.target.set(0,0.9,0); orbit.maxPolarAngle=Math.PI/2.02; orbit.enableDamping
 
 var viewMode='dir';
 /* ---------- UI switches state (quick bar; session-only) ---------- */
-var UI={labels:true,frustum:true,frame:'off',custW:21,custH:9,thirds:true,safe:false,shadow:false,rotate:false,snap:false,pip:true,loop:false,bloom:IS_DESK,ao:IS_DESK};
+var UI={labels:true,frustum:true,frame:'off',custW:21,custH:9,thirds:true,safe:false,v916:false,shadow:false,rotate:false,snap:false,pip:true,loop:false,bloom:IS_DESK,ao:IS_DESK};
 var rotPauseUntil=0;
 orbit.autoRotateSpeed=-0.7;
 orbit.addEventListener('start',function(){ rotPauseUntil=Infinity; });
@@ -3089,7 +3094,7 @@ function qbSet(id,on){ var b=document.getElementById(id); if(!b)return; b.classL
 function syncQB(){
   qbSet('qbGrid',grid.visible); qbSet('qbAxis',(typeof axisOn!=='undefined')&&axisOn);
   qbSet('qbLabel',UI.labels); qbSet('qbFrustum',UI.frustum);
-  qbSet('qbThirds',UI.thirds); qbSet('qbSafe',UI.safe);
+  qbSet('qbThirds',UI.thirds); qbSet('qbSafe',UI.safe); qbSet('qbV916',UI.v916);
   qbSet('qbWhite',(typeof anim!=='undefined'&&anim)&&anim.white); qbSet('qbShadow',UI.shadow);
   qbSet('qbBloom',UI.bloom); qbSet('qbAO',UI.ao);
   qbSet('qbRotate',UI.rotate); qbSet('qbSnap',UI.snap); qbSet('qbPip',UI.pip); qbSet('qbLoop',UI.loop);
@@ -3120,6 +3125,11 @@ function layoutOne(fover,thirdsEl,W,H){
     setBox(sh[2],0,rect.y,rect.x,rect.h,showF); setBox(sh[3],rect.x+rect.w,rect.y,W-(rect.x+rect.w),rect.h,showF);
     setBox(fb,rect.x,rect.y,rect.w,rect.h,showF);
     setBox(sb,rect.x+rect.w*0.05,rect.y+rect.h*0.05,rect.w*0.9,rect.h*0.9,UI.safe);
+    var vb=fover.querySelector('.v916-box');
+    if(vb){ var vr=9/16,vw,vh; if(rect.w/rect.h>vr){ vh=rect.h; vw=rect.h*vr; } else { vw=rect.w; vh=rect.w/vr; }
+      setBox(vb,rect.x+(rect.w-vw)/2,rect.y+(rect.h-vh)/2,vw,vh,UI.v916);
+      var vt=vb.querySelector('.v916-thirds'); if(vt)vt.style.display=(UI.v916&&UI.thirds)?'block':'none';
+    }
   }
   if(thirdsEl){ thirdsEl.style.display=UI.thirds?'block':'none'; if(UI.thirds){ thirdsEl.style.left=rect.x+'px'; thirdsEl.style.top=rect.y+'px'; thirdsEl.style.width=rect.w+'px'; thirdsEl.style.height=rect.h+'px'; thirdsEl.style.right='auto'; thirdsEl.style.bottom='auto'; } }
 }
@@ -3139,6 +3149,7 @@ document.getElementById('qbLabel').onclick=function(){ UI.labels=!UI.labels; app
 document.getElementById('qbFrustum').onclick=function(){ UI.frustum=!UI.frustum; syncQB(); };
 document.getElementById('qbThirds').onclick=function(){ UI.thirds=!UI.thirds; layoutFrames(); syncQB(); };
 document.getElementById('qbSafe').onclick=function(){ UI.safe=!UI.safe; layoutFrames(); syncQB(); };
+document.getElementById('qbV916').onclick=function(){ UI.v916=!UI.v916; layoutFrames(); syncQB(); if(UI.v916)alertMsg('9:16 竖屏安全框已开：金色虚线内是成片裁成竖屏后保留的区域，重要主体、脸和字幕都别越出这条线。'); };
 document.getElementById('frameSel').addEventListener('change',function(e){ UI.frame=e.target.value; document.getElementById('custWrap').classList.toggle('open',UI.frame==='custom'); layoutFrames(); });
 function custIn(){ var w=parseFloat(document.getElementById('custW').value), h=parseFloat(document.getElementById('custH').value); if(w>0)UI.custW=w; if(h>0)UI.custH=h; if(UI.frame==='custom')layoutFrames(); }
 document.getElementById('custW').addEventListener('input',custIn);
