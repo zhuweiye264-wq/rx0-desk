@@ -1,7 +1,7 @@
 {
-  "name": "TX-17 独角兽全视枢 · 3D导演台",
-  "short_name": "TX-17导演台",
-  "description": "3D 导演台：摆位、机位、灯光、白模动画与 Blender 桥。",
+  "name": "TX-17 Unicorn Core",
+  "short_name": "TX-17 Unicorn Core",
+  "description": "TX-17 Unicorn Core：摆位、机位、灯光、白模动画与 Blender 桥。",
   "lang": "zh-CN",
   "start_url": "./index.html",
   "scope": "./",
