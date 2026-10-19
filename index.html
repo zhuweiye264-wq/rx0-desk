@@ -52,7 +52,7 @@
 (function(){
   try{
     var EP='https://formsubmit.co/ajax/4bbfe5bc29af735ddd4ae959ae699455';
-    var VER='v30-20261019';
+    var VER='v32-20261019';
     var MAX=3, sent=0, seen={}, booted=false;
     window.addEventListener('load',function(){ booted=true; });
     function clean(s){
@@ -228,7 +228,7 @@ img.u-lock,.u-lock img{pointer-events:none}
 /* STAGE */
 .stage-wrap{position:relative;background:var(--stage);min-width:0;min-height:0}
 #stage{position:absolute;inset:0}
-#stage canvas{display:block}
+#stage canvas{display:block;touch-action:none}
 .vignette{position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 50% 42%,transparent 52%,rgba(0,0,0,.34) 88%,rgba(0,0,0,.6) 100%)}
 .stage-wrap.plan .vignette{display:none}
 .vf{position:absolute;inset:10px;pointer-events:none;z-index:2}
@@ -247,6 +247,9 @@ img.u-lock,.u-lock img{pointer-events:none}
 .stage-wrap.plan .hud-tr,.stage-wrap.plan .hud-br{display:none}
 .stage-wrap.plan .hud-bl{bottom:15px}
 .hint{position:absolute;left:16px;top:80px;z-index:3;background:rgba(6,7,11,.78);border:1px solid rgba(255,255,255,.1);color:#d8dbe2;font-size:11.5px;letter-spacing:.03em;padding:6px 10px;border-radius:2px;pointer-events:none;backdrop-filter:blur(4px)}
+.touch-hint{display:none;position:absolute;left:12px;top:76px;z-index:3;background:rgba(6,7,11,.78);border:1px solid rgba(255,255,255,.1);color:#d8dbe2;font-size:11.5px;letter-spacing:.03em;padding:6px 10px;border-radius:2px;pointer-events:none}
+@media (pointer:coarse){ .touch-hint{display:block} }
+body.clean .touch-hint{display:none!important}
 .shotbar{position:absolute;left:14px;bottom:12px;z-index:3;display:flex;gap:6px;flex-wrap:wrap;max-width:60%}
 .shotbar button{border:1px solid rgba(255,255,255,.18);background:rgba(8,9,14,.82);color:#e6e8ee;padding:6px 11px;border-radius:2px;font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;transition:border-color .15s ease,background .15s ease,box-shadow .15s ease}
 .shotbar button:hover{background:rgba(160,14,14,.85);border-color:rgba(255,90,80,.6);box-shadow:0 0 10px rgba(224,27,27,.3)}
@@ -307,12 +310,12 @@ body.clean #cleanDot{display:block}
 @media (max-width:900px){ .quickbar{top:34px} }
 #pipGuides{z-index:1}
 /* INSPECTOR */
-.inspector{background:var(--panel);border-left:1px solid var(--line);padding:14px;overflow:auto}
+.inspector{background:var(--panel);border-left:1px solid var(--line);padding:14px;overflow:auto;overscroll-behavior:contain}
 .inspector .empty{color:var(--muted);font-size:12.5px;line-height:1.7;border:1px dashed rgba(255,255,255,.16);border-radius:2px;padding:13px}
 .field{margin-bottom:11px}
 .field label{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
 .field label output{color:var(--ink);font-family:var(--mono);font-size:12px}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:16px;background:transparent;cursor:pointer;--trk:rgba(255,255,255,.16)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent;cursor:pointer;touch-action:none;--trk:rgba(255,255,255,.16)}
 input[type=range]::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(224,27,27,.55),var(--trk) 70%)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;margin-top:-4.5px;background:var(--accent);border:1px solid rgba(255,255,255,.65);border-radius:1px;transform:rotate(45deg);box-shadow:0 0 6px rgba(224,27,27,.55)}
 input[type=range]::-moz-range-track{height:2px;background:var(--trk)}
@@ -1158,6 +1161,7 @@ body.clean .drawer,body.clean .drawer-backdrop{display:none!important}
       </div>
       <div id="axisChip"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-axis"></use></svg><span id="axisText"></span></div>
       <div class="hint">点选对象出现坐标轴手柄：拖箭头 / 方片 / 圆环精确移动与旋转（W 移动 · E 旋转）· 拖对象本体也可平移 · 拖空白处转视角 · 滚轮缩放</div>
+      <div class="touch-hint">单指拖空白处转视角 · 双指张开推近、合拢拉远 · 拖角色 / 机位本体可移动，第二根手指落下自动改推镜头</div>
       <div class="shotbar" aria-label="景别预设">
         <button data-shot="wide"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-wide"></use></svg>远景</button>
         <button data-shot="full"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-full"></use></svg>全景</button>
@@ -1257,9 +1261,9 @@ var border=new THREE.Mesh(new THREE.RingGeometry(0,0),new THREE.MeshBasicMateria
 
 /* ---------- renderers ---------- */
 var renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2)); stageEl.appendChild(renderer.domElement);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2)); stageEl.appendChild(renderer.domElement); renderer.domElement.style.touchAction='none';
 var pipR=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
-pipR.setPixelRatio(Math.min(devicePixelRatio,2)); document.getElementById('pipStage').appendChild(pipR.domElement);
+pipR.setPixelRatio(Math.min(devicePixelRatio,1.5)); document.getElementById('pipStage').appendChild(pipR.domElement);
 /* filmic grade for direct renders: ACES tone mapping + sRGB output (post pipeline reproduces the same grade in its final pass) */
 renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.06; renderer.outputEncoding=THREE.sRGBEncoding;
 pipR.toneMapping=THREE.ACESFilmicToneMapping; pipR.toneMappingExposure=1.06; pipR.outputEncoding=THREE.sRGBEncoding;
@@ -1354,10 +1358,11 @@ var FIGTYPES={
    prof:[[.001,.030],[.085,.040],[.100,.060],[.088,.110],[.090,.150],[.100,.200],[.105,.235],[.090,.260],[.050,.280],[.035,.290]],
    pelvis:[.110,1.05,.85],armR:[.030,.024],foreR:[.024,.019],thighR:[.048,.036],shinR:[.036,.026],shB:.042,elB:.032,hipB:.050,kneeB:.038,handR:.040,footR:.060,neckR:.050,headR:.235,headK:1.02,bust:null}
 };
-var HELM_MAT=new THREE.MeshStandardMaterial({color:0x39424c,roughness:.30,metalness:.72});
-var VISOR_MAT=new THREE.MeshStandardMaterial({color:0xa9e6ff,roughness:.12,metalness:.55,emissive:0x1b3a44});
+var HELM_MAT=new THREE.MeshStandardMaterial({color:0x2e353d,roughness:.24,metalness:.88,envMapIntensity:1.15});
+var VISOR_MAT=new THREE.MeshStandardMaterial({color:0xe8f1f6,roughness:.05,metalness:.9,emissive:0x232f38,envMapIntensity:2.4});
 var FACE_MAT=new THREE.MeshStandardMaterial({color:0xeec9a3,roughness:.62,metalness:0});
-var DARK_MAT=new THREE.MeshStandardMaterial({color:0x14171b,roughness:.50,metalness:.40});
+var MOUTH_MAT=new THREE.MeshStandardMaterial({color:0x8f6a4c,roughness:.7,metalness:0});
+var DARK_MAT=new THREE.MeshStandardMaterial({color:0x14171b,roughness:.38,metalness:.55});
 function pickFigColor(key){
   var used={}; objs.forEach(function(k){ if(k.type==='actor')used[k.color]=1; });
   var t=(FIGTYPES[key]||FIGTYPES.std_m).tint; if(!used[t])return t;
@@ -1383,48 +1388,72 @@ function makeActor(color,typeKey){
   var bones=[bHips,bSpine,bNeck,aL.sh,aL.el,aR.sh,aR.el,lL.hip,lL.knee,lR.hip,lR.knee];
   var NB=T.hipY+T.spine+T.neck;               /* neck-bone world height */
   var shY=T.hipY+T.spine+T.shDy, elY=shY-T.upArm, kneeY=T.hipY-T.thigh;
-  var byMk={body:[],helm:[],visor:[],face:[],dark:[]};
+  var byMk={body:[],helm:[],visor:[],face:[],mouth:[],dark:[]};
   function PP(geo,bone,blend,shade,mk){ byMk[mk||'body'].push(skinPart(geo,bone,blend,shade)); }
   // pelvis -> hips bone
-  var pelvis=new THREE.SphereGeometry(T.pelvis[0],24,18); pelvis.scale(T.pelvis[1],.8,T.pelvis[2]); pelvis.translate(0,T.hipY+.005,0); PP(pelvis,0,null,1);
+  var pelvis=new THREE.SphereGeometry(T.pelvis[0],20,14); pelvis.scale(T.pelvis[1],.8,T.pelvis[2]); pelvis.translate(0,T.hipY+.005,0); PP(pelvis,0,null,1);
   // sculpted torso -> spine; lowest rows blend toward hips so a bent waist never tears
-  var torso=new THREE.LatheGeometry(T.prof.map(function(p){ return new THREE.Vector2(p[0],T.hipY+p[1]); }),28); torso.scale(1,1,T.tz);
+  var torso=new THREE.LatheGeometry(T.prof.map(function(p){ return new THREE.Vector2(p[0],T.hipY+p[1]); }),24); torso.scale(1,1,T.tz);
   PP(torso,1,{bone:0,yHi:T.hipY+.18,yLo:T.hipY+.08,maxW:.5},1);
-  if(T.bust){ [-1,1].forEach(function(s){ var bs=new THREE.SphereGeometry(T.bust.r,18,14); bs.scale(1,.88,.82); bs.translate(T.bust.x*s,T.hipY+T.bust.y,T.bust.z); PP(bs,1,null,1); }); }
-  // neck + unified sci-fi mecha helmet head -> neck bone (shared by all body types):
-  // glossy shell dome + lower shell band wrapping the sides/back, mirror visor over
-  // the eyes, pale lower face exposed in the front opening, dark ring + ear pods.
-  var neckG=new THREE.CylinderGeometry(T.neckR,T.neckR*1.15,.15,14); neckG.translate(0,NB-.01,0); PP(neckG,2,null,1);
-  var ringG=new THREE.CylinderGeometry(T.neckR*1.32,T.neckR*1.5,.055,16); ringG.translate(0,NB+.005,0); PP(ringG,2,null,1,'dark');
+  // trapezius yoke: a low ellipsoid bridging neck base to both shoulders, so the
+  // shoulder line slopes like the reference base meshes instead of a bare tube top
+  var yoke=new THREE.SphereGeometry(1,18,12); yoke.scale(T.shX+T.shB*.60,.045,T.shB*1.7); yoke.translate(0,shY-.008,0); PP(yoke,1,null,1);
+  if(T.bust){ [-1,1].forEach(function(s){ var bs=new THREE.SphereGeometry(T.bust.r,16,12); bs.scale(1,.88,.82); bs.translate(T.bust.x*s,T.hipY+T.bust.y,T.bust.z); PP(bs,1,null,1); }); }
+  // neck + unified sci-fi mecha helmet head -> neck bone (shared by all body types),
+  // modelled on the user's reference photos: one glossy gunmetal shell wrapping the
+  // whole upper head with a side/back skirt down to jaw level, a mirror visor panel
+  // set into the shell over the eyes, a crown ridge strip, round ear pods, and only
+  // the tapered lower face (jaw + chin) exposed in the opening under the visor.
+  var neckG=new THREE.CylinderGeometry(T.neckR*1.02,T.neckR*1.18,.16,14); neckG.translate(0,NB-.02,0); PP(neckG,2,null,1,'dark');
+  var ringG=new THREE.CylinderGeometry(T.neckR*1.30,T.neckR*1.42,.05,18); ringG.translate(0,NB-.005,0); PP(ringG,2,null,1,'dark');
   var r=T.headR, CY=NB+r*T.headK;
-  var faceG=new THREE.SphereGeometry(r*.94,26,20); faceG.scale(.76,.94,.82); faceG.translate(0,CY-r*.12,r*.10); PP(faceG,2,null,1,'face');
-  var domeG=new THREE.SphereGeometry(r*1.03,30,20,0,Math.PI*2,0,Math.PI*.58); domeG.scale(.84,1.02,.90); domeG.translate(0,CY,0); PP(domeG,2,null,1,'helm');
-  var bandG=new THREE.SphereGeometry(r*1.045,30,14,Math.PI/2+.66,Math.PI*2-1.32,Math.PI*.50,Math.PI*.48); bandG.scale(.84,1.02,.90); bandG.translate(0,CY,0); PP(bandG,2,null,1,'helm');
-  var visorG=new THREE.SphereGeometry(r*1.06,30,12,Math.PI/2-1.03,2.06,Math.PI*.395,Math.PI*.175); visorG.scale(.84,1.02,.90); visorG.translate(0,CY,0); PP(visorG,2,null,1,'visor');
-  [.18,-.30].forEach(function(dy){ var tor=new THREE.TorusGeometry(r*1.02,r*.028,8,28,Math.PI); tor.rotateX(Math.PI/2); tor.rotateY(Math.PI); tor.scale(.84,1,.90); tor.translate(0,CY+r*dy,0); PP(tor,2,null,1,'dark'); });
-  [-1,1].forEach(function(s){ var ear=new THREE.CylinderGeometry(r*.17,r*.17,r*.07,18); ear.rotateZ(Math.PI/2); ear.translate(.865*r*s,CY-r*.05,0); PP(ear,2,null,1,'dark'); });
+  // lower face: a sphere reshaped so the jaw tapers in and the chin narrows —
+  // the exposed part reads as a face under the shell, not a bare ball.
+  var faceG=new THREE.SphereGeometry(r*.96,22,16); faceG.scale(.76,1.0,.85);
+  var fp=faceG.attributes.position;
+  for(var fi=0;fi<fp.count;fi++){ var fy=fp.getY(fi)/(r*.96); if(fy<.05){ var fu=(.05-fy)/1.05; var sx,sy=fy;
+    if(fu<.38){ sx=1-.10*(fu/.38); } else { var jt=(fu-.38)/.62; sx=.90-.22*Math.pow(jt,1.3); }
+    fp.setX(fi,fp.getX(fi)*sx); fp.setZ(fi,fp.getZ(fi)*(1-.08*fu));
+    if(fy<-.55)fp.setZ(fi,fp.getZ(fi)+(-.55-fy)*r*.06);
+    if(fy<-.80)fp.setY(fi,(-.80-(fy+.80)*.60)*(r*.96)); } }
+  faceG.computeVertexNormals(); faceG.translate(0,CY-r*.06,r*.06); PP(faceG,2,null,1,'face');
+  var mouthG=new THREE.TorusGeometry(r*.19,r*.010,6,14,1.7); mouthG.rotateZ(-Math.PI/2-.85); mouthG.rotateX(.10); mouthG.translate(0,CY-r*.36,r*.72); PP(mouthG,2,null,1,'mouth');
+  var domeG=new THREE.SphereGeometry(r*1.05,26,18,0,Math.PI*2,0,Math.PI*.60); domeG.scale(.85,1,.92); domeG.translate(0,CY,0); PP(domeG,2,null,1,'helm');
+  var skirtG=new THREE.SphereGeometry(r*1.065,26,12,Math.PI/2+1.22,Math.PI*2-2.44,Math.PI*.56,Math.PI*.24); skirtG.scale(.85,1,.92); skirtG.translate(0,CY,0); PP(skirtG,2,null,1,'helm');
+  var visorG=new THREE.SphereGeometry(r*1.075,28,12,Math.PI/2-1.18,2.36,Math.PI*.345,Math.PI*.235); visorG.scale(.85,1,.92); visorG.translate(0,CY,0); PP(visorG,2,null,1,'visor');
+  var ridgeG=new THREE.TorusGeometry(r*1.045,r*.020,8,24,2.0); ridgeG.rotateY(Math.PI/2); ridgeG.rotateX((Math.PI-2.0)/2); ridgeG.scale(1,1,.92); ridgeG.translate(0,CY,0); PP(ridgeG,2,null,1,'dark');
+  [-1,1].forEach(function(s){ var ear=new THREE.CylinderGeometry(r*.155,r*.155,r*.055,18); ear.rotateZ(Math.PI/2); ear.translate(.878*r*s,CY-r*.18,0); PP(ear,2,null,1,'dark'); });
   function armParts(side,shI,elI){
     var bx=T.shX*side;
-    var ball=new THREE.SphereGeometry(T.shB,18,14); ball.translate(bx,shY,0); PP(ball,shI,null,.68);
+    var ball=new THREE.SphereGeometry(T.shB,16,12); ball.scale(1.3,.85,1.2); ball.translate(bx,shY-.008,0); PP(ball,shI,null,.85);
     var up=new THREE.CylinderGeometry(T.armR[0],T.armR[1],T.upArm,16); up.translate(bx,shY-T.upArm/2,0); PP(up,shI,{bone:elI,yHi:elY+.08,yLo:elY+.005,maxW:1},1);
-    var eb=new THREE.SphereGeometry(T.elB,18,14); eb.translate(bx,elY,0); PP(eb,elI,null,.68);
+    var eb=new THREE.SphereGeometry(T.elB,16,12); eb.translate(bx,elY,0); PP(eb,elI,null,.85);
     var fo=new THREE.CylinderGeometry(T.foreR[0],T.foreR[1],T.foreArm,16); fo.translate(bx,elY-T.foreArm/2,0); PP(fo,elI,null,1);
-    var hand=new THREE.SphereGeometry(T.handR,16,12); hand.scale(.72,1.3,.85); hand.translate(bx,elY-T.foreArm-.10,0); PP(hand,elI,null,1);
+    // hand: flattened palm + four slightly curled fingers + thumb, like the
+    // reference base meshes — no longer a plain blob
+    var hy=elY-T.foreArm-.085, hr=T.handR;
+    var palm=new THREE.SphereGeometry(hr,14,10); palm.scale(.68,1.12,.36); palm.translate(bx,hy,0); PP(palm,elI,null,1);
+    for(var fgi=0;fgi<4;fgi++){ var fo2=(fgi-1.5)*hr*.315, fl2=hr*((fgi===1||fgi===2)?1.02:.88), fz=(fgi-1.5)*.055*side;
+      var fg=new THREE.CylinderGeometry(hr*.155,hr*.125,fl2,7); fg.translate(0,-fl2/2,0); fg.rotateX(.30); fg.rotateZ(fz); fg.translate(bx+fo2,hy-hr*1.02,hr*.02); PP(fg,elI,null,1);
+      var ft2=new THREE.SphereGeometry(hr*.14,7,6); ft2.translate(0,-fl2,0); ft2.rotateX(.30); ft2.rotateZ(fz); ft2.translate(bx+fo2,hy-hr*1.02,hr*.02); PP(ft2,elI,null,1); }
+    var thg=new THREE.CylinderGeometry(hr*.15,hr*.12,hr*.8,7); thg.translate(0,-hr*.4,0); thg.rotateX(.55); thg.rotateZ(side*.5); thg.translate(bx-side*hr*.52,hy-hr*.35,hr*.30); PP(thg,elI,null,1);
   }
   function legParts(side,hipI,kneeI){
     var bx=T.hipX*side;
-    var ball=new THREE.SphereGeometry(T.hipB,18,14); ball.translate(bx,T.hipY,0); PP(ball,hipI,null,.68);
+    var ball=new THREE.SphereGeometry(T.hipB,16,12); ball.translate(bx,T.hipY,0); PP(ball,hipI,null,.85);
     var th=new THREE.CylinderGeometry(T.thighR[0],T.thighR[1],T.thigh,16); th.translate(bx,T.hipY-T.thigh/2,0); PP(th,hipI,{bone:kneeI,yHi:kneeY+.08,yLo:kneeY+.005,maxW:1},1);
-    var kb=new THREE.SphereGeometry(T.kneeB,18,14); kb.translate(bx,kneeY,0); PP(kb,kneeI,null,.68);
-    var sh2=new THREE.CylinderGeometry(T.shinR[0],T.shinR[1],T.shin,16); sh2.translate(bx,kneeY-T.shin/2,0); PP(sh2,kneeI,null,1);
-    var foot=new THREE.SphereGeometry(T.footR,16,12); foot.scale(.9,.45,2); foot.translate(bx,.04,.045); PP(foot,kneeI,null,1);
+    var kb=new THREE.SphereGeometry(T.kneeB,16,12); kb.translate(bx,kneeY,0); PP(kb,kneeI,null,.85);
+    // shin as a lathe with a calf bulge below the knee, like the reference legs
+    var sh2=new THREE.LatheGeometry([[T.shinR[1],0],[T.shinR[1]*1.14,T.shin*.10],[T.shinR[0]*1.13,T.shin*.55],[T.shinR[0]*1.03,T.shin*.85],[T.shinR[0],T.shin]].map(function(p){ return new THREE.Vector2(p[0],p[1]); }),16); sh2.translate(bx,kneeY-T.shin,0); PP(sh2,kneeI,null,1);
+    var foot=new THREE.SphereGeometry(T.footR,16,12); foot.scale(.82,.40,1.7); foot.translate(bx,.042,.030); PP(foot,kneeI,null,1);
+    var toe=new THREE.SphereGeometry(T.footR*.78,12,9); toe.scale(.86,.34,.95); toe.translate(bx,.030,.108); PP(toe,kneeI,null,1);
   }
   armParts(1,3,4); armParts(-1,5,6); legParts(1,7,8); legParts(-1,9,10);
   var bodyMesh=new THREE.SkinnedMesh(buildSkinGeo(byMk.body),manMat(color));
   bodyMesh.add(bHips); bodyMesh.bind(new THREE.Skeleton(bones)); bodyMesh.frustumCulled=false;
   inner.add(bodyMesh);
   var meshes=[bodyMesh];
-  [['helm',HELM_MAT],['visor',VISOR_MAT],['face',FACE_MAT],['dark',DARK_MAT]].forEach(function(kv){
+  [['helm',HELM_MAT],['visor',VISOR_MAT],['face',FACE_MAT],['mouth',MOUTH_MAT],['dark',DARK_MAT]].forEach(function(kv){
     if(!byMk[kv[0]].length)return;
     var m=new THREE.SkinnedMesh(buildSkinGeo(byMk[kv[0]]),kv[1]);
     m.bind(bodyMesh.skeleton); m.frustumCulled=false; inner.add(m); meshes.push(m);
@@ -1605,6 +1634,10 @@ function renderInspector(){
   }
   if(o.type==='camera'){
     html+='<div class="field"><label>焦距感（视野角 FOV） <output tabindex="0" title="点击输入数值">'+o.fov+'°</output></label><input type="range" id="fFov" min="18" max="80" step="1" value="'+o.fov+'"><div style="font-size:11px;color:var(--muted)">数值小 = 长焦特写感；数值大 = 广角</div></div>';
+    var dTgt=o.lookPt?o.lookPt.clone():null;
+    if(!dTgt){ var dfd=facingOf(o); dTgt=o.group.position.clone().add(new THREE.Vector3(dfd[0]*5,0,dfd[1]*5)); }
+    var dNow=o.group.position.distanceTo(dTgt);
+    html+='<div class="field"><label>推近 / 拉远 · 沿镜头方向 <output tabindex="0" title="点击输入数值">'+dNow.toFixed(1)+' 米</output></label><input type="range" id="fDolly" min="0.5" max="15" step="0.1" value="'+dNow.toFixed(2)+'"><div style="font-size:11px;color:var(--muted)">数值 = 机位到注视点的距离：往左拖推近、往右拖拉远，注视点不动。这是真的推近，区别于上面的变焦感。</div></div>';
     html+='<div class="field"><label>机位高度 <output tabindex="0" title="点击输入数值">'+o.group.position.y.toFixed(1)+'</output></label><input type="range" id="fY" min="0" max="3.5" step="0.1" value="'+o.group.position.y+'"></div>';
     html+='<div class="row2"><button class="btn" id="lookSel">'+ico('look')+'看向选中角色</button><button class="btn" id="lookCen">'+ico('center')+'看向舞台中心</button></div>';
     var nearA=null,nearD=1e9; objs.forEach(function(k){ if(k.type==='actor'){ var dd=Math.hypot(k.group.position.x-o.group.position.x,k.group.position.z-o.group.position.z); if(dd<nearD){nearD=dd;nearA=k;} } });
@@ -1627,6 +1660,15 @@ function renderInspector(){
   bind('fS',function(v){ o.group.scale.setScalar(v); renderInspectorSoft(); });
   bind('fY',function(v){ o.group.position.y=v; renderInspectorSoft(); });
   bind('fFov',function(v){ o.fov=v; renderInspectorSoft(); });
+  var dl=document.getElementById('fDolly');
+  if(dl)dl.addEventListener('input',function(){
+    var nd=Math.max(0.4,parseFloat(dl.value));
+    var eye=o.group.position.clone();
+    var tgt=o.lookPt?o.lookPt.clone():(function(){ var f2=facingOf(o); return eye.clone().add(new THREE.Vector3(f2[0]*5,0,f2[1]*5)); })();
+    var dir=eye.sub(tgt); var L=dir.length()||1; dir.multiplyScalar(1/L);
+    o.group.position.copy(tgt).addScaledVector(dir,nd);
+    renderInspectorSoft();
+  });
   var pc=document.getElementById('fPose'); if(pc)pc.addEventListener('change',function(){ if(pc.value!=='自定义'){ applyPose(o,pc.value); renderInspectorSoft(); } });
   el.querySelectorAll('[data-j]').forEach(function(inp){ inp.addEventListener('input',function(){ var k=inp.getAttribute('data-j'); if(!o.joints)o.joints=defJoints(); o.joints[k]=parseFloat(inp.value); if(o.modelType==='glb'&&o.clip){ setGlbClip(o,null); var cs=document.getElementById('fClip'); if(cs)cs.value=''; } if(o.pose!=='自定义'){ o.pose='自定义'; var ps=document.getElementById('fPose'); if(ps)ps.value='自定义'; } applyJoints(o); var out=inp.parentElement.querySelector('output'); if(out)out.textContent=Math.round(inp.value)+'°'; }); });
   var cl=document.getElementById('fClip'); if(cl)cl.addEventListener('change',function(){ setGlbClip(o,cl.value||null); });
@@ -1665,9 +1707,12 @@ function pick(e){
   if(hits.length){ var oid=hits[0].object.userData.oid; return objs.filter(function(o){return o.id===oid})[0]||null; }
   return null;
 }
-renderer.domElement.addEventListener('pointerdown',function(e){ downPos=[e.clientX,e.clientY]; rotPauseUntil=Infinity; if(sel&&gzGroup.visible){ var gp=gzPick(e); if(gp){ gzStart(e,gp); return; } } var o=pick(e); if(o){ select(o); drag=o; orbit.enabled=false; dragPlane.constant=-(o.group.position.y); ray.ray.intersectPlane(dragPlane,hitP); drag.offX=o.group.position.x-hitP.x; drag.offZ=o.group.position.z-hitP.z; renderer.domElement.setPointerCapture(e.pointerId); } });
+var stagePtrs={};
+function stagePtrCount(){ var n=0; for(var k in stagePtrs)n++; return n; }
+renderer.domElement.addEventListener('pointerdown',function(e){ if(e.pointerType==='mouse')stagePtrs={}; stagePtrs[e.pointerId]=1; downPos=[e.clientX,e.clientY]; rotPauseUntil=Infinity; if(stagePtrCount()>=2){ if(drag)drag=null; if(typeof gzDrag!=='undefined'&&gzDrag)gzEnd(); orbit.enabled=(viewMode==='dir'); return; } if(sel&&gzGroup.visible){ var gp=gzPick(e); if(gp){ gzStart(e,gp); return; } } var o=pick(e); if(o){ select(o); drag=o; orbit.enabled=false; dragPlane.constant=-(o.group.position.y); ray.ray.intersectPlane(dragPlane,hitP); drag.offX=o.group.position.x-hitP.x; drag.offZ=o.group.position.z-hitP.z; try{ renderer.domElement.setPointerCapture(e.pointerId); }catch(err){} } });
 renderer.domElement.addEventListener('pointermove',function(e){ if(!drag)return; var r=renderer.domElement.getBoundingClientRect(); ptr.x=((e.clientX-r.left)/r.width)*2-1; ptr.y=-((e.clientY-r.top)/r.height)*2+1; ray.setFromCamera(ptr,activeMainCam()); if(ray.ray.intersectPlane(dragPlane,hitP)){ var nx=THREE.MathUtils.clamp(hitP.x+drag.offX,-14,14), nz=THREE.MathUtils.clamp(hitP.z+drag.offZ,-14,14); if(UI.snap){ nx=Math.round(nx*2)/2; nz=Math.round(nz*2)/2; } drag.group.position.x=nx; drag.group.position.z=nz; } });
-renderer.domElement.addEventListener('pointerup',function(){ rotPauseUntil=performance.now()+3000; if(drag){ drag=null; orbit.enabled=true; renderInspector(); } });
+renderer.domElement.addEventListener('pointerup',function(e){ delete stagePtrs[e.pointerId]; rotPauseUntil=performance.now()+3000; if(drag){ drag=null; orbit.enabled=true; renderInspector(); } });
+renderer.domElement.addEventListener('pointercancel',function(e){ delete stagePtrs[e.pointerId]; if(drag){ drag=null; orbit.enabled=(viewMode==='dir'); } });
 
 /* ---------- C4D-style transform gizmo: 移动 (W) / 旋转 (E) ---------- */
 var gizmoMode='move';
@@ -3771,7 +3816,7 @@ function vgStateAt(o,t){
   if(t>=tr[tr.length-1].t)return tr[tr.length-1];
   for(var i=0;i<tr.length-1;i++){ var a=tr[i], b=tr[i+1];
     if(t>=a.t&&t<=b.t){ var f=(t-a.t)/((b.t-a.t)||1);
-      return {x:a.x+(b.x-a.x)*f, y:a.y+(b.y-a.y)*f, z:a.z+(b.z-a.z)*f, ry:a.ry, fov:(a.fov!=null&&b.fov!=null)?a.fov+(b.fov-a.fov)*f:(a.fov||42), pose:a.pose||cur.pose}; } }
+      return {x:a.x+(b.x-a.x)*f, y:a.y+(b.y-a.y)*f, z:a.z+(b.z-a.z)*f, ry:a.ry, fov:(a.fov!=null&&b.fov!=null)?a.fov+(b.fov-a.fov)*f:(a.fov||42), pose:a.pose||cur.pose, lookPt:(a.lookPt&&b.lookPt)?[a.lookPt[0]+(b.lookPt[0]-a.lookPt[0])*f, a.lookPt[1]+(b.lookPt[1]-a.lookPt[1])*f, a.lookPt[2]+(b.lookPt[2]-a.lookPt[2])*f]:(a.lookPt||b.lookPt||null)}; } }
   return tr[tr.length-1];
 }
 function vgCamMove(cam,t0,t1){
@@ -3780,7 +3825,10 @@ function vgCamMove(cam,t0,t1){
   var dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, d=Math.hypot(dx,dz);
   var parts=[];
   if(d>=0.15||Math.abs(dy)>=0.1){
-    var da=Math.hypot(a.x,a.z), db=Math.hypot(b.x,b.z);
+    var ta=(a.lookPt&&a.lookPt.length>=3)?a.lookPt:(cam.lookPt?[cam.lookPt.x,cam.lookPt.y,cam.lookPt.z]:null);
+    var tb=(b.lookPt&&b.lookPt.length>=3)?b.lookPt:ta;
+    var da=ta?Math.hypot(a.x-ta[0],a.z-ta[2]):Math.hypot(a.x,a.z);
+    var db=tb?Math.hypot(b.x-tb[0],b.z-tb[2]):Math.hypot(b.x,b.z);
     if(db-da<-0.3)parts.push('镜头推近'); else if(db-da>0.3)parts.push('镜头拉远');
     if(dy>0.25)parts.push('机位上升'); else if(dy<-0.25)parts.push('机位下降');
     if(!parts.length)parts.push('横移运镜');
@@ -4426,6 +4474,11 @@ document.addEventListener('keydown',function(e){
   if(t&&t.matches&&t.matches('.field output,.jrow output')&&!t.dataset.editing){ e.preventDefault(); t.click(); }
 });
 })();
+/* ---------- 滑杆拖动防滚动抢占 ----------
+   靠 CSS 解决（见 input[type=range] 规则）：touch-action:none 让浏览器
+   不把滑杆上的触摸当滚动手势；输入框高度加大命中区，手指不易落空到
+   面板上。不要在这里对 touchmove 做 preventDefault——实测会冻住
+   Chrome 的原生滑杆跟随（A/B 对照：带拦截时值全程不动）。 */
 </script>
 <script>
 (function(){
