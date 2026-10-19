@@ -23,7 +23,7 @@
 (function(){
   try{
     var EP='https://formsubmit.co/ajax/4bbfe5bc29af735ddd4ae959ae699455';
-    var VER='v20-20261019';
+    var VER='v21-20261019';
     var MAX=3, sent=0, seen={}, booted=false;
     window.addEventListener('load',function(){ booted=true; });
     function clean(s){
@@ -979,12 +979,13 @@ body.clean .drawer,body.clean .drawer-backdrop{display:none!important}
   <footer class="board">
     <div class="board-head">
       <b><span class="no">05</span>分镜板</b>
-      <span>调好机位后截取，每张分镜都带镜号和景别标注，可下载单张或整板；摆完点「导出参考包」，把每个机位的参考图、平面点位图、参数表和白模视频按场次_镜号一键打包带走。</span>
+      <span>调好机位后截取，每张分镜都带镜号和景别标注，可下载单张或整板；摆好两个角色点「一键多机位覆盖」，按两人连线在轴线安全侧一次生成主镜头、过肩正反打和各自近景 / 特写；摆完点「导出参考包」，把每个机位的参考图、平面点位图、参数表和白模视频按场次_镜号一键打包带走。</span>
       <button class="btn primary" id="capBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-capture"></use></svg>截取当前机位</button>
     </div>
     <div class="strip" id="strip"><span class="none">还没有分镜。先在左边加机位、摆好角色，再点「截取当前机位」。</span></div>
     <div style="flex:none;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <button class="btn teal" id="exportBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-board"></use></svg>下载分镜板</button>
+      <button class="btn" id="coverBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg>一键多机位覆盖</button>
       <button class="btn primary" id="packBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-download"></use></svg>导出参考包</button>
     </div>
   </footer>
@@ -2195,6 +2196,75 @@ document.getElementById('exportBtn').onclick=function(){
       if(++loaded===shots.length){ var a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download='storyboard.png'; a.click(); } };
     img.src=s.url;
   });
+};
+
+/* ---------- 一键多机位覆盖：按前两个角色的连线（轴线）在安全侧一次生成标准覆盖机位组 ----------
+   双人：主镜头（双人全景）+ 过肩正反打 + 两人各自近景 / 特写，共 7 个机位，全部落在轴线同一侧；
+   安全侧优先沿用已开启的轴线（axisSide），没开轴线时沿用现有活动机位所在侧，再没有机位时默认一侧。
+   单人：全景主镜头 + 近景 + 特写 + 45° 侧面中景，共 4 个，取在角色正前方扇区、相邻角度错开 35° 以上。
+   重跑会先清掉上一组自动覆盖机位（名字以「覆盖·」开头），手动摆的机位不动；整组生成记一步撤销。 */
+document.getElementById('coverBtn').onclick=function(){
+  var actors=objs.filter(function(o){return o.type==='actor'});
+  if(!actors.length){ alertMsg('先摆至少一个角色：一键覆盖是按角色站位来布机位的。'); return; }
+  var A=actors[0], B=actors[1]||null, pa=A.group.position;
+  function cl(v){ return THREE.MathUtils.clamp(v,-13,13); }
+  var made=[];
+  function mkCam(name,x,baseY,z,tx,ty,tz,fov,size){
+    var c=addObj('camera',cl(x),cl(z),0,undefined,name);
+    c.group.position.y=baseY; c.fov=fov; c.shotSize=size;
+    aimPoint(c,new THREE.Vector3(tx,ty,tz));
+    made.push(c); return c;
+  }
+  if(!B){
+    var fx=Math.sin(A.group.rotation.y), fz=Math.cos(A.group.rotation.y);
+    function front(deg,d){ var a=THREE.MathUtils.degToRad(deg), cs=Math.cos(a), sn=Math.sin(a); return [pa.x+(fx*cs+fz*sn)*d, pa.z+(-fx*sn+fz*cs)*d]; }
+    objs.filter(function(o){return o.type==='camera'&&o.name.indexOf('覆盖·')===0}).forEach(removeObj);
+    var p;
+    p=front(0,5.6);   mkCam('覆盖·主镜头',p[0],0.42,p[1],pa.x,1.0,pa.z,42,'全景');
+    p=front(35,2.9);  mkCam('覆盖·中景',p[0],0.27,p[1],pa.x,1.25,pa.z,42,'中景');
+    p=front(-35,1.55); mkCam('覆盖·近景',p[0],0.34,p[1],pa.x,1.5,pa.z,42,'近景');
+    p=front(70,0.85); mkCam('覆盖·特写',p[0],0.4,p[1],pa.x,1.62,pa.z,32,'特写');
+    if(made[0])select(made[0]);
+    if(typeof histPushSoon==='function')histPushSoon();
+    alertMsg('已按「'+A.name+'」生成单人覆盖机位 4 个（主镜头 / 中景 / 近景 / 特写，角度逐个错开）。在左侧清单点机位逐个看取景，或直接导出参考包带走。');
+    return;
+  }
+  var pb=B.group.position;
+  var dx=pb.x-pa.x, dz=pb.z-pa.z, len=Math.hypot(dx,dz)||1; dx/=len; dz/=len;
+  /* 安全侧先定（要在清旧覆盖机位之前，活动机位可能就是上一组里的） */
+  var side=0;
+  if(axisOn) side=axisSide;
+  if(!side){ var ec=activeCam(); side=ec?axisSideOf(ec.group.position):0; }
+  if(!side) side=1;
+  var nx=-dz*side, nz=dx*side; /* 与 tickAxis 绿区同一条法线：axisSideOf(中点+n)===side */
+  var mx=(pa.x+pb.x)/2, mz=(pa.z+pb.z)/2;
+  objs.filter(function(o){return o.type==='camera'&&o.name.indexOf('覆盖·')===0}).forEach(removeObj);
+  function pushSafe(cx,cz){ var g=0; while(axisSideOf({x:cx,z:cz})!==side&&g<12){ cx+=nx*0.4; cz+=nz*0.4; g++; } return [cx,cz]; }
+  /* 主镜头：中点沿安全侧法线退开，距离按两人间距撑满画幅 */
+  var mDist=Math.max(4.0,(len/2+1.5)/0.66), mp=pushSafe(mx+nx*mDist,mz+nz*mDist);
+  mkCam('覆盖·主镜头',mp[0],0.32,mp[1],mx,1.15,mz,42,'全景');
+  /* 过肩正反打：架在前景角色肩后、略向安全侧偏，注视对方 */
+  function ots(X,Y,label){
+    var xp=X.group.position, yp=Y.group.position;
+    var tx=yp.x-xp.x, tz=yp.z-xp.z, tl=Math.hypot(tx,tz)||1; tx/=tl; tz/=tl;
+    var cp=pushSafe(xp.x-tx*0.85+nx*0.38, xp.z-tz*0.85+nz*0.38);
+    mkCam(label,cp[0],0.55,cp[1],yp.x,1.35,yp.z,42,'过肩镜头');
+  }
+  ots(B,A,'覆盖·过肩 B→A'); ots(A,B,'覆盖·过肩 A→B');
+  /* 单人近景 / 特写：从两人中点方向往安全侧偏着取，景别逐档递进 */
+  function single(X,label,d,baseY,aimY,fov,size){
+    var xp=X.group.position;
+    var vx=mx-xp.x+nx*1.6, vz=mz-xp.z+nz*1.6, vl=Math.hypot(vx,vz)||1; vx/=vl; vz/=vl;
+    var cp=pushSafe(xp.x+vx*d, xp.z+vz*d);
+    mkCam(label,cp[0],baseY,cp[1],xp.x,aimY,xp.z,fov,size);
+  }
+  single(A,'覆盖·近景 A',1.55,0.34,1.5,42,'近景');
+  single(B,'覆盖·近景 B',1.55,0.34,1.5,42,'近景');
+  single(A,'覆盖·特写 A',0.85,0.4,1.62,32,'特写');
+  single(B,'覆盖·特写 B',0.85,0.4,1.62,32,'特写');
+  if(made[0])select(made[0]);
+  if(typeof histPushSoon==='function')histPushSoon();
+  alertMsg('已生成覆盖机位 7 个（主镜头＋过肩正反打＋两人近景 / 特写），全部在轴线安全侧、没有越轴。在左侧清单点机位逐个看取景，或直接导出参考包带走。');
 };
 
 /* ---------- 生成参考包：一键打包多机位参考图 + 平面点位图 + 参数表/场景 JSON + 白模视频（.zip） ---------- */
