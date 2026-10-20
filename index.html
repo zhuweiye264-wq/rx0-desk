@@ -52,7 +52,7 @@
 (function(){
   try{
     var EP='https://formsubmit.co/ajax/4bbfe5bc29af735ddd4ae959ae699455';
-    var VER='v41-20261020';
+    var VER='v45-20261020';
     var MAX=3, sent=0, seen={}, booted=false;
     window.addEventListener('load',function(){ booted=true; });
     function clean(s){
@@ -253,6 +253,37 @@ body.clean .touch-hint{display:none!important}
 .shotbar{position:absolute;left:14px;bottom:12px;z-index:3;display:flex;gap:6px;flex-wrap:wrap;max-width:60%}
 .shotbar button{border:1px solid rgba(255,255,255,.18);background:rgba(8,9,14,.82);color:#e6e8ee;padding:6px 11px;border-radius:2px;font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;transition:border-color .15s ease,background .15s ease,box-shadow .15s ease}
 .shotbar button:hover{background:rgba(160,14,14,.85);border-color:rgba(255,90,80,.6);box-shadow:0 0 10px rgba(224,27,27,.3)}
+.shotbar button.on{background:rgba(160,14,14,.85);border-color:rgba(255,90,80,.6);color:#fff}
+/* SHOT GRID — 景别 × 角度矩阵（v45 · A6）：按角色锚定的景别预设补齐 */
+.shotgrid{position:absolute;left:14px;bottom:56px;z-index:4;width:min(584px,calc(100% - 28px));background:rgba(7,8,12,.94);border:1px solid rgba(255,255,255,.16);border-radius:3px;padding:9px 10px;backdrop-filter:blur(6px);box-shadow:0 14px 34px rgba(0,0,0,.6)}
+.stage-wrap.plan .shotgrid{display:none}
+.sg-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:7px;font-size:12px;color:var(--muted)}
+.sg-head b{color:var(--ink)}
+.sg-newcam{margin-left:auto;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:4px 9px;border-radius:2px;font-size:11.5px;cursor:pointer}
+.sg-newcam.on{background:rgba(160,14,14,.85);border-color:rgba(255,90,80,.6);color:#fff}
+.sg-grid{display:grid;grid-template-columns:36px repeat(7,1fr);gap:4px;align-items:stretch}
+.sg-col,.sg-row{font-size:10.5px;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.25;padding:2px 0}
+.sg-row{justify-content:flex-start;font-size:11.5px;color:var(--ink);font-weight:700}
+.sg-cell{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:#e6e8ee;font-size:12px;font-weight:700;padding:6px 0;border-radius:2px;cursor:pointer}
+.sg-cell:hover:not(:disabled){background:rgba(160,14,14,.85);border-color:rgba(255,90,80,.6)}
+.sg-cell:disabled{opacity:.32;cursor:not-allowed}
+.sg-note{margin-top:7px;font-size:11px;color:var(--muted);line-height:1.55}
+/* SHOT LIBRARY — 截图库（v45 · A6）：截图按机位自动命名归档 */
+.board{flex-wrap:wrap}
+.shotlib{flex:1 1 100%;min-width:0;border-top:1px dashed var(--line);padding-top:9px}
+.shotlib .none{font-size:12.5px;color:var(--muted)}
+.shotlib-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.shotlib-head b{font-size:13px;letter-spacing:.14em}
+.sl-note{font-size:11px;color:var(--muted);line-height:1.5}
+.sl-count{font-size:11px;color:var(--muted);margin-left:auto}
+.sl-group{margin-top:9px}
+.sl-group-head{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:5px}
+.sl-group-head b{letter-spacing:.06em}
+.sl-group-head span{color:var(--muted);font-size:11px}
+.sl-group-head .btn{margin-left:auto;padding:3px 9px;font-size:11.5px}
+.sl-items{display:flex;gap:9px;flex-wrap:wrap}
+.sl-thumb{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.sl-missing{display:flex;width:100%;height:100%;align-items:center;justify-content:center;color:var(--muted);font-size:11px;text-align:center;line-height:1.5;padding:4px}
 #planWrap{position:absolute;inset:0;display:none;background:#08090d}
 .stage-wrap.plan #planWrap{display:block}
 .stage-wrap.plan #stage,.stage-wrap.plan .shotbar{display:none}
@@ -371,6 +402,21 @@ input[type=color]{width:100%;height:32px;border:1px solid var(--line);border-rad
 .kf-bubble{position:absolute;bottom:23px;transform:translateX(-50%);background:#10121b;border:1px solid var(--accent);color:#fff;font-family:var(--mono);font-size:11px;line-height:1;padding:3px 6px;border-radius:3px;pointer-events:none;z-index:6;white-space:nowrap}
 .kf-state{font-size:11.5px;color:var(--muted);line-height:1.5}
 .kf-state b{color:var(--accent-hi);font-weight:600}
+/* 动作片段条（v42 · A3 运动系统）：挂在角色泳道上，可拖移 / 拖右缘拉伸 / 点选 */
+.mo-clip{position:absolute;top:2px;bottom:2px;border-radius:2px;font-size:10px;line-height:16px;padding:0 5px;color:#fff;white-space:nowrap;overflow:hidden;cursor:grab;z-index:3;touch-action:none;border:1px solid rgba(255,255,255,.35);background:rgba(14,116,233,.55)}
+.mo-clip.run{background:rgba(217,119,6,.6)}
+.mo-clip.bvh{background:rgba(124,58,237,.55)}
+.mo-clip.sel{border-color:#fff;box-shadow:0 0 0 1px var(--accent),0 0 8px rgba(224,27,27,.55);cursor:grabbing}
+.mo-cliprow{display:flex;width:100%;gap:6px;align-items:baseline;text-align:left;background:#0d0e14;border:1px solid var(--line);border-radius:2px;color:var(--ink);padding:5px 7px;font-size:11.5px;cursor:pointer;margin-top:5px}
+.mo-cliprow.on{border-color:var(--accent);background:#171019}
+.mo-cliprow .sp{margin-left:auto;color:var(--muted);font-family:var(--mono);font-size:10.5px;white-space:nowrap}
+.cc-clip{position:absolute;top:2px;bottom:2px;border-radius:2px;font-size:10px;line-height:16px;padding:0 5px;color:#fff;white-space:nowrap;overflow:hidden;cursor:grab;z-index:3;touch-action:none;border:1px solid rgba(255,255,255,.35);background:rgba(8,145,178,.62)}
+.cc-clip.path{background:rgba(101,163,13,.62)}
+.cc-clip.orphan{background:rgba(120,120,130,.5);border-style:dashed}
+.cc-clip.sel{border-color:#fff;box-shadow:0 0 0 1px var(--accent),0 0 8px rgba(224,27,27,.55);cursor:grabbing}
+.fpbar{position:absolute;left:50%;transform:translateX(-50%);top:64px;z-index:6;display:flex;gap:10px;align-items:center;background:rgba(6,7,11,.9);border:1px solid var(--accent);color:#e8eaf0;font-size:12px;padding:7px 12px;border-radius:3px;max-width:92%}
+.fpbar[hidden]{display:none}
+.mo-note{font-size:11px;color:var(--muted);line-height:1.55;margin-top:6px}
 .anim-row2{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:9px}
 .segctl{display:flex;gap:5px;align-items:center;font-size:12px;color:var(--muted);white-space:nowrap}
 .segctl select{background:#0d0e14;color:var(--ink);border:1px solid var(--line);border-radius:2px;padding:5px 6px;font-size:12px}
@@ -553,6 +599,13 @@ input[type=color]{width:100%;height:32px;border:1px solid var(--line);border-rad
 .ai-pricebar b{color:var(--ink)}
 .cost-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(4,5,8,.72);backdrop-filter:blur(3px)}
 .cost-modal[hidden]{display:none}
+.wm-card{max-width:620px;width:calc(100vw - 32px);max-height:88vh;overflow:auto}
+.wm-sec{border-top:1px solid var(--line);padding:12px 0 4px}
+.wm-h{font-weight:700;font-size:13.5px;margin-bottom:6px}
+.wm-note{font-size:12px;color:var(--muted);line-height:1.6}
+.wm-cfgstat{font-size:12px;line-height:1.6;margin-top:8px;padding:8px 10px;border:1px solid var(--line);border-radius:6px}
+.wm-status{font-size:12px;line-height:1.6;margin-top:8px;white-space:pre-wrap}
+.wm-status.err{color:#ff5147}
 .tx-banner{position:absolute;left:50%;transform:translateX(-50%);top:118px;z-index:60;width:min(520px,calc(100vw - 24px));background:rgba(8,9,14,.94);border:1px solid rgba(255,176,102,.55);color:var(--ink);padding:10px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 14px 40px rgba(0,0,0,.55);backdrop-filter:blur(4px)}
 .tx-banner[hidden]{display:none}
 .tx-banner .tx-bt{flex:1;font-size:12.5px;line-height:1.65;color:var(--muted)}
@@ -971,6 +1024,7 @@ body.splitting-y,body.splitting-y *{cursor:row-resize!important}
       <button class="btn primary" id="expSceneBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-json-out"></use></svg>导出场景 JSON</button>
       <button class="btn" id="impSceneBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-json-in"></use></svg>导入场景</button>
       <input type="file" id="impFile" accept=".json,application/json" style="display:none">
+      <input type="file" id="bvhFile" accept=".bvh,text/plain" style="display:none">
       <button class="btn teal" id="blendBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-bridge"></use></svg>导出 Blender 桥</button>
       <button class="btn danger" id="clearBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-clear"></use></svg>清空</button>
     </div>
@@ -1155,6 +1209,52 @@ body.splitting-y,body.splitting-y *{cursor:row-resize!important}
     </div>
   </div>
 
+  <div class="cost-modal" id="wmModal" hidden>
+    <div class="cost-card wm-card" role="dialog" aria-modal="true" aria-label="场景双通道">
+      <div class="cost-t">场景双通道 · 搭景两条路</div>
+      <div class="wm-sec">
+        <div class="wm-h">通道二 · 导入外部白模（准）</div>
+        <div class="wm-note">选 .glb / .gltf / .obj 模型文件：导入后按你给的真实尺寸归一化落地，成为可拖动 / 旋转 / 缩放的白模对象（一步撤销、自动保存，和道具同一套操作）。模型字节存这台设备的本机资产库，场景只存引用；换设备打开同一场景时，该对象会显示为带名称与尺寸的占位块，重新导入一次即可补回。.skp（SketchUp）不能直读，先经 SketchUp / Blender 转成 GLB / OBJ。面数过高会提示但不拒绝。</div>
+        <div class="cost-row" style="justify-content:flex-start"><button class="btn primary" id="wmImpGo" type="button">选择模型文件…</button></div>
+      </div>
+      <div class="wm-sec">
+        <div class="wm-h">通道一 · 一图生成白模空间（快）</div>
+        <div class="wm-note">给一张场景参考图，视觉模型返回结构化布局，台子自动摆出白模块体组。明示：这是 AI 近似估算，块体只供站位与空间关系参考，不是精确建模。走「AI 助手 · OpenAI 兼容」那套钥匙与接口（需填支持看图的视觉模型名，如 GPT / Qwen-VL 类；DeepSeek 官方接口不支持看图）。生成前先报预估、确认才发送；无可用配置或生成失败时，用下方「背景图对位」兜底，不会假装生成成功。</div>
+        <div class="wm-cfgstat" id="wmAiStat"></div>
+        <div class="cost-row" style="justify-content:flex-start"><button class="btn" id="wmAiPick" type="button">选择参考图…</button><button class="btn primary" id="wmAiGo" type="button" disabled>生成白模布局</button></div>
+        <img id="wmAiPrev" alt="参考图预览" style="display:none;max-width:100%;max-height:180px;border-radius:6px;margin-top:8px">
+        <div class="wm-status" id="wmAiStatus"></div>
+      </div>
+      <div class="wm-sec">
+        <div class="wm-h">降级 · 背景图对位（本地处理 ¥0）</div>
+        <div class="wm-note">把照片作大幕背景立在舞台上：可缩放 / 平移 / 转向对位，角色在它前面摆位。图片只存本机资产库、不出这台设备，无费用。</div>
+        <div class="cost-row" style="justify-content:flex-start"><button class="btn" id="wmBgPick" type="button">选择背景图…</button><button class="btn" id="wmBgGround" type="button">底边贴地</button><button class="btn danger" id="wmBgRemove" type="button">移除幕布</button></div>
+        <div id="wmBgCtrls" style="display:none">
+          <div class="field"><label>幕布宽度（米） <output id="wmBgWOut">9.0</output></label><input type="range" id="wmBgW" min="2" max="30" step="0.1" value="9"></div>
+          <div class="field"><label>幕布高度（米） <output id="wmBgHOut">5.0</output></label><input type="range" id="wmBgH" min="1" max="15" step="0.1" value="5"></div>
+          <div class="field"><label>左右位置 X <output id="wmBgXOut">0.0</output></label><input type="range" id="wmBgX" min="-15" max="15" step="0.1" value="0"></div>
+          <div class="field"><label>前后位置 Z <output id="wmBgZOut">-6.0</output></label><input type="range" id="wmBgZ" min="-15" max="15" step="0.1" value="-6"></div>
+          <div class="field"><label>底边离地（米） <output id="wmBgYOut">0.0</output></label><input type="range" id="wmBgY" min="0" max="5" step="0.05" value="0"></div>
+          <div class="field"><label>朝向（旋转） <output id="wmBgROut">0°</output></label><input type="range" id="wmBgR" min="0" max="359" step="1" value="0"></div>
+        </div>
+        <div class="wm-status" id="wmBgStatus"></div>
+      </div>
+      <div class="cost-row"><button class="btn" id="wmClose" type="button">关闭</button></div>
+    </div>
+  </div>
+
+  <div class="cost-modal" id="wmImpModal" hidden>
+    <div class="cost-card" role="dialog" aria-modal="true" aria-label="导入白模设置">
+      <div class="cost-t">导入白模 · 尺寸归一化</div>
+      <div class="cost-body" id="wmImpBody"></div>
+      <div class="field"><label>按什么定真实尺寸</label><select id="wmImpMode" style="width:100%"><option value="h">按高度（米）</option><option value="max">按最长边（米）</option></select></div>
+      <div class="field"><label>真实尺寸（米）</label><input type="text" class="txtin" id="wmImpMeters" inputmode="decimal" value="2.6"></div>
+      <div class="field"><label style="display:flex;gap:8px;align-items:center;font-size:12.5px"><input type="checkbox" id="wmImpZup"> 模型是 Z 轴向上（SketchUp 常见）→ 自动转正</label></div>
+      <div class="wm-status" id="wmImpStatus"></div>
+      <div class="cost-row"><button class="btn" id="wmImpCancel" type="button">取消</button><button class="btn primary" id="wmImpOk" type="button">导入到舞台</button></div>
+    </div>
+  </div>
+
   <div class="workspace">
     <div class="split split-l" id="splitLeft" role="separator" aria-orientation="vertical" aria-label="左栏宽度调节" title="拖动调整左栏宽度 · 双击恢复默认"></div>
     <div class="split split-r" id="splitRight" role="separator" aria-orientation="vertical" aria-label="右栏宽度调节" title="拖动调整右栏宽度 · 双击恢复默认"></div>
@@ -1178,7 +1278,18 @@ body.splitting-y,body.splitting-y *{cursor:row-resize!important}
         <button class="add-btn" data-add="tree"><svg class="ic " aria-hidden="true" focusable="false"><use href="#i-tree"></use></svg><b>树</b><small>外景</small></button>
         <button class="add-btn" data-add="car"><svg class="ic " aria-hidden="true" focusable="false"><use href="#i-car"></use></svg><b>汽车</b><small>外景</small></button>
       </div>
-      <h3><span class="no">03</span>场上清单</h3>
+      <h3><span class="no">03</span>场景搭建 · 双通道</h3>
+      <div class="add-grid">
+        <button class="add-btn" id="wmImpBtn" type="button"><svg class="ic " aria-hidden="true" focusable="false"><use href="#i-upload"></use></svg><b>导入白模</b><small>外部模型 GLB / OBJ · 准</small></button>
+        <button class="add-btn" id="wmAiBtn" type="button"><svg class="ic " aria-hidden="true" focusable="false"><use href="#i-chat"></use></svg><b>一图生成</b><small>AI 看图搭白模 · 快</small></button>
+        <button class="add-btn" id="wmBgBtn" type="button"><svg class="ic " aria-hidden="true" focusable="false"><use href="#i-pano"></use></svg><b>背景图对位</b><small>照片当幕布 · 本地 ¥0</small></button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.55;margin:2px 0 4px">搭景两条路：有现成模型走「导入白模」（尺寸精确）；只有一张参考图走「一图生成」（AI 近似估算，先搭空间关系）。图和模型都存在这台设备的本机资产库里，场景文件只存引用。.skp 文件不能直读，先在 SketchUp / Blender 里转成 GLB 或 OBJ 再导入。</div>
+      <input type="file" id="wmModelFile" accept=".glb,.gltf,.obj,model/gltf-binary,model/gltf+json" style="display:none">
+      <input type="file" id="wmAiFile" accept="image/*" style="display:none">
+      <input type="file" id="wmBgFile" accept="image/*" style="display:none">
+      <input type="file" id="wmReFile" accept=".glb,.gltf,.obj,model/gltf-binary,model/gltf+json" style="display:none">
+      <h3><span class="no">04</span>场上清单</h3>
       <div class="objlist" id="objList"></div>
     </aside>
 
@@ -1245,6 +1356,7 @@ body.splitting-y,body.splitting-y *{cursor:row-resize!important}
       </div>
       <div class="hint">点选对象出现坐标轴手柄：拖箭头 / 方片 / 圆环精确移动与旋转（W 移动 · E 旋转）· 拖对象本体也可平移 · 拖空白处转视角 · 滚轮缩放</div>
       <div class="touch-hint">单指拖空白处转视角 · 双指张开推近、合拢拉远 · 拖角色 / 机位本体可移动，第二根手指落下自动改推镜头</div>
+      <div class="fpbar" id="fpBar" hidden><span>第一人称操控中 · WASD 移动 · Q / E 升降 · 拖鼠标转向 · 滚轮调速（<span id="fpSpd">×1.0</span>）· Esc 退出</span><button class="btn primary" id="fpExit" type="button">退出并写回机位</button></div>
       <div class="shotbar" aria-label="景别预设">
         <button data-shot="wide"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-wide"></use></svg>远景</button>
         <button data-shot="full"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-full"></use></svg>全景</button>
@@ -1252,6 +1364,15 @@ body.splitting-y,body.splitting-y *{cursor:row-resize!important}
         <button data-shot="close"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-close"></use></svg>近景</button>
         <button data-shot="xclose"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-xclose"></use></svg>特写</button>
         <button data-shot="ots"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-ots"></use></svg>过肩</button>
+        <button id="shotGridBtn" type="button"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg>景别·角度</button>
+      </div>
+      <div class="shotgrid" id="shotGrid" hidden>
+        <div class="sg-head">
+          <span>景别 × 角度 · 锚点 <b id="sgAnchor">—</b></span>
+          <button type="button" class="sg-newcam" id="sgNewCam" aria-pressed="false">新建机位：关</button>
+        </div>
+        <div class="sg-grid" id="sgGrid"></div>
+        <div class="sg-note" id="sgNote"></div>
       </div>
       <div class="vignette" aria-hidden="true"></div>
       <div class="vf" aria-hidden="true"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
@@ -1330,6 +1451,17 @@ body.splitting-y,body.splitting-y *{cursor:row-resize!important}
       <button class="btn teal" id="exportBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-board"></use></svg>下载分镜板</button>
       <button class="btn" id="coverBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg>一键多机位覆盖</button>
       <button class="btn primary" id="packBtn"><svg class="ic sm" aria-hidden="true" focusable="false"><use href="#i-download"></use></svg>导出参考包</button>
+    </div>
+    <div class="shotlib" id="shotLib">
+      <div class="shotlib-head">
+        <b>截图库</b>
+        <span class="sl-note">随手截图按 场次_机位_序号 自动命名归档，图存本机浏览器（IndexedDB），不进场景文件；与分镜板、参考包各自独立。</span>
+        <button class="btn" id="slCapDir" type="button">截导演视角</button>
+        <button class="btn" id="slCapCam" type="button">截机位视角</button>
+        <button class="btn" id="slZipAll" type="button">打包全部</button>
+        <span class="sl-count" id="slCount"></span>
+      </div>
+      <div id="slGroups"><span class="none">还没有截图。摆好画面点「截导演视角 / 截机位视角」，截图会按 场次_机位_序号 自动命名存进这里。</span></div>
     </div>
   </footer>
   <button id="cleanDot" type="button" aria-label="恢复界面"></button>
@@ -1462,7 +1594,7 @@ function shadowTick(){
   if(txInteracting()&&now-SHD.last<66)return; /* 拖动中节流 ≈15fps */
   renderer.shadowMap.needsUpdate=true; SHD.pending=false; SHD.last=now;
 }
-function markShadow(root){ if(!root)return; root.traverse(function(n){ if(n.isMesh){ if(n.name==='__floor'){ n.receiveShadow=true; } else if(n.name==='__ring'||n.name==='frustum'||n.name==='__pano'){} else if(n.material&&n.material.transparent&&n.material.opacity<0.3){} else { n.castShadow=true; n.receiveShadow=true; } } if(n.isSpotLight){ n.castShadow=true; } }); }
+function markShadow(root){ if(!root)return; root.traverse(function(n){ if(n.isMesh){ if(n.name==='__floor'){ n.receiveShadow=true; } else if(n.name==='__ring'||n.name==='frustum'||n.name==='__pano'||n.name==='__backdrop'){} else if(n.material&&n.material.transparent&&n.material.opacity<0.3){} else { n.castShadow=true; n.receiveShadow=true; } } if(n.isSpotLight){ n.castShadow=true; } }); }
 function activeMainCam(){ return viewMode==='top'?topCam:(viewMode==='cam'?previewCam:dirCam); }
 
 /* ---------- objects ---------- */
@@ -1549,6 +1681,8 @@ function pickFigColor(key){
   return t;
 }
 function labY(o){
+  if(o.kind==='wm')return (o.wmSize?o.wmSize[1]:2)+0.3; /* 白模：名牌浮在模型顶上（v44） */
+  if(o.kind==='block')return (o.blkSize?o.blkSize[1]:0.8)+0.3; /* AI 块体同理（v44） */
   if(o.type==='light')return 2.75; if(o.type==='camera')return 1.95;
   if(o.type==='actor'&&o.modelType!=='glb')return (FIGTYPES[o.bodyType]||FIGTYPES.std_m).labelY;
   return 1.93;
@@ -1942,6 +2076,7 @@ function addObj(type,x,z,rot,color,name,bodyType){
 function removeObj(o){
   if(o.mixer)o.mixer.stopAllAction();
   scene.remove(o.group); objs=objs.filter(function(k){return k!==o}); if(sel===o)sel=null; refreshList(); renderInspector();
+  if(typeof moDraw!=='undefined'&&moDraw&&moDraw.o===o)moDraw=null; if(typeof buildPaths==='function')buildPaths(); /* 运动轨迹可视层跟随增删（v42） */
 }
 function refreshList(){
   var el=document.getElementById('objList'); el.innerHTML=''; var hu=document.getElementById('hudUnits'); if(hu)hu.textContent='UNITS '+objs.length;
@@ -1983,6 +2118,7 @@ function renderInspector(){
       +'<div class="posegrid">'+(POSECATS.filter(function(c){return c[0]===poseCatSel;})[0]||POSECATS[0])[1].map(function(p){ return '<button type="button" data-pose="'+p+'"'+(o.pose===p?' class="on"':'')+'>'+p+'</button>'; }).join('')+'</div>'
       +'<div class="posenote">点一下套用，算一步撤销、自动保存；套用后可继续拖下方关节滑杆微调，也可打关键帧。盘坐 / 侧卧为近似形：本台关节无髋外展与躯干扭转，盘腿交叉、劈叉、扭腰类姿势做不到，未收录。</div></div>';
     html+='<div class="field"><label><span class="label-ic">'+ico('joint')+'关节姿势 · 逐关节调节</span></label><div class="joints">'+JOINTDEF.map(function(d){ var v=(o.joints&&o.joints[d[0]]!=null)?o.joints[d[0]]:0; return '<div class="jrow"><span>'+d[1]+'</span><input type="range" data-j="'+d[0]+'" min="'+d[2]+'" max="'+d[3]+'" step="1" value="'+v+'"><output tabindex="0" title="点击输入数值">'+Math.round(v)+'°</output></div>'; }).join('')+'</div></div>';
+    html+=moInspectorHTML(o); /* 运动区（v42 · A3）：轨迹 / 步态片段 / 动捕导入，GLB 自带动画模型只出说明 */
     if(o.modelType==='glb'&&!o.femaleGlb){
       var clipLbl={Idle:'待机 Idle',Walk:'行走 Walk',Run:'跑步 Run',TPose:'T 姿势 TPose'};
       html+='<div class="field"><label><span class="label-ic">'+ico('video')+'模型自带动作（GLB 动画片段）</span></label><select id="fClip" style="width:100%"><option value="">手动关节（用下方滑杆摆姿势）</option>'+(o.clipNames||[]).map(function(cn){ return '<option value="'+escHtml(cn)+'"'+(o.clip===cn?' selected':'')+'>'+(clipLbl[cn]||escHtml(cn))+'</option>'; }).join('')+'</select><div style="font-size:11px;color:var(--muted);margin-top:4px">选了动作片段后骨骼由动画驱动；一拖关节滑杆就切回手动摆姿势。走位关键帧照常管位置和朝向。</div></div>';
@@ -2003,6 +2139,7 @@ function renderInspector(){
     var nearA=null,nearD=1e9; objs.forEach(function(k){ if(k.type==='actor'){ var dd=Math.hypot(k.group.position.x-o.group.position.x,k.group.position.z-o.group.position.z); if(dd<nearD){nearD=dd;nearA=k;} } });
     if(nearA){ var sg=nearD<1.1?'特写':nearD<1.9?'近景':nearD<3.4?'中景':nearD<6.5?'全景':'远景'; html+='<div class="note" style="margin-top:10px">镜头语法：距最近角色「'+escHtml(nearA.name)+'」约 '+nearD.toFixed(1)+' 米，按距离约合'+sg+'。景别预设按钮会按这个距离关系自动摆机位；双人戏开顶部「轴线」后，机位别越到连线另一侧。</div>'; }
     html+='<div class="note" style="margin-top:10px">右下角是这个机位的实时取景，带三分法构图线。摆好后点下方「截取当前机位」存进分镜板。</div>';
+    html+=ccInspectorHTML(o); /* 运镜区（v43 · A4）：机位片段（跟随 / 路径）+ 第一人称入口（桌面端） */
   }
   if(o.type==='light'){
     html+='<div class="field"><label>灯光高度 <output tabindex="0" title="点击输入数值">'+o.group.position.y.toFixed(1)+'</output></label><input type="range" id="fY" min="0" max="2" step="0.05" value="'+o.group.position.y+'"></div>';
@@ -2010,6 +2147,7 @@ function renderInspector(){
   if(o.type==='prop'&&['sofa','box','cyl','car'].indexOf(o.kind)>=0){
     html+='<div class="field"><label>颜色</label><input type="color" id="fC" value="#'+new THREE.Color(o.color).getHexString()+'"></div>';
   }
+  if(typeof wmInspectorHTML==='function')html+=wmInspectorHTML(o); /* 白模 / AI 块体区（v44 · A5） */
   html+='<div class="row2" style="margin-top:12px"><button class="btn" id="dupBtn">'+ico('duplicate')+'复制一个</button><button class="btn danger" id="delBtn">'+ico('trash')+'删除</button></div>';
   el.innerHTML=html;
   function bind(id,fn){ var n=document.getElementById(id); if(n)n.addEventListener('input',function(){ fn(parseFloat(n.value),n); }); }
@@ -2033,11 +2171,12 @@ function renderInspector(){
   el.querySelectorAll('[data-pcat]').forEach(function(b){ b.addEventListener('click',function(){ poseCatSel=b.getAttribute('data-pcat'); renderInspector(); }); });
   el.querySelectorAll('[data-pose]').forEach(function(b){ b.addEventListener('click',function(){ applyPose(o,b.getAttribute('data-pose')); renderInspectorSoft(); }); });
   el.querySelectorAll('[data-j]').forEach(function(inp){ inp.addEventListener('input',function(){ var k=inp.getAttribute('data-j'); if(!o.joints)o.joints=defJoints(); o.joints[k]=parseFloat(inp.value); if(o.modelType==='glb'&&o.clip){ setGlbClip(o,null); var cs=document.getElementById('fClip'); if(cs)cs.value=''; } if(o.pose!=='自定义'){ o.pose='自定义'; el.querySelectorAll('[data-pose].on').forEach(function(pb){ pb.classList.remove('on'); }); } applyJoints(o); var out=inp.parentElement.querySelector('output'); if(out)out.textContent=Math.round(inp.value)+'°'; }); });
+  moBindInspector(o,el); ccBindInspector(o,el); if(typeof wmBindInspector==='function')wmBindInspector(o,el);
   var cl=document.getElementById('fClip'); if(cl)cl.addEventListener('change',function(){ setGlbClip(o,cl.value||null); });
   var cc=document.getElementById('fC'); if(cc)cc.addEventListener('input',function(){ o.color=new THREE.Color(cc.value).getHex(); if(o.type==='actor'){ recolorActor(o); } else { o.group.traverse(function(n){ if(n.isMesh&&n.name!=='__ring')n.material=mat(o.color, n.material.roughness); }); } refreshList(); });
   var ft=document.getElementById('fFigType'); if(ft)ft.addEventListener('change',function(){ setFigType(o,ft.value); });
   el.querySelectorAll('.figsw').forEach(function(b){ b.addEventListener('click',function(){ o.color=parseInt(b.getAttribute('data-c'),10); recolorActor(o); refreshList(); renderInspector(); }); });
-  var db=document.getElementById('dupBtn'); if(db)db.onclick=function(){ var n; if(o.modelType==='glb'&&o.glbTemplate&&!o.femaleGlb){ n=addGlbActorInstance(o.glbTemplate,o.group.position.x+0.9,o.group.position.z+0.9,o.group.rotation.y); } else { n=addObj(o.kind,o.group.position.x+0.9,o.group.position.z+0.9,o.group.rotation.y,(o.type==='actor'&&o.modelType!=='glb')?null:o.color,undefined,o.bodyType); } n.group.scale.copy(o.group.scale); if(o.type==='actor'){ n.joints=JSON.parse(JSON.stringify(o.joints||defJoints())); n.sitDrop=o.sitDrop||0; n.pose=o.pose; n.group.rotation.x=o.group.rotation.x; n.group.rotation.z=o.group.rotation.z; n.group.position.y=o.group.position.y; n._poseDy=o._poseDy||0; applyJoints(n); if(o.modelType==='glb'&&o.clip)setGlbClip(n,o.clip); } };
+  var db=document.getElementById('dupBtn'); if(db)db.onclick=function(){ var n; if(o.kind==='wm'&&typeof wmDuplicate==='function'){ n=wmDuplicate(o); } else if(o.kind==='block'&&typeof wmBlockDuplicate==='function'){ n=wmBlockDuplicate(o); } else if(o.modelType==='glb'&&o.glbTemplate&&!o.femaleGlb){ n=addGlbActorInstance(o.glbTemplate,o.group.position.x+0.9,o.group.position.z+0.9,o.group.rotation.y); } else { n=addObj(o.kind,o.group.position.x+0.9,o.group.position.z+0.9,o.group.rotation.y,(o.type==='actor'&&o.modelType!=='glb')?null:o.color,undefined,o.bodyType); } n.group.scale.copy(o.group.scale); if(o.type==='actor'){ n.joints=JSON.parse(JSON.stringify(o.joints||defJoints())); n.sitDrop=o.sitDrop||0; n.pose=o.pose; n.group.rotation.x=o.group.rotation.x; n.group.rotation.z=o.group.rotation.z; n.group.position.y=o.group.position.y; n._poseDy=o._poseDy||0; applyJoints(n); if(o.modelType==='glb'&&o.clip)setGlbClip(n,o.clip); } };
   var del=document.getElementById('delBtn'); if(del)del.onclick=function(){ removeObj(o); };
   var fc=document.getElementById('faceCam'); if(fc)fc.onclick=function(){ var c=activeCam(); if(c)faceToward(o,c.group.position); };
   var fcen=document.getElementById('faceCen'); if(fcen)fcen.onclick=function(){ faceToward(o,new THREE.Vector3(0,0,0)); };
@@ -2279,6 +2418,132 @@ document.querySelectorAll('[data-shot]').forEach(function(b){ b.addEventListener
   cam.fov = kind==='xclose'?32:(kind==='wide'?55:42);
   select(cam);
 });});
+
+/* ---------- 景别 × 角度矩阵（v45 · 借鉴清单 A6）：按角色锚定的景别预设补齐 ----------
+   上面的 shotbar 六钮是正面快速预设；这里补齐成 景别 × 角度 矩阵：距离 / 眼高 /
+   注视高度沿用旧预设在标准男（身高 1.78 米）上的数值，按锚点角色的实际身高线性
+   换算（身高口径 = FIGTYPES.labelY − 0.15，与台内身高区间 1.22–1.86 米一致）；
+   注视点按景别锚高——特写 / 大特写看头部、中景看胸腹、全景 / 远景看全身中心；
+   FOV 沿用旧预设值（特写 / 大特写 32、远景 55、其余 42）。
+   默认移动当前活动机位（histPushSoon 一步撤销 + 自动保存），开「新建机位」则
+   每点一格新建一个。过肩沿用 v21 覆盖的轴线安全侧摆法（肩后 0.85 米 + 安全侧
+   法线偏 0.38 + pushSafe 兜底），缺第二名角色时整列置灰注明。
+   与一键多机位覆盖并存：那是整组生成、这是单机位锚定。只是机位操作，
+   走现行机位字段，不新增任何场景 JSON 字段。 */
+var SG_H0=1.78;
+var SG_SIZES={
+  wide:{label:'远景',d:11,h:2.6,ty:1.1,fov:55},
+  full:{label:'全景',d:5.6,h:1.7,ty:1.0,fov:42},
+  medium:{label:'中景',d:2.9,h:1.55,ty:1.25,fov:42},
+  close:{label:'近景',d:1.55,h:1.62,ty:1.5,fov:42},
+  xclose:{label:'特写',d:0.85,h:1.68,ty:1.62,fov:32},
+  xxclose:{label:'大特写',d:0.45,h:1.70,ty:1.66,fov:32}
+};
+var SG_ANGLES=[['front','正面'],['side45','斜侧 45°'],['side90','正侧 90°'],['back','背面'],['top','俯拍'],['low','仰拍'],['ots','过肩']];
+var SG_NEW=false;
+function sgActorHeight(o){
+  if(o&&FIGTYPES[o.bodyType])return FIGTYPES[o.bodyType].labelY-0.15;
+  if(o&&o.group){ try{ var s=new THREE.Box3().setFromObject(o.group).getSize(new THREE.Vector3()); if(s.y>0.3&&s.y<4.5)return s.y; }catch(e){} }
+  return SG_H0;
+}
+function sgActors(){ return objs.filter(function(o){ return o.type==='actor'; }); }
+function sgAnchor(){
+  var as=sgActors(); if(!as.length)return null;
+  if(sel&&sel.type==='actor')return sel;
+  var cam=activeCam();
+  if(cam&&cam.lookPt){ var best=null,bd=1e18;
+    as.forEach(function(a){ var p=a.group.position, dd=(p.x-cam.lookPt.x)*(p.x-cam.lookPt.x)+(p.z-cam.lookPt.z)*(p.z-cam.lookPt.z); if(dd<bd){ bd=dd; best=a; } });
+    if(best)return best;
+  }
+  return as[0];
+}
+function sgPartner(anchor){
+  var ap=anchor.group.position, best=null, bd=1e18;
+  sgActors().forEach(function(a){ if(a===anchor)return; var p=a.group.position, dd=(p.x-ap.x)*(p.x-ap.x)+(p.z-ap.z)*(p.z-ap.z); if(dd<bd){ bd=dd; best=a; } });
+  return best;
+}
+/* 纯计算（不碰场景）：返回 {eye, look, fov, d}，d = 机位到锚点的水平距离；
+   过肩额外带 groupY（肩后机位底座高，与 v21 的 0.55 同口径）。 */
+function sgCompute(anchor,sizeKey,angleKey,partner){
+  var H=sgActorHeight(anchor), k=H/SG_H0, c=SG_SIZES[sizeKey];
+  var d=c.d*k, ty=c.ty*k, sp=anchor.group.position, ry=anchor.group.rotation.y;
+  var look=new THREE.Vector3(sp.x,ty,sp.z);
+  if(angleKey==='ots'&&partner){
+    var xp=partner.group.position;
+    var tx=sp.x-xp.x, tz=sp.z-xp.z, tl=Math.hypot(tx,tz)||1; tx/=tl; tz/=tl;
+    var side=0;
+    if(typeof axisOn!=='undefined'&&axisOn)side=axisSide;
+    if(!side){ var ec=activeCam(); side=ec?axisSideOf(ec.group.position):0; }
+    if(!side)side=1;
+    var nx=-tz*side, nz=tx*side;
+    var cx=xp.x-tx*0.85+nx*0.38, cz=xp.z-tz*0.85+nz*0.38, g=0;
+    while(axisSideOf({x:cx,z:cz})!==side&&axisSideOf({x:cx,z:cz})!==0&&g<12){ cx+=nx*0.4; cz+=nz*0.4; g++; }
+    return {eye:new THREE.Vector3(cx,0.55+1.28,cz),look:look,fov:c.fov,d:Math.hypot(cx-sp.x,cz-sp.z),groupY:0.55,side:side};
+  }
+  var fx=Math.sin(ry), fz=Math.cos(ry), eye;
+  if(angleKey==='top'){
+    var el=THREE.MathUtils.degToRad(35), hd=d*Math.cos(el);
+    eye=new THREE.Vector3(sp.x+fx*hd, ty+d*Math.sin(el), sp.z+fz*hd);
+  } else if(angleKey==='low'){
+    eye=new THREE.Vector3(sp.x+fx*d, Math.max(0.35,ty-d*Math.tan(THREE.MathUtils.degToRad(22))), sp.z+fz*d);
+  } else {
+    var az={front:0,side45:Math.PI/4,side90:Math.PI/2,back:Math.PI}[angleKey]||0;
+    var dx=Math.sin(ry+az), dz=Math.cos(ry+az);
+    eye=new THREE.Vector3(sp.x+dx*d, c.h*k, sp.z+dz*d);
+  }
+  return {eye:eye,look:look,fov:c.fov,d:d};
+}
+function sgApply(sizeKey,angleKey){
+  var anchor=sgAnchor();
+  if(!anchor){ alertMsg('先加一个角色作锚点：景别预设是按角色取景的。'); return; }
+  var partner=null;
+  if(angleKey==='ots'){ partner=sgPartner(anchor); if(!partner){ alertMsg('过肩需要第二名角色（对话对象）：再摆一个角色就能用过肩了。'); return; } }
+  var r=sgCompute(anchor,sizeKey,angleKey,partner);
+  var cam;
+  if(SG_NEW){ cam=addObj('camera',0,0,0); }
+  else { cam=activeCam(); if(!cam){ alertMsg('还没有机位：先在左侧加一个机位，或打开矩阵里的「新建机位」。'); return; } }
+  var sc=cam.group.scale.y||1;
+  var gy=(typeof r.groupY==='number')?r.groupY:Math.max(0,r.eye.y-1.28*sc);
+  cam.group.position.set(THREE.MathUtils.clamp(r.eye.x,-13.5,13.5), gy, THREE.MathUtils.clamp(r.eye.z,-13.5,13.5));
+  cam.fov=r.fov;
+  cam.shotSize=(angleKey==='ots')?'过肩镜头':SG_SIZES[sizeKey].label;
+  aimPoint(cam,r.look);
+  select(cam);
+  if(typeof histPushSoon==='function')histPushSoon();
+  sgRender();
+  var angLabel={front:'正面',side45:'斜侧 45°',side90:'正侧 90°',back:'背面',top:'俯拍',low:'仰拍',ots:'过肩'}[angleKey];
+  alertMsg((SG_NEW?'已新建机位':'已摆机位')+'：对「'+anchor.name+'」'+(angleKey==='ots'?('过肩（前景 '+partner.name+'）'):SG_SIZES[sizeKey].label+' · '+angLabel)+'，距锚点约 '+r.d.toFixed(2)+' 米。');
+}
+function sgRender(){
+  var a=sgAnchor(), el=document.getElementById('sgAnchor');
+  if(el)el.textContent=a?('「'+a.name+'」身高约 '+sgActorHeight(a).toFixed(2)+' 米'):'无（先加角色）';
+  var two=sgActors().length>=2;
+  document.querySelectorAll('.sg-cell[data-angle="ots"]').forEach(function(b){ b.disabled=!two; });
+  var note=document.getElementById('sgNote');
+  if(note)note.textContent=two
+    ?'点任意一格，机位立刻摆到对锚点角色的标准位置：距离按身高换算、注视点按景别锚高（特写 / 大特写看头、中景看胸腹、全景 / 远景看全身中心）。默认移动当前活动机位，整步可撤销；过肩取离锚点最近的角色作前景，按轴线安全侧落位。'
+    :'过肩一列已置灰：需要第二名角色作对话对象。其余格点一下，机位立刻摆到对锚点角色的标准位置（距离按身高换算、注视点按景别锚高）；默认移动当前活动机位，整步可撤销。';
+}
+(function(){
+  var grid=document.getElementById('sgGrid'); if(!grid)return;
+  var html='<span class="sg-corner"></span>';
+  SG_ANGLES.forEach(function(a){ html+='<span class="sg-col">'+a[1]+'</span>'; });
+  Object.keys(SG_SIZES).forEach(function(sk){
+    html+='<span class="sg-row">'+SG_SIZES[sk].label+'</span>';
+    SG_ANGLES.forEach(function(a){
+      html+='<button type="button" class="sg-cell" data-size="'+sk+'" data-angle="'+a[0]+'" title="'+SG_SIZES[sk].label+' · '+a[1]+'">'+SG_SIZES[sk].label.charAt(0)+'</button>';
+    });
+  });
+  grid.innerHTML=html;
+  grid.querySelectorAll('.sg-cell').forEach(function(b){ b.addEventListener('click',function(){ if(b.disabled)return; sgApply(b.getAttribute('data-size'),b.getAttribute('data-angle')); }); });
+  var btn=document.getElementById('shotGridBtn'), panel=document.getElementById('shotGrid');
+  if(btn&&panel)btn.addEventListener('click',function(){ panel.hidden=!panel.hidden; btn.classList.toggle('on',!panel.hidden); if(!panel.hidden)sgRender(); });
+  var nc=document.getElementById('sgNewCam');
+  if(nc)nc.addEventListener('click',function(){ SG_NEW=!SG_NEW; nc.textContent='新建机位：'+(SG_NEW?'开':'关'); nc.setAttribute('aria-pressed',SG_NEW?'true':'false'); nc.classList.toggle('on',SG_NEW); });
+})();
+/* 自动化 / 探针测试面：与界面同一条计算管线 */
+window.TX17SG={version:'v45',sizes:SG_SIZES,angles:SG_ANGLES,height:sgActorHeight,anchor:sgAnchor,partner:sgPartner,compute:sgCompute,apply:sgApply};
+
 function alertMsg(m){ var h=document.querySelector('.hint'); var old=h.textContent; h.textContent=m; h.style.background='#d92318'; setTimeout(function(){ h.textContent=old; h.style.background='rgba(6,7,11,.78)'; },2600); }
 
 /* ---------- templates ---------- */
@@ -2323,13 +2588,18 @@ document.getElementById('gridBtn').onclick=function(){ grid.visible=!grid.visibl
 function renameObj(o,name){ o.name=name; var sp=o.group.getObjectByName('__label'); if(sp)o.group.remove(sp); var ns=labelSprite(name||'未命名'); ns.name='__label'; ns.position.y=labY(o); o.group.add(ns); }
 function buildSceneData(){
   var data={format:'3d-director-scene',version:1,exportedAt:new Date().toISOString(),
-    environment:{mood:mi,grid:grid.visible,pano:(typeof panoKey!=='undefined'&&panoKey&&panoKey!=='custom')?panoKey:null},
+    environment:{mood:mi,grid:grid.visible,pano:(typeof panoKey!=='undefined'&&panoKey&&panoKey!=='custom')?panoKey:null,
+      backdrop:(typeof wmBgSceneOut==='function')?wmBgSceneOut():null}, /* 背景图对位（v44 · A5）：只存资产引用 + 对位参数，图片字节在本机资产库 */
     objects:objs.map(function(o){ return {kind:o.kind,type:o.type,name:o.name,
       position:[+o.group.position.x.toFixed(2),+o.group.position.y.toFixed(2),+o.group.position.z.toFixed(2)],
       rotationY:+o.group.rotation.y.toFixed(3),rotationX:+o.group.rotation.x.toFixed(3),rotationZ:+o.group.rotation.z.toFixed(3),scale:+o.group.scale.x.toFixed(2),color:o.color,
       pose:o.pose||'站立',joints:o.joints||null,sitDrop:o.sitDrop||0,fov:o.fov||42,shotSize:o.shotSize||null,
       modelType:o.modelType||null,bodyType:o.bodyType||null,clip:o.clip||null,modelName:o.modelName||null,
       track:(o.track&&o.track.length)?o.track:null,
+      wm:(o.kind==='wm'&&typeof wmSceneOut==='function')?wmSceneOut(o):null, /* 白模对象（v44 · A5）：资产引用 + 归一化参数，模型字节不进 JSON */
+      blk:(o.kind==='block')?{size:o.blkSize,ai:o.blkAi?1:0}:null, /* AI 生成块体（v44 · A5） */
+      camclips:(o.type==='camera'&&typeof ccSceneOut==='function')?ccSceneOut(o):null,
+      motion:(o.type==='actor'&&typeof moSceneOut==='function')?moSceneOut(o):null,
       lookPt:o.lookPt?[+o.lookPt.x.toFixed(2),+o.lookPt.y.toFixed(2),+o.lookPt.z.toFixed(2)]:null}; })};
   data.animation={duration:anim.dur};
   return data;
@@ -2358,12 +2628,18 @@ function importScene(data){
     if(typeof data.environment.grid==='boolean'){ grid.visible=data.environment.grid; var gb=document.getElementById('gridBtn'); setBtnHTML(gb,'grid','网格：'+(grid.visible?'开':'关')); gb.classList.toggle('is-on',grid.visible); var hg2=document.getElementById('hudGrid'); if(hg2)hg2.textContent='GRID 1M · '+(grid.visible?'ON':'OFF'); }
     if(data.environment.pano===null||typeof data.environment.pano==='string'){ if(data.environment.pano){ setPano(data.environment.pano); document.getElementById('panoSel').value=data.environment.pano; } else { setPano(''); document.getElementById('panoSel').value=''; } }
   }
-  data.objects.forEach(function(sd){
+  if(typeof wmBgFromScene==='function')wmBgFromScene((data.environment&&data.environment.backdrop)||null); /* 背景图对位随场景恢复（v44）：无此字段的旧场景自动撤下幕布 */
+  var ccIdxMap=[];
+  data.objects.forEach(function(sd,sdIdx){
     if(!sd||typeof sd!=='object'||typeof sd.kind!=='string'||!sd.kind) return;
     if(sd.kind==='chair'||sd.kind==='wall') return; /* 椅子 / 墙面已除名：旧存档、旧场景文件与撤销历史里的这两类不再恢复 */
     var pos=Array.isArray(sd.position)?sd.position:[0,0,0];
     var px=sNum(pos[0],0), py=sNum(pos[1],0), pz=sNum(pos[2],0), ry0=sNum(sd.rotationY,0), nm=sName(sd.name), col=sColor(sd.color);
-    var o=(sd.modelType==='glb'&&sd.bodyType!=='hero_f'&&soldierTemplate)?addGlbActorInstance(soldierTemplate,px,pz,ry0,nm||undefined):addObj(sd.kind,px,pz,ry0,col,nm||undefined,(typeof sd.bodyType==='string'&&FIGTYPES[sd.bodyType])?sd.bodyType:undefined);
+    var o=(sd.kind==='wm'&&typeof wmRestoreObject==='function')?wmRestoreObject(sd,px,pz,ry0,nm||undefined)
+      :(sd.kind==='block'&&typeof wmBlockRestore==='function')?wmBlockRestore(sd,px,pz,ry0,nm||undefined)
+      :(sd.modelType==='glb'&&sd.bodyType!=='hero_f'&&soldierTemplate)?addGlbActorInstance(soldierTemplate,px,pz,ry0,nm||undefined):addObj(sd.kind,px,pz,ry0,col,nm||undefined,(typeof sd.bodyType==='string'&&FIGTYPES[sd.bodyType])?sd.bodyType:undefined);
+    if(!o)return; /* 白模 / 块体清洗不过时跳过该对象，场景其余部分照常恢复（v44） */
+    ccIdxMap[sdIdx]=o;
     if(sd.modelType==='glb'&&o.modelType==='glb'&&typeof sd.clip==='string')setGlbClip(o,sd.clip);
     o.group.position.y=py;
     if(sd.scale!=null) o.group.scale.setScalar(sNum(sd.scale,1,0.05,20));
@@ -2377,9 +2653,11 @@ function importScene(data){
       var pk=(o.modelType==='skin'&&FIGTYPES[o.bodyType])?FIGTYPES[o.bodyType].sitK:1, pp=POSES[o.pose];
       if(!pp&&(Math.abs(o.group.rotation.x)>0.7||Math.abs(o.group.rotation.z)>0.7)){ for(var pn in POSES){ var pc2=POSES[pn]; if(Math.abs(THREE.MathUtils.degToRad(pc2.rx||0)-o.group.rotation.x)<0.02&&Math.abs(THREE.MathUtils.degToRad(pc2.rz||0)-o.group.rotation.z)<0.02){ pp=pc2; break; } } }
       o._poseDy=pp?(pp.dy||0)*pk:0; }
-    if(o.type==='camera'){ o.fov=sNum(sd.fov,42,18,80); o.shotSize=(typeof sd.shotSize==='string'&&sd.shotSize)?sd.shotSize.slice(0,12):null; if(Array.isArray(sd.lookPt)&&sd.lookPt.length>=3) o.lookPt=new THREE.Vector3(sNum(sd.lookPt[0],0),sNum(sd.lookPt[1],0),sNum(sd.lookPt[2],0)); }
+    if(o.type==='camera'){ o.fov=sNum(sd.fov,42,18,80); o.shotSize=(typeof sd.shotSize==='string'&&sd.shotSize)?sd.shotSize.slice(0,12):null; if(Array.isArray(sd.lookPt)&&sd.lookPt.length>=3) o.lookPt=new THREE.Vector3(sNum(sd.lookPt[0],0),sNum(sd.lookPt[1],0),sNum(sd.lookPt[2],0)); } if(Array.isArray(sd.camclips)&&sd.camclips.length)o._ccRaw=sd.camclips;
     var trk=sTrack(sd.track); if(trk) o.track=trk;
+    if(o.type==='actor'){ var mo=sMotion(sd.motion); if(mo)o.motion=mo; }
   });
+  objs.forEach(function(o){ if(o._ccRaw){ var cc=(typeof sCamClips==='function')?sCamClips(o._ccRaw,ccIdxMap):null; if(cc)o.camclips=cc; delete o._ccRaw; } }); /* 运镜片段目标序号 → 对象 id（v43） */
   if(data.animation){ var ddur=sNum(data.animation.duration,NaN); if(isFinite(ddur)){ anim.dur=Math.min(120,Math.max(1,ddur)); document.getElementById('animDur').value=anim.dur; } }
   anim.t=0; applyAnim(0); renderLane();
   var first=objs.filter(function(k){return k.type==='actor'})[0]||objs[0];
@@ -2945,7 +3223,7 @@ document.getElementById('libDel').onclick=function(){
 var shots=[];
 document.getElementById('capBtn').onclick=function(){
   var cam=activeCam(); if(!cam){ alertMsg('还没有机位：先在左侧加一个机位再截取。'); return; }
-  updatePreviewCam(); cam.group.visible=false; var gv1=gzGroup.visible; gzGroup.visible=false; pipR.render(scene,previewCam); gzGroup.visible=gv1; cam.group.visible=true;
+  updatePreviewCam(); cam.group.visible=false; var gv1=gzGroup.visible; gzGroup.visible=false; var tjv1=(typeof trajGroup!=='undefined'&&trajGroup)?trajGroup.visible:null; if(tjv1!==null)trajGroup.visible=false; var mpv1=moHidePaths(); pipR.render(scene,previewCam); gzGroup.visible=gv1; if(tjv1!==null)trajGroup.visible=tjv1; moShowPaths(mpv1); cam.group.visible=true;
   var url=pipR.domElement.toDataURL('image/jpeg',0.92);
   var subj=(sel&&sel.type==='actor')?sel.name:'';
   var no=shots.length+1, size=cam.shotSize||'全景';
@@ -3107,9 +3385,10 @@ function renderCamStillBytes(camObj,W,H){
   objs.forEach(function(o){ if(o.type==='camera'){ vis.push([o.group,o.group.visible]); o.group.visible=false; } var r=o.group.getObjectByName('__ring'); if(r){ vis.push([r,r.visible]); r.visible=false; } });
   var gzv=gzGroup.visible; gzGroup.visible=false;
   var tjv=(typeof trajGroup!=='undefined'&&trajGroup)?trajGroup.visible:null; if(tjv!==null)trajGroup.visible=false; /* 轨迹线不进参考图 */
+  var mpv=moHidePaths(); /* 运动轨迹同理不进参考图（v42） */
   var url='';
   try{ wr.render(scene,tc); url=wr.domElement.toDataURL('image/jpeg',0.92); }catch(e){}
-  gzGroup.visible=gzv; if(tjv!==null)trajGroup.visible=tjv; vis.forEach(function(v){ v[0].visible=v[1]; });
+  gzGroup.visible=gzv; if(tjv!==null)trajGroup.visible=tjv; moShowPaths(mpv); vis.forEach(function(v){ v[0].visible=v[1]; });
   try{ wr.dispose(); }catch(e){}
   return dataUrlToBytes(url);
 }
@@ -3121,6 +3400,7 @@ function captureWhiteVideoBlob(onProg){
     anim.playing=false; setPlayLabel();
     if(!wasWhite)setWhite(true);
     var tjv=(typeof trajGroup!=='undefined'&&trajGroup)?trajGroup.visible:null; if(tjv!==null)trajGroup.visible=false; /* 轨迹线不录进白模视频 */
+    var mpv=moHidePaths(); /* 运动轨迹同理不录（v42） */
     var WH=whiteResMap[whiteResKey]||whiteResMap['720'], W=WH[0], H=WH[1];
     var wr=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true}); wr.setPixelRatio(1); wr.setSize(W,H);
     previewCam.aspect=W/H; previewCam.updateProjectionMatrix();
@@ -3129,7 +3409,7 @@ function captureWhiteVideoBlob(onProg){
     function done(blob){
       if(finished)return; finished=true;
       objs.forEach(function(o){ if(o.type==='camera')o.group.visible=true; });
-      if(tjv!==null)trajGroup.visible=tjv;
+      if(tjv!==null)trajGroup.visible=tjv; moShowPaths(mpv);
       if(!wasWhite)setWhite(false);
       try{ wr.dispose(); }catch(e){}
       resize(); applyAnim(anim.t); anim.playing=wasPlaying; setPlayLabel();
@@ -3758,6 +4038,8 @@ function applyAnim(t){
         break; } }
     if(s)applyState(o,s);
   });
+  applyMotionAll(t); /* 运动系统（v42 · A3）：片段时段内接管该角色的位置 / 朝向 / 关节，片段外照旧走关键帧 */
+  applyCamClips(t); /* 运镜片段（v43 · A4）：片段时段内机位由片段接管（跟随 / 路径），目标读到的是本时刻最终位置；片段外照旧走机位关键帧 */
 }
 /* ---------- 分轨时间线 + 轨迹线 + 帧状态提示（v37 · 甲方四痛点第四步） ---------- */
 function kfAtCurrent(o){ if(!o||!o.track)return null; for(var i=0;i<o.track.length;i++){ if(Math.abs(o.track[i].t-anim.t)<0.05)return o.track[i]; } return null; }
@@ -3827,17 +4109,20 @@ function renderLane(){
       d.style.left=(anim.dur?(k.t/anim.dur*100):0)+'%'; d.title=o.name+' · '+k.t.toFixed(1)+'s（可拖动改时间）';
       d.setAttribute('data-oid',o.id); d.setAttribute('data-t',k.t); lane.appendChild(d);
     });
+    if(o.motion&&o.motion.clips){ o.motion.clips.forEach(function(c){ var bar=document.createElement('div'); bar.className='mo-clip '+c.kind+((typeof moSelClip!=='undefined'&&moSelClip&&moSelClip.oid===o.id&&moSelClip.id===c.id)?' sel':''); bar.style.left=(anim.dur?(c.t0/anim.dur*100):0)+'%'; bar.style.width=Math.max(1.4,anim.dur?((c.t1-c.t0)/anim.dur*100):0)+'%'; bar.textContent=(c.kind==='bvh'?('动捕'+(c.name?' · '+c.name:'')):((c.kind==='run'?'跑步':'行走')+(c.end==='ping'?' · 往返':c.end==='loop'?' · 循环':''))); bar.title='动作片段 '+c.t0.toFixed(1)+'s → '+c.t1.toFixed(1)+'s：拖动移位、拖右缘改时长（即改速度）、点选后在属性面板「运动」区调速度 / 删除'; bar.setAttribute('data-oid',o.id); bar.setAttribute('data-cid',c.id); lane.appendChild(bar); }); }
+    if(o.type==='camera'&&o.camclips){ o.camclips.forEach(function(c){ var bar=document.createElement('div'); bar.className='cc-clip '+c.kind+((typeof ccClipOrphan==='function'&&ccClipOrphan(c))?' orphan':'')+((typeof ccSelClip!=='undefined'&&ccSelClip&&ccSelClip.oid===o.id&&ccSelClip.id===c.id)?' sel':''); bar.style.left=(anim.dur?(c.t0/anim.dur*100):0)+'%'; bar.style.width=Math.max(1.4,anim.dur?((c.t1-c.t0)/anim.dur*100):0)+'%'; bar.textContent=(c.kind==='follow'?'跟随运镜':'路径运镜'); bar.title='运镜片段 '+c.t0.toFixed(1)+'s \u2192 '+c.t1.toFixed(1)+'s：片段时段内机位由片段接管（时段外走机位关键帧），拖动移位、拖右缘改时长、点选后在属性面板「运镜」区改参数'; bar.setAttribute('data-oid',o.id); bar.setAttribute('data-ccid',c.id); lane.appendChild(bar); }); }
     row.appendChild(lb); row.appendChild(lane); wrap.appendChild(row);
   });
   var lb2=document.getElementById('laneLabel');
   if(lb2){ if(sel) lb2.textContent='轨道 · '+sel.name+((sel.track&&sel.track.length)?('（'+sel.track.length+' 帧）'):'（暂无关键帧）');
     else { var tot=0; objs.forEach(function(o){ tot+=(o.track?o.track.length:0); }); lb2.textContent='轨道 · 共 '+tot+' 帧'; } }
   buildTrajectories();
+  if(typeof buildPaths==='function')buildPaths(); /* 运动轨迹可视层随轨道一起刷新（v42） */
   syncAnimUI();
 }
 var playBtn=document.getElementById('animPlayBtn');
 playBtn.onclick=function(){
-  if(!objs.some(function(o){ return o.track&&o.track.length; })){ alertMsg('还没有关键帧：先选中一个对象摆好位置，点「打关键帧」记下第一帧。'); return; }
+  if(!objs.some(function(o){ return (o.track&&o.track.length)||(o.motion&&o.motion.clips&&o.motion.clips.length)||(o.camclips&&o.camclips.length); })){ alertMsg('还没有关键帧或动作片段：先选中一个对象摆好位置点「打关键帧」，或在属性面板「运动」区给角色派一段动作。'); return; }
   anim.playing=!anim.playing; if(anim.playing&&anim.t>=anim.dur-0.02)anim.t=0;
   setPlayLabel();
 };
@@ -3847,7 +4132,7 @@ document.getElementById('animDur').addEventListener('change',function(e){
   var old=anim.dur;
   if(v!==old){ /* 改总时长：既有关键帧时刻按同一比例缩放，帧位相对关系不变（v37） */
     var f=v/old;
-    objs.forEach(function(o){ (o.track||[]).forEach(function(k){ k.t=+(k.t*f).toFixed(2); }); });
+    objs.forEach(function(o){ (o.track||[]).forEach(function(k){ k.t=+(k.t*f).toFixed(2); }); if(o.motion&&o.motion.clips)o.motion.clips.forEach(function(c){ c.t0=+(c.t0*f).toFixed(2); c.t1=+(c.t1*f).toFixed(2); }); if(o.camclips)o.camclips.forEach(function(c){ c.t0=+(c.t0*f).toFixed(2); c.t1=+(c.t1*f).toFixed(2); }); });
     anim.dur=v;
   }
   if(anim.t>anim.dur)anim.t=anim.dur; applyAnim(anim.t); renderLane();
@@ -3932,6 +4217,10 @@ if(lanesEl){
   lanesEl.addEventListener('pointercancel',kfDragFinish);
   lanesEl.addEventListener('click',function(e){
     if(lastKfDragEnd&&performance.now()-lastKfDragEnd<400)return; /* 刚拖完的这次 click 不当作定位 */
+    if(window.__moBarDragEnd&&performance.now()-window.__moBarDragEnd<400)return; /* 刚拖完片段条的 click 不定位（v42） */
+    if(e.target&&e.target.closest&&e.target.closest('.mo-clip'))return; /* 点片段条只选中片段，不跳播放头（v42） */
+    if(window.__ccBarDragEnd&&performance.now()-window.__ccBarDragEnd<400)return; /* 刚拖完运镜片段条的 click 不定位（v43） */
+    if(e.target&&e.target.closest&&e.target.closest('.cc-clip'))return; /* 点运镜片段条只选中片段，不跳播放头（v43） */
     var kf=(e.target&&e.target.closest)?e.target.closest('.kf'):null;
     if(kf){ var oid=parseInt(kf.getAttribute('data-oid'),10); var oo=objs.filter(function(x){return x.id===oid})[0]; if(oo&&oo!==sel)select(oo); anim.t=parseFloat(kf.getAttribute('data-t'))||0; }
     else { var lane=(e.target&&e.target.closest)?e.target.closest('.tl-lane'):null; if(!lane)return; var r=lane.getBoundingClientRect(); anim.t=THREE.MathUtils.clamp((e.clientX-r.left)/r.width,0,1)*anim.dur; }
@@ -3979,6 +4268,913 @@ document.getElementById('orbGo').onclick=function(){
   if(typeof histPushSoon==='function')histPushSoon();
   alertMsg('已生成「推进+环绕」：'+(steps+1)+' 个机位关键帧（'+t0.toFixed(1)+'s → '+(t0+dur).toFixed(1)+'s，距离 '+r0+' → '+r1+' 米，环绕 '+ang+'°，注视点锁定「'+subj.name+'」）。');
 };
+
+/* ---------- 人物运动系统 + 动捕导入（v42 · 借鉴清单 A3） ----------
+   三层：① 程序步态（行走 1.4 m/s / 跑步 3 m/s，由现行 13 关节按步频相位实时合成，
+   程序人偶与真模型女版共用同一条 applyJoints 驱动路径）+ 地面轨迹（逐点绘制、
+   Catmull-Rom 平滑、点可拖改 / 删）+ 片段条挂角色泳道（可拖移 / 拉伸改时长即改速度 /
+   删除，走现行一步撤销 + 自动保存）；到达行为：停住 / 往返 / 循环回起点。
+   ② 避碰基础版：行进方向前方约 0.5 米内有其他角色 / 道具时减速停等或小幅侧移，
+   不是智能寻路。③ 动捕导入 BVH：解析骨骼与帧，按关节名映射重定向到 13 关节
+   （关节角迁移近似，脚步可能滑动，导入后可再打关键帧修），根节点位移读 Hips 通道，
+   采样密度可控以守住存档体积；FBX 不在台内解析（走 PC Blender 离线转 BVH）。
+   数据只走可选附加字段 motion，过 importScene 白名单（sMotion），旧场景零影响。
+   片段时段内运动系统接管角色位置 / 朝向 / 关节，片段外照旧走关键帧（applyAnim 尾部调用）。
+   轨迹可视层 pathGroup 在参考图 / 分镜截图 / 白模录制时按 v37 规则隐藏；
+   步态合成只算关节角，不重建轨迹几何（v40 性能体制）。 */
+var GAIT={ walk:{spd:1.4,cyc:1.3,hip:30,knee:42,arm:20,elb:10,bob:0.032,lean:4},
+           run:{spd:3.0,cyc:3.1,hip:47,knee:88,arm:34,elb:52,bob:0.055,lean:11} };
+var moDraw=null, moPtDrag=null, moPtSel=null, moSelClip=null, moClipSeq=0, moBvhTarget=null;
+var pathGroup=null, moHandles=[], ccHandles=[];
+var MO_PLANE=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+function moSS(x){ x=Math.max(0,Math.min(1,x)); return x*x*(3-2*x); }
+function moEnsure(o){ if(!o.motion)o.motion={path:null,clips:[]}; if(!Array.isArray(o.motion.clips))o.motion.clips=[]; return o.motion; }
+function moClipAt(o,t){ var m=o.motion; if(!m||!m.clips)return null; var hit=null; for(var i=0;i<m.clips.length;i++){ var c=m.clips[i]; if(t>=c.t0-0.001&&t<=c.t1+0.001)hit=c; } return hit; }
+function moActiveClip(o,t){ var c=moClipAt(o,t); if(!c)return null; if(c.kind!=='bvh'&&(!o.motion.path||o.motion.path.length<2))return null; return c; }
+/* 无关键帧的角色进片段前把「原地状态」存进 _moHome，离开片段时还原；
+   有关键帧的角色每帧由关键帧通道先归位，运动层只在片段内覆盖，不需还原。 */
+function moCaptureHome(o){ if(o._moActive)return; o._moActive=true;
+  if(!o.track||!o.track.length){ var p=o.group.position, r=o.group.rotation;
+    o._moHome={x:p.x,y:p.y,z:p.z,rx:r.x,ry:r.y,rz:r.z,joints:o.joints?JSON.parse(JSON.stringify(o.joints)):defJoints(),sit:o.sitDrop||0}; } }
+function moRestoreHome(o){ o._moActive=false; o._moYaw=null; var h=o._moHome; o._moHome=null; if(!h)return;
+  o.group.position.set(h.x,h.y,h.z); o.group.rotation.set(h.rx,h.ry,h.rz); o.joints=h.joints; o.sitDrop=h.sit; applyJoints(o); }
+/* ---------- 轨迹：缓存曲线 + 可视层 ---------- */
+function moPathOf(o){ var m=o.motion; if(!m||!m.path||m.path.length<2)return null;
+  if(o._moCurve&&o._moCurveVer===(m._ver||0))return o._moCurve;
+  var pts=m.path.map(function(p){ return new THREE.Vector3(p[0],0,p[1]); });
+  var curve=new THREE.CatmullRomCurve3(pts,false,'centripetal',0.5);
+  var c={curve:curve,len:curve.getLength(),pts:curve.getSpacedPoints(120)}; o._moCurve=c; o._moCurveVer=(m._ver||0); return c; }
+function moPathLen(o){ var c=moPathOf(o); return c?c.len:0; }
+function moTouchPath(o){ if(o.motion)o.motion._ver=(o.motion._ver||0)+1; buildPaths(); }
+function buildPaths(){
+  if(typeof scene==='undefined'||!scene)return;
+  if(!pathGroup){ pathGroup=new THREE.Group(); pathGroup.name='__paths'; scene.add(pathGroup); }
+  while(pathGroup.children.length){ var ch=pathGroup.children[0]; pathGroup.remove(ch); if(ch.geometry)ch.geometry.dispose(); if(ch.material)ch.material.dispose(); }
+  moHandles=[];
+  objs.forEach(function(o){
+    if(o.type!=='actor'||!o.motion||!o.motion.path||o.motion.path.length<2)return;
+    var P=moPathOf(o); if(!P)return; var isSel=(o===sel);
+    var col=(o.color!=null)?o.color:0xffffff;
+    var samples=P.curve.getPoints(72); samples.forEach(function(p){ p.y=0.03; });
+    var line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(samples),new THREE.LineBasicMaterial({color:col,transparent:true,opacity:isSel?0.95:0.4}));
+    line.name='__pathLine'; pathGroup.add(line);
+    o.motion.path.forEach(function(p,i){
+      var isPtSel=isSel&&moPtSel&&moPtSel.oid===o.id&&moPtSel.idx===i;
+      var r=(isSel?(i===0?0.11:0.085):0.05)*(isPtSel?1.4:1);
+      var dot=new THREE.Mesh(new THREE.SphereGeometry(r,12,10),new THREE.MeshBasicMaterial({color:isPtSel?0xffffff:col,transparent:true,opacity:isSel?0.95:0.5,depthTest:false}));
+      dot.position.set(p[0],0.05,p[1]); dot.renderOrder=5; dot.name='__pathPt'; dot.userData.moPt={oid:o.id,idx:i};
+      pathGroup.add(dot); if(isSel)moHandles.push(dot);
+    });
+  });
+  ccHandles=[];
+  objs.forEach(function(o){
+    if(o.type!=='camera'||!o.camclips)return;
+    o.camclips.forEach(function(c){
+      if(c.kind!=='path'||!c.path||c.path.length<2)return;
+      var P=ccPathOf(c); if(!P)return;
+      var isSelC=(o===sel), isClipSel=isSelC&&ccSelClip&&ccSelClip.oid===o.id&&ccSelClip.id===c.id;
+      var samples=P.curve.getPoints(72); samples.forEach(function(p){ p.y=0.04; });
+      var line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(samples),new THREE.LineBasicMaterial({color:0x84cc16,transparent:true,opacity:isSelC?0.95:0.35}));
+      line.name='__ccPathLine'; pathGroup.add(line);
+      if(isClipSel){ c.path.forEach(function(p,i){
+        var dot=new THREE.Mesh(new THREE.SphereGeometry(0.09,12,10),new THREE.MeshBasicMaterial({color:0xa3e635,transparent:true,opacity:0.95,depthTest:false}));
+        dot.position.set(p[0],0.06,p[1]); dot.renderOrder=5; dot.name='__ccPathPt'; dot.userData.ccPt={oid:o.id,cid:c.id,idx:i};
+        pathGroup.add(dot); ccHandles.push(dot); }); }
+    });
+  });
+}
+function moHidePaths(){ if(typeof pathGroup==='undefined'||!pathGroup)return null; var v=pathGroup.visible; pathGroup.visible=false; return v; }
+function moShowPaths(v){ if(v!==null&&typeof pathGroup!=='undefined'&&pathGroup)pathGroup.visible=v; }
+/* ---------- 步态合成：相位由「已行进距离」驱动，脚步与地面位移同频 ---------- */
+function moGaitJoints(kind,phaseDist,base,amp){
+  var P=GAIT[kind]||GAIT.walk, ph=phaseDist/P.cyc*Math.PI*2, s=Math.sin(ph);
+  var g={ hipLX:P.hip*s, hipRX:-P.hip*s,
+    kneeL:P.knee*Math.pow(Math.max(0,Math.sin(ph-4.71239)),1.2),
+    kneeR:P.knee*Math.pow(Math.max(0,Math.sin(ph-1.57080)),1.2),
+    shLX:-P.arm*s, shRX:P.arm*s,
+    elL:P.elb+5*Math.sin(ph+Math.PI), elR:P.elb+5*Math.sin(ph),
+    torsoX:(base.torsoX||0)+P.lean };
+  var out={}; for(var k in base)out[k]=base[k];
+  for(var k2 in g)out[k2]=(base[k2]||0)+(g[k2]-(base[k2]||0))*amp;
+  return {joints:out, bob:P.bob*(0.5-0.5*Math.cos(2*ph))*amp};
+}
+function moGaitState(o,c,t){
+  var Pc=moPathOf(o); if(!Pc)return null;
+  var len=Pc.len, span=Math.max(0.05,c.t1-c.t0), speed=(c.trav||1)*len/span, odo=speed*Math.max(0,t-c.t0);
+  var s, dir=1;
+  if(c.end==='ping'){ var per=2*len, mm=odo%per; if(mm<0)mm+=per; if(mm<=len)s=mm; else { s=per-mm; dir=-1; } }
+  else if(c.end==='loop'){ s=len>0?(odo%len):0; }
+  else s=Math.min(odo,len);
+  var amp=moSS(odo/0.35); if(c.end==='stop')amp*=moSS((len-s)/0.35);
+  return {clip:c,len:len,s:s,dir:dir,odo:odo,phaseDist:odo,speed:speed,amp:amp,latOff:0};
+}
+/* 避碰基础版：把占用者投影到本角色路径上（弧长坐标 + 横向距离），走廊内的占用者
+   在本段行程里是一道绝对停等线——s 钳在「占用者弧长 − 安全距离」处、相位同步
+   冻结（phaseDist 同步扣减），无状态、可拖时间轴复现；只是擦边时给小幅侧移。
+   占用者取其当前渲染位置（其他运动角色为上一帧位置，逐帧收敛到停等）。 */
+function moAvoidAdjust(o,st){
+  var Pc=moPathOf(o); if(!Pc||st.len<=0||!Pc.pts)return;
+  var pts=Pc.pts, n=pts.length-1;
+  var u=(st.dir>0)?st.s:(st.len-st.s);
+  for(var i=0;i<objs.length;i++){
+    var ob=objs[i]; if(ob===o)continue; if(ob.type!=='actor'&&ob.type!=='prop')continue;
+    var ox=ob.group.position.x, oz=ob.group.position.z;
+    var orad=0.36;
+    if(ob.type==='prop'){ var fp=fpOf(ob); orad=(fp.r?fp.r:Math.max(fp.w||0.7,fp.d||0.7)/2)*(ob.group.scale.x||1); if(orad<0.25)orad=0.25; }
+    var need=0.36+orad+0.14; /* 双方半径 + 约 0.5 米量级的安全余量 */
+    var bi=0, bd=1e18;
+    for(var k=0;k<=n;k++){ var dx=ox-pts[k].x, dz=oz-pts[k].z, d=dx*dx+dz*dz; if(d<bd){ bd=d; bi=k; } }
+    var sObs=bi/n*st.len, tan=Pc.curve.getTangentAt(bi/n);
+    var lat=(ox-pts[bi].x)*(-tan.z)+(oz-pts[bi].z)*tan.x;
+    if(Math.abs(lat)>=need+0.15)continue; /* 不在走廊内，不管 */
+    var uObs=(st.dir>0)?sObs:(st.len-sObs);
+    if(uObs<need*0.5)continue; /* 占用者在本段起点处 / 身后：视为已经过 */
+    var blockU=uObs-need;
+    if(u>blockU){ var ex=u-blockU; st.phaseDist-=ex; u=blockU; st.s=(st.dir>0)?u:(st.len-u); st.amp*=0.35; }
+    else if(uObs-u<1.1){ var off=-(lat>=0?1:-1)*(need-Math.abs(lat))*0.5; st.latOff+=Math.max(-0.4,Math.min(0.4,off)); }
+  }
+}
+function moApplyGait(o,st,t){
+  moCaptureHome(o);
+  var Pc=moPathOf(o); if(!Pc)return;
+  var uu=st.len>0?st.s/st.len:0, pt=Pc.curve.getPointAt(uu), tan=Pc.curve.getTangentAt(uu);
+  var base=o._moHome?{y:o._moHome.y,rx:o._moHome.rx,rz:o._moHome.rz}:{y:o.group.position.y,rx:o.group.rotation.x,rz:o.group.rotation.z};
+  var g=moGaitJoints(st.clip.kind,st.phaseDist,o.joints||defJoints(),st.amp);
+  o.joints=g.joints;
+  var lo=st.latOff*st.dir;
+  o.group.position.set(pt.x-tan.z*lo, base.y+g.bob, pt.z+tan.x*lo);
+  o.group.rotation.x=base.rx; o.group.rotation.z=base.rz;
+  var yawT=Math.atan2(tan.x*st.dir,tan.z*st.dir);
+  var now=performance.now();
+  if(o._moYaw==null||o._moYawClip!==st.clip.id||Math.abs(t-(o._moLastT||0))>0.6){ o._moYaw=yawT; }
+  else { var dtR=Math.min(0.05,Math.max(0.001,(now-(o._moYawT||now))/1000));
+    var d=yawT-o._moYaw; while(d>Math.PI)d-=Math.PI*2; while(d<-Math.PI)d+=Math.PI*2;
+    var mx=11*dtR; if(d>mx)d=mx; else if(d<-mx)d=-mx; o._moYaw+=d; }
+  o._moYawT=now; o._moLastT=t; o._moYawClip=st.clip.id;
+  o.group.rotation.y=o._moYaw;
+  applyJoints(o); o._moClipNow=st.clip.id;
+}
+function moApplyBvh(o,c,t){
+  moCaptureHome(o);
+  var fr=c.frames; if(!fr||!fr.length)return;
+  var base=o._moHome?{x:o._moHome.x,y:o._moHome.y,z:o._moHome.z,rx:o._moHome.rx,ry:o._moHome.ry,rz:o._moHome.rz}
+                    :{x:o.group.position.x,y:o.group.position.y,z:o.group.position.z,rx:o.group.rotation.x,ry:o.group.rotation.y,rz:o.group.rotation.z};
+  var fps=c.fps||15, baked=fr.length/fps, span=Math.max(0.05,c.t1-c.t0);
+  var ltB=Math.max(0,Math.min(baked,(t-c.t0)*(baked/span)));
+  var fi=ltB*fps, i0=Math.floor(fi), i1=Math.min(fr.length-1,i0+1), f=fi-i0;
+  var A=fr[i0], B=fr[i1];
+  o.joints=lerpJoints(A.j,B.j,f);
+  var rx=A.r[0]+(B.r[0]-A.r[0])*f, ry2=A.r[1]+(B.r[1]-A.r[1])*f, rz=A.r[2]+(B.r[2]-A.r[2])*f;
+  var dyaw=lerpAngle(A.yaw||0,B.yaw||0,f,0);
+  var cs=Math.cos(base.ry), sn=Math.sin(base.ry);
+  o.group.position.set(base.x+rx*cs+rz*sn, base.y+ry2, base.z-rx*sn+rz*cs);
+  o.group.rotation.set(base.rx, base.ry+dyaw, base.rz);
+  applyJoints(o); o._moClipNow=c.id;
+}
+/* applyAnim 尾部调用：先全体算步态状态（避碰要看彼此位置），再逐个应用 / 还原 */
+function applyMotionAll(t){
+  if(typeof objs==='undefined'||!objs.length)return;
+  var states={}, i, o, c;
+  for(i=0;i<objs.length;i++){ o=objs[i]; if(o.type!=='actor'||!o.motion)continue;
+    c=moActiveClip(o,t); if(!c||c.kind==='bvh')continue;
+    if(typeof drag!=='undefined'&&drag===o)continue;
+    var st=moGaitState(o,c,t); if(st)states[o.id]=st; }
+  for(i=0;i<objs.length;i++){ o=objs[i]; if(o.type!=='actor'||!o.motion)continue;
+    c=moActiveClip(o,t);
+    if(!c){ if(o._moActive)moRestoreHome(o); continue; }
+    if(typeof drag!=='undefined'&&drag===o)continue;
+    if(c.kind==='bvh')moApplyBvh(o,c,t);
+    else { var st2=states[o.id]; if(st2){ moAvoidAdjust(o,st2); moApplyGait(o,st2,t); } } }
+}
+/* ---------- 存档：序列化（moSceneOut）与白名单清洗（sMotion） ---------- */
+function moSceneOut(o){
+  var m=o.motion; if(!m||typeof m!=='object')return null;
+  var out={path:null,clips:[]};
+  if(Array.isArray(m.path)&&m.path.length>=2)out.path=m.path.map(function(p){ return [+p[0].toFixed(2),+p[1].toFixed(2)]; });
+  (m.clips||[]).forEach(function(c){
+    var cc={id:c.id,kind:c.kind,t0:+c.t0.toFixed(2),t1:+c.t1.toFixed(2),end:c.end||'stop',trav:c.trav||1};
+    if(c.kind==='bvh'){ cc.name=c.name||'动捕'; cc.fps=c.fps||15;
+      cc.frames=(c.frames||[]).map(function(fr){ var j={}; for(var k in fr.j)j[k]=+fr.j[k].toFixed(1);
+        return {j:j, r:[+fr.r[0].toFixed(2),+fr.r[1].toFixed(2),+fr.r[2].toFixed(2)], yaw:+(fr.yaw||0).toFixed(3)}; }); }
+    out.clips.push(cc); });
+  if(!out.path&&!out.clips.length)return null;
+  return out;
+}
+function sMotion(v){
+  if(!v||typeof v!=='object')return null;
+  var out={path:null,clips:[]};
+  if(Array.isArray(v.path)&&v.path.length>=2){ var pts=[];
+    v.path.slice(0,64).forEach(function(p){ if(Array.isArray(p)&&p.length>=2)pts.push([sNum(p[0],0,-14,14),sNum(p[1],0,-14,14)]); });
+    if(pts.length>=2)out.path=pts; }
+  if(Array.isArray(v.clips)){ v.clips.slice(0,12).forEach(function(c){
+    if(!c||typeof c!=='object')return;
+    var kind=(c.kind==='run'||c.kind==='bvh')?c.kind:'walk';
+    var t0=sNum(c.t0,0,0,3600), t1=sNum(c.t1,0,0,3600); if(t1<t0+0.1)t1=t0+0.1;
+    var cc={id:(typeof c.id==='string'&&c.id)?c.id.slice(0,24):('c'+out.clips.length), kind:kind,
+      t0:+t0.toFixed(2), t1:+t1.toFixed(2), end:(c.end==='ping'||c.end==='loop')?c.end:'stop',
+      trav:Math.max(1,Math.min(20,Math.round(sNum(c.trav,1,1,20))))};
+    if(kind==='bvh'){
+      if(!Array.isArray(c.frames)||!c.frames.length)return;
+      var fps=sNum(c.fps,15,5,60), fr=[];
+      c.frames.slice(0,1800).forEach(function(fr2){ if(!fr2||typeof fr2!=='object')return;
+        var r=(Array.isArray(fr2.r)&&fr2.r.length>=3)?[sNum(fr2.r[0],0,-40,40),sNum(fr2.r[1],0,-40,40),sNum(fr2.r[2],0,-40,40)]:[0,0,0];
+        fr.push({j:sJoints(fr2.j)||defJoints(), r:r, yaw:sNum(fr2.yaw,0,-12.6,12.6)}); });
+      if(!fr.length)return;
+      cc.name=sName(c.name||'动捕').slice(0,40); cc.fps=fps; cc.frames=fr; }
+    out.clips.push(cc); }); }
+  out.clips.sort(function(a,b){ return a.t0-b.t0; });
+  if(!out.path&&!out.clips.length)return null;
+  return out;
+}
+/* ---------- 片段 CRUD / 速度 ---------- */
+function moSelClipObj(o){ if(!moSelClip||moSelClip.oid!==o.id||!o.motion||!o.motion.clips)return null;
+  var hit=null; o.motion.clips.forEach(function(c){ if(c.id===moSelClip.id)hit=c; }); return hit; }
+function moClipSpeedVal(o,c){ if(c.kind==='bvh'){ var b=(c.frames?c.frames.length:0)/(c.fps||15); return b/Math.max(0.05,c.t1-c.t0); }
+  var len=moPathLen(o); if(len<0.05)return (GAIT[c.kind]||GAIT.walk).spd; return (c.trav||1)*len/Math.max(0.05,c.t1-c.t0); }
+function moClipSpeedText(o,c){ var v=moClipSpeedVal(o,c); return c.kind==='bvh'?('×'+v.toFixed(2)+' 倍速'):v.toFixed(1)+' 米/秒'; }
+function moExtendDur(t1){ if(t1>anim.dur){ anim.dur=Math.min(120,Math.ceil(t1)); var di=document.getElementById('animDur'); if(di)di.value=anim.dur; } }
+function moSetClipSpeed(o,c,v){
+  if(!(v>0))return;
+  if(c.kind==='bvh'){ var b=(c.frames?c.frames.length:0)/(c.fps||15); c.t1=+(c.t0+b/Math.max(0.1,v)).toFixed(2); }
+  else { var len=moPathLen(o); if(len<0.05)return; c.t1=+(c.t0+(c.trav||1)*len/Math.max(0.1,v)).toFixed(2); }
+  moExtendDur(c.t1); if(c.t1>anim.dur)c.t1=anim.dur;
+}
+function moAddGaitClip(o,kind,end){
+  if(!o.motion||!o.motion.path||o.motion.path.length<2){ alertMsg('先给「'+o.name+'」画一条地面轨迹，再生成动作片段。'); return; }
+  var len=moPathLen(o); if(len<0.1){ alertMsg('轨迹太短：把点拉开一点距离再生成片段。'); return; }
+  var t0=Math.round(anim.t*10)/10;
+  if(t0>=anim.dur-0.05){ alertMsg('播放头已在总时长末尾：先把播放头往前拖，或加长总时长，再生成片段。'); return; }
+  var spd=(GAIT[kind]||GAIT.walk).spd, cycles=((end||'stop')==='ping')?2:1, t1=t0+cycles*len/spd;
+  moExtendDur(t1); t1=Math.min(t1,anim.dur);
+  var c={id:'c'+Date.now().toString(36)+(++moClipSeq), kind:kind, t0:+t0.toFixed(2), t1:+t1.toFixed(2), end:end||'stop', trav:cycles};
+  moEnsure(o).clips.push(c); o.motion.clips.sort(function(a,b){ return a.t0-b.t0; });
+  moSelClip={oid:o.id,id:c.id};
+  applyAnim(anim.t); renderLane(); histPushSoon(); renderInspector();
+  alertMsg('已给「'+o.name+'」生成'+(kind==='run'?'跑步':'行走')+'片段：'+c.t0.toFixed(1)+'s → '+c.t1.toFixed(1)+'s（轨迹 '+len.toFixed(1)+' 米 ÷ '+spd+' 米/秒）。时间线上的片段条可拖移、拖右缘拉伸改速。');
+}
+function moAddBvhClip(o,name,res){
+  var baked=res.frames.length/res.fps, t0=Math.round(anim.t*10)/10;
+  if(t0>=anim.dur-0.05){ alertMsg('播放头已在总时长末尾：先把播放头往前拖，或加长总时长，再导入动捕。'); return; }
+  var t1=t0+baked; moExtendDur(t1); t1=Math.min(t1,anim.dur);
+  var c={id:'c'+Date.now().toString(36)+(++moClipSeq), kind:'bvh', name:(name||'动捕').slice(0,40), t0:+t0.toFixed(2), t1:+t1.toFixed(2), end:'stop', trav:1, fps:res.fps, frames:res.frames};
+  moEnsure(o).clips.push(c); o.motion.clips.sort(function(a,b){ return a.t0-b.t0; });
+  moSelClip={oid:o.id,id:c.id};
+  applyAnim(anim.t); renderLane(); histPushSoon(); renderInspector();
+  alertMsg('动捕已导入为「'+o.name+'」的片段：'+res.frames.length+' 帧（采样约 '+res.fps+' fps）· '+baked.toFixed(1)+' 秒 · 映射到 '+res.mapped+' 处关节。关节角迁移是近似重定向，脚步可能滑动，可再打关键帧修正。');
+}
+/* ---------- 属性面板「运动」区 ---------- */
+function moInspectorHTML(o){
+  if(o.modelType==='glb'&&!o.femaleGlb){
+    return '<div class="field"><label><span class="label-ic">'+ico('move')+'运动 · 轨迹 / 步态 / 动捕</span></label><div class="mo-note">运动系统驱动的是台子的 13 关节（程序人偶与真模型女版共用同一驱动）：这个模型用自带动画片段，不参与轨迹与动捕；换成程序体型或「肌肉女 · 真模型」即可用。</div></div>';
+  }
+  var m=o.motion||{path:null,clips:[]}, len=m.path?moPathLen(o):0;
+  var drawing=(moDraw&&moDraw.o===o);
+  var h='<div class="field"><label><span class="label-ic">'+ico('move')+'运动 · 轨迹 / 步态 / 动捕</span></label>';
+  h+='<div class="mo-note" style="margin-top:0">地面轨迹：'+(m.path?('共 '+m.path.length+' 个点 · 全长 '+len.toFixed(1)+' 米。舞台上点路径圆点可拖动改位，点中后可在下方删点。'):'还没有。点「画轨迹」后在地面逐点点击加点（再点「完成绘制」退出）。')+'</div>';
+  h+='<div class="row2" style="margin-top:6px"><button class="btn'+(drawing?' primary':'')+'" id="moDrawBtn">'+ico('plan')+(drawing?'完成绘制':'画轨迹')+'</button>';
+  if(m.path)h+='<button class="btn danger" id="moPathDel">'+ico('trash')+'清除轨迹</button>';
+  h+='</div>';
+  if(moPtSel&&moPtSel.oid===o.id&&m.path&&m.path[moPtSel.idx])h+='<div class="row2" style="margin-top:6px"><button class="btn" id="moPtDel">删除第 '+(moPtSel.idx+1)+' 点</button></div>';
+  h+='<div class="row2" style="margin-top:8px"><select id="moKind" style="flex:1"><option value="walk">行走 · 约 1.4 米/秒</option><option value="run">跑步 · 约 3 米/秒</option></select><select id="moEnd" style="flex:1"><option value="stop">到终点停住</option><option value="ping">往返</option><option value="loop">循环回起点</option></select></div>';
+  h+='<button class="btn teal" id="moAddClip" style="width:100%;margin-top:6px">'+ico('key')+'在播放头生成动作片段</button>';
+  if(m.clips&&m.clips.length&&!m.path)h+='<div class="mo-note">轨迹已清除：步态片段暂不生效，重画轨迹即恢复（动捕片段不受影响）。</div>';
+  (m.clips||[]).forEach(function(c){ var on=moSelClip&&moSelClip.oid===o.id&&moSelClip.id===c.id;
+    h+='<button type="button" class="mo-cliprow'+(on?' on':'')+'" data-moclip="'+c.id+'"><span>'+(c.kind==='bvh'?('动捕 · '+escHtml(c.name||'未命名')):(c.kind==='run'?'跑步':'行走'))+'</span><span class="sp">'+c.t0.toFixed(1)+'s → '+c.t1.toFixed(1)+'s · '+moClipSpeedText(o,c)+'</span></button>'; });
+  var sc=moSelClipObj(o);
+  if(sc){
+    h+='<div style="margin-top:8px"><label style="font-size:12px;color:var(--muted);display:flex;justify-content:space-between"><span>已选片段 · 速度微调</span><output>'+moClipSpeedText(o,sc)+'</output></label><input type="range" id="moSpeed" style="width:100%" min="'+(sc.kind==='bvh'?'0.25':'0.3')+'" max="'+(sc.kind==='bvh'?'3':'6')+'" step="0.05" value="'+moClipSpeedVal(o,sc).toFixed(2)+'"></div>';
+    if(sc.kind!=='bvh')h+='<div class="row2" style="margin-top:6px"><select id="moEnd2" style="flex:1"><option value="stop"'+(sc.end==='stop'?' selected':'')+'>到终点停住</option><option value="ping"'+(sc.end==='ping'?' selected':'')+'>往返</option><option value="loop"'+(sc.end==='loop'?' selected':'')+'>循环回起点</option></select></div>';
+    h+='<div class="row2" style="margin-top:6px"><button class="btn danger" id="moClipDel">'+ico('trash')+'删除这个片段</button></div>';
+  }
+  h+='<div class="row2" style="margin-top:8px"><select id="moBvhFps" style="flex:1"><option value="10">动捕采样 10 fps</option><option value="15" selected>动捕采样 15 fps</option><option value="30">动捕采样 30 fps</option></select><button class="btn" id="moBvhBtn">'+ico('upload')+'导入动捕 BVH…</button></div>';
+  h+='<div class="mo-note">步态（行走 / 跑步）由 13 关节按步频实时合成，不是外部动画文件；片段时长 = 路径长度 ÷ 速度，拉伸片段条即改速度。动捕 BVH 是关节角迁移的近似重定向：脚步可能滑动，导入后可再打关键帧修正；采样越高越细、存档越大。FBX 不能在台内解析——请先在电脑 Blender 里转成 BVH 再导入。避碰是基础版：前方约 0.5 米内有角色 / 道具时减速停等或小幅侧移，不是智能寻路。</div>';
+  h+='</div>';
+  return h;
+}
+function moSetDraw(o){
+  moDraw=o?{o:o}:null;
+  if(orbit)orbit.enabled=!moDraw&&(viewMode==='dir');
+  if(o&&sel!==o)select(o);
+  renderInspector();
+  if(o)alertMsg('绘制轨迹中：在地面逐点点击给「'+o.name+'」加点，会依次连成平滑路径；点完点面板「完成绘制」，或按 Esc 退出。');
+}
+function moBindInspector(o,el){
+  if(!el||o.type!=='actor')return;
+  var q=function(id){ return document.getElementById(id); };
+  var db=q('moDrawBtn'); if(db)db.onclick=function(){ if(moDraw&&moDraw.o===o)moSetDraw(null); else moSetDraw(o); };
+  var pd=q('moPathDel'); if(pd)pd.onclick=function(){ if(!o.motion)return; o.motion.path=null; o._moCurve=null; if(moPtSel&&moPtSel.oid===o.id)moPtSel=null; buildPaths(); histPushSoon(); renderInspector(); };
+  var ptd=q('moPtDel'); if(ptd)ptd.onclick=function(){ if(!o.motion||!o.motion.path||!moPtSel||moPtSel.oid!==o.id)return;
+    if(o.motion.path.length<=2){ alertMsg('只剩两个点，再删轨迹就没了：整条删除请用「清除轨迹」。'); return; }
+    o.motion.path.splice(moPtSel.idx,1); moPtSel=null; moTouchPath(o); histPushSoon(); renderInspector(); };
+  var ac=q('moAddClip'); if(ac)ac.onclick=function(){ var k=q('moKind'), e2=q('moEnd'); moAddGaitClip(o,k?k.value:'walk',e2?e2.value:'stop'); };
+  el.querySelectorAll('[data-moclip]').forEach(function(b){ b.addEventListener('click',function(){ moSelClip={oid:o.id,id:b.getAttribute('data-moclip')}; renderLane(); renderInspector(); }); });
+  var sp=q('moSpeed');
+  if(sp){ sp.addEventListener('input',function(){ var c=moSelClipObj(o); if(!c)return; moSetClipSpeed(o,c,parseFloat(sp.value)); renderLane();
+      var out=sp.parentElement.querySelector('output'); if(out)out.textContent=moClipSpeedText(o,c); });
+    sp.addEventListener('change',function(){ histPushSoon(); renderInspector(); }); }
+  var e2=q('moEnd2'); if(e2)e2.addEventListener('change',function(){ var c=moSelClipObj(o); if(c){ /* 切到达行为时保持速度不变：往返 = 片段内走一个来回（trav 2），跨度随之调整 */
+      var v=moClipSpeedVal(o,c), len=moPathLen(o); c.end=e2.value; c.trav=(c.end==='ping')?2:1;
+      if(len>0.05){ c.t1=+(c.t0+c.trav*len/Math.max(0.1,v)).toFixed(2); moExtendDur(c.t1); if(c.t1>anim.dur)c.t1=anim.dur; }
+      histPushSoon(); renderLane(); renderInspector(); } });
+  var cd=q('moClipDel'); if(cd)cd.onclick=function(){ var c=moSelClipObj(o); if(!c||!o.motion)return;
+    o.motion.clips=o.motion.clips.filter(function(x){ return x!==c; }); moSelClip=null; applyAnim(anim.t); histPushSoon(); renderLane(); renderInspector();
+    alertMsg('已删除「'+o.name+'」的动作片段。'); };
+  var bb=q('moBvhBtn'); if(bb)bb.onclick=function(){ moBvhTarget=o; var f=document.getElementById('bvhFile'); if(f){ f.value=''; f.click(); } };
+}
+/* ---------- 时间线片段条：拖移 / 拉伸 ---------- */
+var moBarDrag=null;
+if(lanesEl){
+  lanesEl.addEventListener('pointerdown',function(e){
+    var bar=(e.target&&e.target.closest)?e.target.closest('.mo-clip'):null; if(!bar)return;
+    e.preventDefault(); e.stopPropagation();
+    var oid=parseInt(bar.getAttribute('data-oid'),10), cid=bar.getAttribute('data-cid');
+    var o=objs.filter(function(x){ return x.id===oid; })[0]; if(!o||!o.motion||!o.motion.clips)return;
+    var c=null; o.motion.clips.forEach(function(x){ if(x.id===cid)c=x; }); if(!c)return;
+    if(o!==sel)select(o);
+    moSelClip={oid:oid,id:cid}; renderInspector();
+    var lr=bar.parentElement.getBoundingClientRect(), br=bar.getBoundingClientRect();
+    moBarDrag={o:o,c:c,mode:(e.clientX>br.right-12&&br.width>24)?'stretch':'move',x0:e.clientX,laneW:lr.width||1,t0:c.t0,t1:c.t1,moved:false};
+    var nb=lanesEl.querySelector('.mo-clip[data-cid="'+cid+'"]');
+    if(nb){ nb.classList.add('sel'); try{ nb.setPointerCapture(e.pointerId); }catch(_e){} }
+  });
+  lanesEl.addEventListener('pointermove',function(e){
+    if(!moBarDrag)return;
+    var d=(e.clientX-moBarDrag.x0)/moBarDrag.laneW*anim.dur, c=moBarDrag.c;
+    if(moBarDrag.mode==='move'){ var span=moBarDrag.t1-moBarDrag.t0;
+      var nt0=Math.round(Math.max(0,Math.min(anim.dur-span,moBarDrag.t0+d))*10)/10;
+      if(nt0!==c.t0){ c.t0=nt0; c.t1=+(nt0+span).toFixed(2); moBarDrag.moved=true; } }
+    else { var nt1=Math.round(Math.max(c.t0+0.3,Math.min(anim.dur,moBarDrag.t1+d))*10)/10;
+      if(nt1!==c.t1){ c.t1=nt1; moBarDrag.moved=true; } }
+    if(moBarDrag.moved){ var nb=lanesEl.querySelector('.mo-clip[data-cid="'+c.id+'"]');
+      if(nb){ nb.style.left=(anim.dur?(c.t0/anim.dur*100):0)+'%'; nb.style.width=Math.max(1.4,anim.dur?((c.t1-c.t0)/anim.dur*100):0)+'%'; }
+      applyAnim(anim.t); }
+  });
+  var moBarUp=function(){ if(!moBarDrag)return; var moved=moBarDrag.moved; moBarDrag=null;
+    if(moved){ window.__moBarDragEnd=performance.now(); histPushSoon(); }
+    renderLane(); if(sel)renderInspector(); };
+  lanesEl.addEventListener('pointerup',moBarUp);
+  lanesEl.addEventListener('pointercancel',moBarUp);
+}
+/* ---------- 舞台：画轨迹 + 路径点拖改（在画布父层捕获阶段拦截，不惊动 gizmo / 拖拽 / 轨道控制） ---------- */
+function moGroundPt(e){
+  var r=renderer.domElement.getBoundingClientRect();
+  ptr.x=((e.clientX-r.left)/r.width)*2-1; ptr.y=-((e.clientY-r.top)/r.height)*2+1;
+  ray.setFromCamera(ptr,activeMainCam());
+  var v=new THREE.Vector3();
+  return ray.ray.intersectPlane(MO_PLANE,v)?v:null;
+}
+(function(){
+  var cv=renderer.domElement, wrap=cv.parentNode; if(!wrap)return;
+  wrap.addEventListener('pointerdown',function(e){
+    if(e.target!==cv)return;
+    if(moDraw&&moDraw.o&&objs.indexOf(moDraw.o)>=0){
+      var v=moGroundPt(e); if(!v)return;
+      e.stopPropagation(); e.preventDefault();
+      var m=moEnsure(moDraw.o); if(!m.path)m.path=[];
+      m.path.push([+THREE.MathUtils.clamp(v.x,-11.5,11.5).toFixed(2),+THREE.MathUtils.clamp(v.z,-7.5,7.5).toFixed(2)]);
+      moTouchPath(moDraw.o); renderInspectorSoft(); histPushSoon();
+      return;
+    }
+    if(sel&&sel.type==='actor'&&moHandles.length){
+      var r=cv.getBoundingClientRect();
+      ptr.x=((e.clientX-r.left)/r.width)*2-1; ptr.y=-((e.clientY-r.top)/r.height)*2+1;
+      ray.setFromCamera(ptr,activeMainCam());
+      var hits=ray.intersectObjects(moHandles,false);
+      if(hits.length){ e.stopPropagation(); e.preventDefault();
+        var ud=hits[0].object.userData.moPt;
+        moPtSel={oid:ud.oid,idx:ud.idx}; moPtDrag={o:sel,idx:ud.idx,moved:false};
+        orbit.enabled=false; buildPaths(); renderInspector(); }
+    }
+  },true);
+  window.addEventListener('pointermove',function(e){
+    if(!moPtDrag)return;
+    var v=moGroundPt(e); if(!v)return;
+    var o=moPtDrag.o; if(!o.motion||!o.motion.path)return;
+    o.motion.path[moPtDrag.idx]=[+THREE.MathUtils.clamp(v.x,-11.5,11.5).toFixed(2),+THREE.MathUtils.clamp(v.z,-7.5,7.5).toFixed(2)];
+    moPtDrag.moved=true; moTouchPath(o);
+  });
+  window.addEventListener('pointerup',function(){
+    if(!moPtDrag)return;
+    var wasMoved=moPtDrag.moved; moPtDrag=null;
+    orbit.enabled=(viewMode==='dir');
+    if(wasMoved)histPushSoon();
+    renderInspector();
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&moDraw){ var t=e.target;
+      if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable))return;
+      moSetDraw(null); }
+  });
+})();
+/* ---------- BVH 解析 + 烘焙（关节角迁移近似重定向） ---------- */
+function bvhNorm(n){ return String(n||'').split(':').pop().toLowerCase().replace(/[^a-z0-9]/g,''); }
+function bvhBake(text,targetFps){
+  var mi=text.search(/\bMOTION\b/); if(mi<0)throw new Error('缺 MOTION 段');
+  var hier=text.slice(0,mi), mot=text.slice(mi);
+  var toks=hier.replace(/([{}])/g,' $1 ').split(/\s+/).filter(function(s){ return s.length; });
+  var ti=0, chanTotal=0;
+  function parseNode(name){
+    var node={name:name,offset:[0,0,0],channels:[],children:[],start:0};
+    if(toks[ti]==='{')ti++;
+    while(ti<toks.length){
+      var tk=toks[ti];
+      if(tk==='}'){ ti++; break; }
+      if(tk==='OFFSET'){ node.offset=[parseFloat(toks[ti+1])||0,parseFloat(toks[ti+2])||0,parseFloat(toks[ti+3])||0]; ti+=4; }
+      else if(tk==='CHANNELS'){ var n=parseInt(toks[ti+1],10)||0; node.start=chanTotal; node.channels=toks.slice(ti+2,ti+2+n); chanTotal+=n; ti+=2+n; }
+      else if(tk==='JOINT'){ var cn=toks[ti+1]; ti+=2; node.children.push(parseNode(cn)); }
+      else if(tk==='End'){ ti+=2; if(toks[ti]==='{'){ ti++; while(ti<toks.length&&toks[ti]!=='}')ti++; ti++; } }
+      else ti++;
+    }
+    return node;
+  }
+  var root=null;
+  while(ti<toks.length){ if(toks[ti]==='ROOT'){ root=parseNode(toks[ti+1]); break; } ti++; }
+  if(!root||!chanTotal)throw new Error('缺 ROOT 或通道');
+  var fm=mot.match(/Frames:\s*(\d+)/), tm=mot.match(/Frame Time:\s*([0-9.]+)/);
+  if(!fm||!tm)throw new Error('缺帧信息');
+  var nFrames=parseInt(fm[1],10), frameTime=parseFloat(tm[1]);
+  var nums=mot.slice(mot.indexOf(tm[0])+tm[0].length).split(/\s+/).map(function(s){ return parseFloat(s); }).filter(function(v){ return isFinite(v); });
+  if(nums.length<chanTotal)throw new Error('帧数据为空');
+  var byName={};
+  (function walk(nd){ var k=bvhNorm(nd.name); if(!(k in byName))byName[k]=nd; nd.children.forEach(walk); })(root);
+  function find(){ for(var i=0;i<arguments.length;i++){ var nd=byName[arguments[i]]; if(nd)return nd; } return null; }
+  var N={ hips:find('hips','pelvis')||root,
+    spine:find('spine','spine01'), chest:find('chest','spine2','spine02','upperchest'),
+    neck:find('neck','neck01','neck1'), head:find('head'),
+    armL:find('leftarm','leftupperarm'), foreL:find('leftforearm','leftlowerarm'),
+    armR:find('rightarm','rightupperarm'), foreR:find('rightforearm','rightlowerarm'),
+    legL:find('leftupleg','leftupperleg','leftthigh'), shinL:find('leftleg','leftlowerleg','leftshin','leftcalf'),
+    legR:find('rightupleg','rightupperleg','rightthigh'), shinR:find('rightleg','rightlowerleg','rightshin','rightcalf') };
+  var mapped=0; ['spine','neck','armL','foreL','armR','foreR','legL','shinL','legR','shinR'].forEach(function(k){ if(N[k])mapped++; });
+  function chanVal(vals,node,chName){ var i=node.channels.indexOf(chName); return i<0?0:(vals[node.start+i]||0); }
+  function nodeRot(node,vals){ if(!node)return null;
+    var has=node.channels.indexOf('Xrotation')>=0||node.channels.indexOf('Yrotation')>=0||node.channels.indexOf('Zrotation')>=0;
+    if(!has)return null;
+    return {x:chanVal(vals,node,'Xrotation'), y:chanVal(vals,node,'Yrotation'), z:chanVal(vals,node,'Zrotation')}; }
+  function hipsPos(vals){ return [chanVal(vals,N.hips,'Xposition'),chanVal(vals,N.hips,'Yposition'),chanVal(vals,N.hips,'Zposition')]; }
+  var srcFps=frameTime>0?1/frameTime:30;
+  var step=Math.max(1,Math.round(srcFps/Math.max(5,targetFps||15)));
+  if(Math.ceil(nFrames/step)>1800)step=Math.ceil(nFrames/1800);
+  var firstVals=nums.slice(0,chanTotal), p0=hipsPos(firstVals);
+  var scale=(Math.max(Math.abs(N.hips.offset[1]),Math.abs(p0[1]))>3)?0.01:1; /* 厘米制 BVH 自动折算 */
+  var e0=nodeRot(N.hips,firstVals), yaw0=e0?e0.y:0;
+  function tpose(nd){ return !!nd&&(Math.abs(nd.offset[0])>Math.abs(nd.offset[1])*1.5); }
+  var tpL=tpose(N.armL), tpR=tpose(N.armR);
+  var frames=[];
+  for(var fi=0;fi<nFrames;fi+=step){
+    var vals=nums.slice(fi*chanTotal,(fi+1)*chanTotal); if(vals.length<chanTotal)break;
+    var j={neckX:0,neckY:0,torsoX:0,shLX:0,shLZ:0,elL:0,shRX:0,shRZ:0,elR:0,hipLX:0,kneeL:0,hipRX:0,kneeR:0}, e;
+    e=nodeRot(N.neck||N.head,vals); if(e){ j.neckX=e.x; j.neckY=e.y; }
+    if(N.neck&&N.head){ var eh=nodeRot(N.head,vals); if(eh){ j.neckX+=eh.x*0.5; j.neckY+=eh.y*0.5; } }
+    e=nodeRot(N.spine||N.chest,vals); if(e)j.torsoX=e.x;
+    e=nodeRot(N.armL,vals); if(e){ if(tpL){ j.shLZ=80+e.z; j.shLX=-e.y; } else { j.shLX=-e.x; j.shLZ=e.z; } }
+    e=nodeRot(N.foreL,vals); if(e)j.elL=tpL?-e.y:-e.x;
+    e=nodeRot(N.armR,vals); if(e){ if(tpR){ j.shRZ=80-e.z; j.shRX=e.y; } else { j.shRX=-e.x; j.shRZ=-e.z; } }
+    e=nodeRot(N.foreR,vals); if(e)j.elR=tpR?e.y:-e.x;
+    e=nodeRot(N.legL,vals); if(e)j.hipLX=-e.x;
+    e=nodeRot(N.shinL,vals); if(e)j.kneeL=e.x;
+    e=nodeRot(N.legR,vals); if(e)j.hipRX=-e.x;
+    e=nodeRot(N.shinR,vals); if(e)j.kneeR=e.x;
+    JOINTDEF.forEach(function(d){ j[d[0]]=+(Math.max(d[2],Math.min(d[3],j[d[0]]))).toFixed(1); });
+    var p=hipsPos(vals), eh2=nodeRot(N.hips,vals);
+    var yaw=eh2?((eh2.y-yaw0)*Math.PI/180):0;
+    while(yaw>Math.PI)yaw-=Math.PI*2; while(yaw<-Math.PI)yaw+=Math.PI*2;
+    frames.push({j:j, r:[+((p[0]-p0[0])*scale).toFixed(2),+((p[1]-p0[1])*scale).toFixed(2),+((p[2]-p0[2])*scale).toFixed(2)], yaw:+yaw.toFixed(3)});
+  }
+  if(!frames.length)throw new Error('没有可用帧');
+  return {frames:frames, fps:+(srcFps/step).toFixed(2), mapped:mapped};
+}
+(function(){
+  var bf=document.getElementById('bvhFile'); if(!bf)return;
+  bf.addEventListener('change',function(){
+    var f=bf.files[0]; bf.value='';
+    if(!f||!moBvhTarget)return;
+    var o=moBvhTarget, fpsEl=document.getElementById('moBvhFps'), tf=parseInt(fpsEl?fpsEl.value:'15',10)||15;
+    var rd=new FileReader();
+    rd.onload=function(){
+      try{ var res=bvhBake(String(rd.result),tf); moAddBvhClip(o,f.name.replace(/\.bvh$/i,''),res); }
+      catch(err){ alertMsg('导入失败：BVH 解析出错（'+(err&&err.message?err.message:'格式不识别')+'）。FBX 请先在 Blender 转成 BVH 再导入。'); }
+    };
+    rd.readAsText(f);
+  });
+})();
+
+
+/* ---------- 运镜片段制 + 第一人称操控机位（v43 · 借鉴清单 A4） ----------
+   与 A3 的人物片段对称：机位泳道上也挂片段条，片段时段内机位由片段接管，
+   时段外照旧走机位关键帧（applyAnim 在 applyMotionAll 之后调用 applyCamClips，
+   保证跟随目标读到的是该时刻的最终位置——关键帧驱动或 A3 运动片段驱动都跟得住）。
+   ① 跟随片段：机位用几何关系绑在目标角色身上——锚点（脚部 / 身体中心 / 头部）、
+   相对角色朝向的方位角起→止、俯仰角、距离起→止、高度偏移；取景恒看向锚点。
+   方位与距离在片段内线性插值，一条片段即「推进 + 环绕」，不再给机位逐帧打点。
+   ② 路径片段：沿用 A3 的地面逐点绘制给机位画行进轨迹（同一 pathGroup 可视层，
+   导出 / 录制按既有规则隐藏）；注视三选一：锚定角色锚点 / 看向路径前方 / 固定注视点。
+   ③ 边界融合：片段首尾各有一段融合窗（0.3–1.8 秒，按位姿差距自适应），位姿从「无片段时的位姿」
+   平滑过渡进 / 出片段位姿，相邻帧无位移突变；无关键帧的机位进片段前捕获原地
+   位姿（_ccHome），离开片段时还原（同 A3 的 _moHome 机制）。
+   ④ 目标角色被删：片段优雅降级——保持最后一次求解出的位姿、面板标注失效，不报错。
+   数据只走可选附加字段 camclips（目标以对象序号写入存档、导入时经 index 映射
+   还原为对象 id），过 importScene 白名单（sCamClips），旧场景零影响；
+   片段求解只读缓存曲线（ccPathOf 按 _ver 缓存），不逐帧重建轨迹几何（v40 体制）。
+   第一人称（桌面端键鼠专属，手机端不显示入口）：选中机位进入后主视口切到该
+   机位视角，WASD 平移 / Q·E 升降 / 鼠标拖拽转向 / 滚轮调速；Esc 或按钮退出，
+   退出时当前位姿即该机位位姿（全程直接写在机位对象上），并记一步撤销。 */
+var ccSelClip=null, ccDraw=null, ccPtDrag=null, ccPtSel=null, ccClipSeq=0;
+function ccObjById(id){ if(id==null)return null; var hit=null; objs.forEach(function(o){ if(o.id===id)hit=o; }); return hit; }
+function ccTargetOf(c){ return c&&c.target!=null?ccObjById(c.target):null; }
+function ccClipOrphan(c){ if(!c)return false; if(c.kind==='follow')return !ccTargetOf(c); if(c.kind==='path'&&c.look==='target')return !ccTargetOf(c); return false; }
+function ccEnsure(cam){ if(!Array.isArray(cam.camclips))cam.camclips=[]; return cam.camclips; }
+function ccClipAt(cam,t){ var cl=cam.camclips; if(!cl)return null; var hit=null; for(var i=0;i<cl.length;i++){ var c=cl[i]; if(t>=c.t0-0.001&&t<=c.t1+0.001)hit=c; } return hit; }
+function ccAnchorPt(a,anchor){ var p=a.group.position, sc=a.group.scale.y||1;
+  var h=(anchor==='head')?1.58:((anchor==='foot')?0.05:0.95);
+  return new THREE.Vector3(p.x,p.y+h*sc,p.z); }
+function ccEyeOf(cam){ var e=cam.group.position.clone(); e.y+=1.28*(cam.group.scale.y||1); return e; }
+function ccPoseOf(cam){ var eye=ccEyeOf(cam), look;
+  if(cam.lookPt)look=cam.lookPt.clone();
+  else { var f=facingOf(cam); look=new THREE.Vector3(eye.x+f[0]*5,eye.y-0.15,eye.z+f[1]*5); }
+  return {pos:cam.group.position.clone(),eye:eye,look:look,ry:cam.group.rotation.y}; }
+function ccApplyEyeLook(cam,eye,look){
+  var sc=cam.group.scale.y||1;
+  cam.group.position.set(THREE.MathUtils.clamp(eye.x,-11.5,11.5), THREE.MathUtils.clamp(eye.y-1.28*sc,0,6), THREE.MathUtils.clamp(eye.z,-8.5,8.5));
+  cam.lookPt=look.clone();
+  var e2=ccEyeOf(cam);
+  cam.group.rotation.y=Math.atan2(look.x-e2.x,look.z-e2.z)+Math.PI;
+}
+/* ---------- 片段求解：纯函数（目标当前位姿 + 片段参数 → 机位眼位 / 注视点） ---------- */
+function ccFollowPose(c,t){
+  var a=ccTargetOf(c); if(!a)return null;
+  var span=Math.max(0.05,c.t1-c.t0), f=THREE.MathUtils.clamp((t-c.t0)/span,0,1);
+  var anchor=ccAnchorPt(a,c.anchor);
+  var az=THREE.MathUtils.degToRad((c.az0||0)+((c.az1||0)-(c.az0||0))*f);
+  var dist=(c.d0||4)+((c.d1||4)-(c.d0||4))*f;
+  var pitch=THREE.MathUtils.degToRad(c.pitch||0), ry=a.group.rotation.y+az;
+  var hd=dist*Math.cos(pitch);
+  var eye=new THREE.Vector3(anchor.x+Math.sin(ry)*hd, anchor.y+(c.hOff||0)+dist*Math.sin(pitch), anchor.z+Math.cos(ry)*hd);
+  return {eye:eye,look:anchor};
+}
+function ccPathOf(c){ if(!c||!c.path||c.path.length<2)return null;
+  if(c._curve&&c._curveVer===(c._ver||0))return c._curve;
+  var pts=c.path.map(function(p){ return new THREE.Vector3(p[0],0,p[1]); });
+  var curve=new THREE.CatmullRomCurve3(pts,false,'centripetal',0.5);
+  var P={curve:curve,len:curve.getLength()}; c._curve=P; c._curveVer=(c._ver||0); return P; }
+function ccPathPose(c,t){
+  var P=ccPathOf(c); if(!P)return null;
+  var span=Math.max(0.05,c.t1-c.t0), f=THREE.MathUtils.clamp((t-c.t0)/span,0,1);
+  var pt=P.curve.getPointAt(f), h=(c.h!=null?c.h:1.6);
+  var eye=new THREE.Vector3(pt.x,h,pt.z), look;
+  if(c.look==='ahead'){ var tan=P.curve.getTangentAt(f); look=new THREE.Vector3(pt.x+tan.x*2.5,h,pt.z+tan.z*2.5); }
+  else if(c.look==='target'){ var a=ccTargetOf(c); if(!a)return null; look=ccAnchorPt(a,c.anchor||'center'); }
+  else { var lp=c.lookPt||[0,1.2,0]; look=new THREE.Vector3(lp[0],lp[1],lp[2]); }
+  return {eye:eye,look:look};
+}
+function ccSolvePose(c,t){ return c.kind==='follow'?ccFollowPose(c,t):ccPathPose(c,t); }
+/* ---------- 片段接管：applyAnim 尾部调用 ---------- */
+function ccRestoreHome(cam){ var h=cam._ccHome; cam._ccHome=null; cam._ccClipNow=null; if(!h)return;
+  cam.group.position.copy(h.pos); cam.lookPt=h.look?h.look.clone():null; cam.group.rotation.y=h.ry; }
+function applyCamClips(t){
+  if(typeof objs==='undefined'||!objs.length)return;
+  objs.forEach(function(cam){
+    if(cam.type!=='camera')return;
+    var c=ccClipAt(cam,t);
+    if(!c){ if(cam._ccHome)ccRestoreHome(cam); cam._ccClipNow=null; return; }
+    if(typeof drag!=='undefined'&&drag===cam)return;
+    if(typeof fp!=='undefined'&&fp&&fp.cam===cam)return;
+    var pose=null; try{ pose=ccSolvePose(c,t); }catch(err){ pose=null; }
+    if(!pose){ /* 目标被删 / 路径不足：保持最后位姿，优雅降级不报错 */
+      if(cam._ccLast)ccApplyEyeLook(cam,cam._ccLast.eye,cam._ccLast.look);
+      cam._ccClipNow=c.id; return; }
+    var pre;
+    if(cam.track&&cam.track.length){ pre=ccPoseOf(cam); cam._ccClipNow=c.id; }
+    else { if(cam._ccClipNow!==c.id||!cam._ccHome){ cam._ccHome=ccPoseOf(cam); cam._ccClipNow=c.id; } pre=cam._ccHome; }
+    var span=Math.max(0.05,c.t1-c.t0);
+    var gap=pre.eye.distanceTo(pose.eye); /* 融合窗按位姿差距自适应：原位离片段位姿越远窗越长（封顶 1 秒），融合期单帧位移不突变 */
+    var w=Math.min(span*0.45,Math.max(0.3,Math.min(1.8,gap*0.12))), bf=1;
+    if(w>0.01){ if(t<c.t0+w)bf=moSS((t-c.t0)/w); if(t>c.t1-w)bf=Math.min(bf,moSS((c.t1-t)/w)); }
+    var wl=Math.min(0.3,span*0.3), bfl=1; /* 注视融合用固定短窗：片段主体时段内取景严格恒看向目标锚点，只有贴边 0.3 秒过渡 */
+    if(wl>0.01){ if(t<c.t0+wl)bfl=moSS((t-c.t0)/wl); if(t>c.t1-wl)bfl=Math.min(bfl,moSS((c.t1-t)/wl)); }
+    var eye=pre.eye.clone().lerp(pose.eye,bf), look=pre.look.clone().lerp(pose.look,bfl);
+    ccApplyEyeLook(cam,eye,look);
+    cam._ccLast={eye:eye.clone(),look:look.clone()};
+  });
+}
+/* ---------- 存档：序列化（ccSceneOut，目标写对象序号）与白名单清洗（sCamClips，序号还原为 id） ---------- */
+function ccSceneOut(cam){
+  var cl=cam.camclips; if(!cl||!cl.length)return null;
+  return cl.map(function(c){
+    var tgt=(c.target!=null&&ccObjById(c.target))?objs.indexOf(ccObjById(c.target)):-1;
+    var o={id:c.id,kind:c.kind,t0:+c.t0.toFixed(2),t1:+c.t1.toFixed(2)};
+    if(c.kind==='follow'){ o.tgt=tgt; o.anchor=c.anchor||'center';
+      o.az0=+c.az0.toFixed(1); o.az1=+c.az1.toFixed(1); o.pitch=+c.pitch.toFixed(1);
+      o.d0=+c.d0.toFixed(2); o.d1=+c.d1.toFixed(2); o.hOff=+c.hOff.toFixed(2); }
+    else { o.tgt=tgt; o.anchor=c.anchor||'center'; o.look=c.look||'target'; o.h=+(c.h!=null?c.h:1.6).toFixed(2);
+      o.lookPt=(c.lookPt||[0,1.2,0]).map(function(v){ return +v.toFixed(2); });
+      o.path=(Array.isArray(c.path)&&c.path.length>=2)?c.path.map(function(p){ return [+p[0].toFixed(2),+p[1].toFixed(2)]; }):null; }
+    return o; });
+}
+function sCamClips(v,idxMap){
+  if(!Array.isArray(v))return null;
+  var out=[];
+  v.slice(0,12).forEach(function(c){
+    if(!c||typeof c!=='object')return;
+    var kind=(c.kind==='path')?'path':'follow';
+    var t0=sNum(c.t0,0,0,3600), t1=sNum(c.t1,0,0,3600); if(t1<t0+0.1)t1=t0+0.1;
+    var tgt=null;
+    if(typeof c.tgt==='number'&&idxMap&&idxMap[c.tgt])tgt=idxMap[c.tgt].id;
+    var cc={id:(typeof c.id==='string'&&c.id)?c.id.slice(0,24):('k'+out.length), kind:kind, t0:+t0.toFixed(2), t1:+t1.toFixed(2), target:tgt,
+      anchor:(c.anchor==='head'||c.anchor==='foot')?c.anchor:'center'};
+    if(kind==='follow'){
+      cc.az0=sNum(c.az0,35,-360,360); cc.az1=sNum(c.az1,-35,-360,360);
+      cc.pitch=sNum(c.pitch,8,-60,75); cc.d0=sNum(c.d0,4.5,0.6,20); cc.d1=sNum(c.d1,2.2,0.6,20); cc.hOff=sNum(c.hOff,0,-2,4);
+    } else {
+      cc.look=(c.look==='ahead'||c.look==='fixed')?c.look:'target';
+      cc.h=sNum(c.h,1.6,0.3,6);
+      cc.lookPt=(Array.isArray(c.lookPt)&&c.lookPt.length>=3)?[sNum(c.lookPt[0],0,-14,14),sNum(c.lookPt[1],1.2,0,8),sNum(c.lookPt[2],0,-14,14)]:[0,1.2,0];
+      cc.path=null;
+      if(Array.isArray(c.path)&&c.path.length>=2){ var pts=[];
+        c.path.slice(0,64).forEach(function(p){ if(Array.isArray(p)&&p.length>=2)pts.push([sNum(p[0],0,-14,14),sNum(p[1],0,-14,14)]); });
+        if(pts.length>=2)cc.path=pts; }
+    }
+    out.push(cc); });
+  out.sort(function(a,b){ return a.t0-b.t0; });
+  return out.length?out:null;
+}
+/* ---------- 片段 CRUD ---------- */
+function ccSelClipObj(cam){ if(!ccSelClip||ccSelClip.oid!==cam.id||!cam.camclips)return null;
+  var hit=null; cam.camclips.forEach(function(c){ if(c.id===ccSelClip.id)hit=c; }); return hit; }
+function ccAddFollow(cam){
+  var acts=objs.filter(function(o){ return o.type==='actor'; });
+  if(!acts.length){ alertMsg('先加一个角色，跟随片段要有跟随目标。'); return; }
+  var tgt=(sel&&sel.type==='actor')?sel:acts[0];
+  var t0=Math.round(anim.t*10)/10;
+  if(t0>=anim.dur-0.05){ alertMsg('播放头已在总时长末尾：先把播放头往前拖，或加长总时长，再生成片段。'); return; }
+  var t1=t0+4; moExtendDur(t1); t1=Math.min(t1,anim.dur);
+  var c={id:'k'+Date.now().toString(36)+(++ccClipSeq), kind:'follow', t0:+t0.toFixed(2), t1:+t1.toFixed(2),
+    target:tgt.id, anchor:'center', az0:40, az1:-40, pitch:8, d0:4.5, d1:2.2, hOff:0};
+  ccEnsure(cam).push(c); cam.camclips.sort(function(a,b){ return a.t0-b.t0; });
+  ccSelClip={oid:cam.id,id:c.id};
+  applyAnim(anim.t); renderLane(); histPushSoon(); renderInspector();
+  alertMsg('已给「'+cam.name+'」生成跟随片段：'+c.t0.toFixed(1)+'s → '+c.t1.toFixed(1)+'s，跟住「'+tgt.name+'」（方位 40° → −40°、距离 4.5 → 2.2 米，一条片段即推进 + 环绕）。参数在下方运镜区改，片段条可拖移 / 拉伸。');
+}
+function ccAddPath(cam){
+  var t0=Math.round(anim.t*10)/10;
+  if(t0>=anim.dur-0.05){ alertMsg('播放头已在总时长末尾：先把播放头往前拖，或加长总时长，再生成片段。'); return; }
+  var t1=t0+4; moExtendDur(t1); t1=Math.min(t1,anim.dur);
+  var acts=objs.filter(function(o){ return o.type==='actor'; });
+  var eye=ccEyeOf(cam);
+  var c={id:'k'+Date.now().toString(36)+(++ccClipSeq), kind:'path', t0:+t0.toFixed(2), t1:+t1.toFixed(2),
+    path:null, look:acts.length?'target':'fixed', target:acts.length?acts[0].id:null, anchor:'center',
+    h:+eye.y.toFixed(2), lookPt:cam.lookPt?[+cam.lookPt.x.toFixed(2),+cam.lookPt.y.toFixed(2),+cam.lookPt.z.toFixed(2)]:[0,1.2,0]};
+  ccEnsure(cam).push(c); cam.camclips.sort(function(a,b){ return a.t0-b.t0; });
+  ccSelClip={oid:cam.id,id:c.id};
+  renderLane(); histPushSoon(); renderInspector();
+  ccSetDraw(cam,c);
+}
+function ccSetDraw(cam,c){
+  ccDraw=(cam&&c)?{cam:cam,c:c}:null;
+  if(orbit)orbit.enabled=!ccDraw&&(viewMode==='dir');
+  renderInspector();
+  if(cam)alertMsg('绘制机位轨迹中：在地面逐点点击给「'+cam.name+'」的路径片段加点；点完点运镜区「完成绘制」，或按 Esc 退出。');
+}
+function ccTouchPathC(c){ c._ver=(c._ver||0)+1; if(typeof buildPaths==='function')buildPaths(); }
+/* ---------- 属性面板「运镜」区 ---------- */
+function ccFld(label,val,min,max,step,id,unit){
+  return '<div class="field"><label>'+label+' <output tabindex="0" title="点击输入数值">'+val+unit+'</output></label><input type="range" id="'+id+'" min="'+min+'" max="'+max+'" step="'+step+'" value="'+val+'"></div>';
+}
+function ccInspectorHTML(cam){
+  var h='<div class="field"><label><span class="label-ic">'+ico('video')+'运镜 · 机位片段（跟随 / 路径）</span></label>';
+  h+='<div class="mo-note" style="margin-top:0">片段时段内，这个机位由片段接管（跟随目标或沿路径行进），不用再给机位打关键帧；时段外照旧走机位关键帧。片段首尾有短暂融合过渡，不会跳变。</div>';
+  h+='<div class="row2" style="margin-top:6px"><button class="btn teal" id="ccAddFollow">'+ico('key')+'生成跟随片段</button><button class="btn teal" id="ccAddPath">'+ico('plan')+'生成路径片段</button></div>';
+  var cl=cam.camclips||[];
+  cl.forEach(function(c){ var on=ccSelClip&&ccSelClip.oid===cam.id&&ccSelClip.id===c.id;
+    var nm=c.kind==='follow'?'跟随':'路径', tg=ccTargetOf(c);
+    var sub=(c.kind==='follow')?(tg?('跟「'+escHtml(tg.name)+'」'):'目标已失效')
+      :(c.look==='target'?(tg?('看「'+escHtml(tg.name)+'」'):'目标已失效'):c.look==='ahead'?'看路径前方':'固定注视点');
+    h+='<button type="button" class="mo-cliprow'+(on?' on':'')+'" data-ccclip="'+c.id+'"><span>'+nm+'运镜 · '+sub+'</span><span class="sp">'+c.t0.toFixed(1)+'s → '+c.t1.toFixed(1)+'s</span></button>'; });
+  var sc=ccSelClipObj(cam);
+  if(sc){
+    h+='<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px"><label style="font-size:12px;color:var(--muted)">已选片段 · '+(sc.kind==='follow'?'跟随':'路径')+'运镜参数</label></div>';
+    if(ccClipOrphan(sc))h+='<div class="mo-note" style="color:#f0a35e">目标角色已被删除，这个片段已失效：机位保持最后位姿，不会报错。重新选一个目标即可恢复。</div>';
+    h+=ccFld('片段开始（秒）',sc.t0.toFixed(1),0,Math.max(1,anim.dur),0.1,'ccT0','');
+    h+=ccFld('片段结束（秒）',sc.t1.toFixed(1),0.1,Math.max(1.1,anim.dur),0.1,'ccT1','');
+    if(sc.kind==='follow'){
+      var acts=objs.filter(function(o){ return o.type==='actor'; });
+      h+='<div class="row2" style="margin-top:6px"><select id="ccTarget" style="flex:1">'+acts.map(function(a){ return '<option value="'+a.id+'"'+(sc.target===a.id?' selected':'')+'>跟随目标 · '+escHtml(a.name)+'</option>'; }).join('')+'</select>'
+        +'<select id="ccAnchor" style="flex:1"><option value="center"'+(sc.anchor==='center'?' selected':'')+'>锚点 · 身体中心</option><option value="head"'+(sc.anchor==='head'?' selected':'')+'>锚点 · 头部</option><option value="foot"'+(sc.anchor==='foot'?' selected':'')+'>锚点 · 脚部</option></select></div>';
+      h+=ccFld('方位角 · 起（相对角色朝向，0° = 正前方）',Math.round(sc.az0),-180,180,1,'ccAz0','°');
+      h+=ccFld('方位角 · 止',Math.round(sc.az1),-180,180,1,'ccAz1','°');
+      h+=ccFld('俯仰角（正 = 机位在锚点上方俯拍）',Math.round(sc.pitch),-60,75,1,'ccPitch','°');
+      h+=ccFld('距离 · 起（米）',(+sc.d0).toFixed(1),0.8,15,0.1,'ccD0','');
+      h+=ccFld('距离 · 止（米）',(+sc.d1).toFixed(1),0.8,15,0.1,'ccD1','');
+      h+=ccFld('高度偏移（米，叠加在锚点高度上）',(+sc.hOff).toFixed(1),-1.5,3,0.05,'ccHOff','');
+      h+='<div class="mo-note">目标无论被关键帧还是动作片段驱动，机位都按上面几何关系自动跟住；方位 起→止 即环绕、距离 起→止 即推进 / 拉远，一条片段成型。</div>';
+    } else {
+      h+='<div class="mo-note" style="margin-top:6px">机位轨迹：'+(sc.path?('共 '+sc.path.length+' 个点 · 全长 '+ccPathLen(sc).toFixed(1)+' 米。舞台上点绿色路径点可拖动改位，点中后可在下方删点。'):'还没有。点「画轨迹」后在地面逐点点击加点。')+'</div>';
+      var drawing=(ccDraw&&ccDraw.c===sc);
+      h+='<div class="row2" style="margin-top:6px"><button class="btn'+(drawing?' primary':'')+'" id="ccDrawBtn">'+ico('plan')+(drawing?'完成绘制':'画轨迹')+'</button>';
+      if(sc.path)h+='<button class="btn danger" id="ccPathDel">'+ico('trash')+'清除轨迹</button>';
+      h+='</div>';
+      if(ccPtSel&&ccPtSel.cid===sc.id&&sc.path&&sc.path[ccPtSel.idx])h+='<div class="row2" style="margin-top:6px"><button class="btn" id="ccPtDel">删除第 '+(ccPtSel.idx+1)+' 点</button></div>';
+      h+='<div class="row2" style="margin-top:6px"><select id="ccLook" style="flex:1"><option value="target"'+(sc.look==='target'?' selected':'')+'>注视 · 锚定角色</option><option value="ahead"'+(sc.look==='ahead'?' selected':'')+'>注视 · 看向路径前方</option><option value="fixed"'+(sc.look==='fixed'?' selected':'')+'>注视 · 固定注视点</option></select></div>';
+      if(sc.look==='target'){ var acts2=objs.filter(function(o){ return o.type==='actor'; });
+        h+='<div class="row2" style="margin-top:6px"><select id="ccTarget" style="flex:1">'+acts2.map(function(a){ return '<option value="'+a.id+'"'+(sc.target===a.id?' selected':'')+'>注视目标 · '+escHtml(a.name)+'</option>'; }).join('')+'</select>'
+          +'<select id="ccAnchor" style="flex:1"><option value="center"'+(sc.anchor==='center'?' selected':'')+'>锚点 · 身体中心</option><option value="head"'+(sc.anchor==='head'?' selected':'')+'>锚点 · 头部</option><option value="foot"'+(sc.anchor==='foot'?' selected':'')+'>锚点 · 脚部</option></select></div>'; }
+      if(sc.look==='fixed')h+='<div class="row2" style="margin-top:6px"><button class="btn" id="ccFixLook">把当前机位注视点设为固定注视点</button></div><div class="mo-note">当前固定注视点：'+(sc.lookPt?[sc.lookPt[0].toFixed(1),sc.lookPt[1].toFixed(1),sc.lookPt[2].toFixed(1)].join(', '):'—')+'</div>';
+      h+=ccFld('机位高度（米，眼位离地）',(+sc.h).toFixed(1),0.3,6,0.05,'ccH','');
+    }
+    h+='<div class="row2" style="margin-top:6px"><button class="btn danger" id="ccClipDel">'+ico('trash')+'删除这个片段</button></div>';
+  }
+  if(IS_DESK)h+='<div class="row2" style="margin-top:8px"><button class="btn" id="ccFpBtn">'+ico('camera')+'第一人称操控这个机位（键鼠）</button></div><div class="mo-note">进入后主视口切到这个机位的视角：WASD 平移、Q / E 升降、拖鼠标转向、滚轮调进退速度；Esc 或按钮退出，退出时当前位姿写回机位（一步撤销）。</div>';
+  h+='</div>';
+  return h;
+}
+function ccPathLen(c){ var P=ccPathOf(c); return P?P.len:0; }
+function ccBindInspector(cam,el){
+  if(!el||cam.type!=='camera')return;
+  var q=function(id){ return document.getElementById(id); };
+  var af=q('ccAddFollow'); if(af)af.onclick=function(){ ccAddFollow(cam); };
+  var ap=q('ccAddPath'); if(ap)ap.onclick=function(){ ccAddPath(cam); };
+  el.querySelectorAll('[data-ccclip]').forEach(function(b){ b.addEventListener('click',function(){ ccSelClip={oid:cam.id,id:b.getAttribute('data-ccclip')}; renderLane(); renderInspector(); }); });
+  var sc=ccSelClipObj(cam); if(!sc)return;
+  function num(id,fn){ var n=q(id); if(n)n.addEventListener('input',function(){ fn(parseFloat(n.value)); applyAnim(anim.t); renderLane(); });
+    if(n)n.addEventListener('change',function(){ histPushSoon(); renderInspector(); }); }
+  num('ccT0',function(v){ if(isFinite(v)){ sc.t0=+Math.min(v,sc.t1-0.1).toFixed(2); if(sc.t0<0)sc.t0=0; } });
+  num('ccT1',function(v){ if(isFinite(v)){ sc.t1=+Math.max(v,sc.t0+0.1).toFixed(2); moExtendDur(sc.t1); if(sc.t1>anim.dur)sc.t1=anim.dur; } });
+  num('ccAz0',function(v){ sc.az0=v; }); num('ccAz1',function(v){ sc.az1=v; });
+  num('ccPitch',function(v){ sc.pitch=v; }); num('ccD0',function(v){ sc.d0=v; }); num('ccD1',function(v){ sc.d1=v; });
+  num('ccHOff',function(v){ sc.hOff=v; }); num('ccH',function(v){ sc.h=v; });
+  var tg=q('ccTarget'); if(tg)tg.addEventListener('change',function(){ sc.target=parseInt(tg.value,10); histPushSoon(); applyAnim(anim.t); renderLane(); renderInspector(); });
+  var an=q('ccAnchor'); if(an)an.addEventListener('change',function(){ sc.anchor=an.value; histPushSoon(); applyAnim(anim.t); renderInspector(); });
+  var lk=q('ccLook'); if(lk)lk.addEventListener('change',function(){ sc.look=lk.value; histPushSoon(); applyAnim(anim.t); renderInspector(); });
+  var fx=q('ccFixLook'); if(fx)fx.onclick=function(){ if(cam.lookPt)sc.lookPt=[+cam.lookPt.x.toFixed(2),+cam.lookPt.y.toFixed(2),+cam.lookPt.z.toFixed(2)]; histPushSoon(); applyAnim(anim.t); renderInspector(); };
+  var db=q('ccDrawBtn'); if(db)db.onclick=function(){ if(ccDraw&&ccDraw.c===sc)ccSetDraw(null); else ccSetDraw(cam,sc); };
+  var pd=q('ccPathDel'); if(pd)pd.onclick=function(){ sc.path=null; ccTouchPathC(sc); if(ccPtSel&&ccPtSel.cid===sc.id)ccPtSel=null; histPushSoon(); renderInspector(); };
+  var ptd=q('ccPtDel'); if(ptd)ptd.onclick=function(){ if(!sc.path||!ccPtSel||ccPtSel.cid!==sc.id)return;
+    if(sc.path.length<=2){ alertMsg('只剩两个点，再删轨迹就没了：整条删除请用「清除轨迹」。'); return; }
+    sc.path.splice(ccPtSel.idx,1); ccPtSel=null; ccTouchPathC(sc); histPushSoon(); renderInspector(); };
+  var cd=q('ccClipDel'); if(cd)cd.onclick=function(){ cam.camclips=cam.camclips.filter(function(x){ return x!==sc; }); ccSelClip=null; if(ccDraw&&ccDraw.c===sc)ccDraw=null; applyAnim(anim.t); histPushSoon(); renderLane(); renderInspector();
+    alertMsg('已删除「'+cam.name+'」的运镜片段。'); };
+  var fb=q('ccFpBtn'); if(fb)fb.onclick=function(){ fpEnter(cam); };
+}
+/* ---------- 时间线运镜片段条：拖移 / 拉伸（与 .mo-clip 同规矩） ---------- */
+var ccBarDrag=null;
+if(lanesEl){
+  lanesEl.addEventListener('pointerdown',function(e){
+    var bar=(e.target&&e.target.closest)?e.target.closest('.cc-clip'):null; if(!bar)return;
+    e.preventDefault(); e.stopPropagation();
+    var oid=parseInt(bar.getAttribute('data-oid'),10), cid=bar.getAttribute('data-ccid');
+    var cam=objs.filter(function(x){ return x.id===oid; })[0]; if(!cam||!cam.camclips)return;
+    var c=null; cam.camclips.forEach(function(x){ if(x.id===cid)c=x; }); if(!c)return;
+    if(cam!==sel)select(cam);
+    ccSelClip={oid:oid,id:cid}; renderInspector();
+    var lr=bar.parentElement.getBoundingClientRect(), br=bar.getBoundingClientRect();
+    ccBarDrag={cam:cam,c:c,mode:(e.clientX>br.right-12&&br.width>24)?'stretch':'move',x0:e.clientX,laneW:lr.width||1,t0:c.t0,t1:c.t1,moved:false};
+    var nb=lanesEl.querySelector('.cc-clip[data-ccid="'+cid+'"]');
+    if(nb){ nb.classList.add('sel'); try{ nb.setPointerCapture(e.pointerId); }catch(_e){} }
+  });
+  lanesEl.addEventListener('pointermove',function(e){
+    if(!ccBarDrag)return;
+    var d=(e.clientX-ccBarDrag.x0)/ccBarDrag.laneW*anim.dur, c=ccBarDrag.c;
+    if(ccBarDrag.mode==='move'){ var span=ccBarDrag.t1-ccBarDrag.t0;
+      var nt0=Math.round(Math.max(0,Math.min(anim.dur-span,ccBarDrag.t0+d))*10)/10;
+      if(nt0!==c.t0){ c.t0=nt0; c.t1=+(nt0+span).toFixed(2); ccBarDrag.moved=true; } }
+    else { var nt1=Math.round(Math.max(c.t0+0.3,Math.min(anim.dur,ccBarDrag.t1+d))*10)/10;
+      if(nt1!==c.t1){ c.t1=nt1; ccBarDrag.moved=true; } }
+    if(ccBarDrag.moved){ var nb=lanesEl.querySelector('.cc-clip[data-ccid="'+c.id+'"]');
+      if(nb){ nb.style.left=(anim.dur?(c.t0/anim.dur*100):0)+'%'; nb.style.width=Math.max(1.4,anim.dur?((c.t1-c.t0)/anim.dur*100):0)+'%'; }
+      applyAnim(anim.t); }
+  });
+  var ccBarUp=function(){ if(!ccBarDrag)return; var moved=ccBarDrag.moved; ccBarDrag=null;
+    if(moved){ window.__ccBarDragEnd=performance.now(); histPushSoon(); }
+    renderLane(); if(sel)renderInspector(); };
+  lanesEl.addEventListener('pointerup',ccBarUp);
+  lanesEl.addEventListener('pointercancel',ccBarUp);
+}
+/* ---------- 舞台：画机位轨迹 + 路径点拖改（捕获阶段拦截，同 A3 规矩） ---------- */
+(function(){
+  var cv=renderer.domElement, wrap=cv.parentNode; if(!wrap)return;
+  wrap.addEventListener('pointerdown',function(e){
+    if(e.target!==cv)return;
+    if(ccDraw&&ccDraw.cam&&objs.indexOf(ccDraw.cam)>=0){
+      var v=moGroundPt(e); if(!v)return;
+      e.stopPropagation(); e.preventDefault();
+      var c=ccDraw.c; if(!c.path)c.path=[];
+      c.path.push([+THREE.MathUtils.clamp(v.x,-11.5,11.5).toFixed(2),+THREE.MathUtils.clamp(v.z,-7.5,7.5).toFixed(2)]);
+      ccTouchPathC(c); renderInspectorSoft(); histPushSoon();
+      return;
+    }
+    if(sel&&sel.type==='camera'&&ccHandles.length){
+      var r=cv.getBoundingClientRect();
+      ptr.x=((e.clientX-r.left)/r.width)*2-1; ptr.y=-((e.clientY-r.top)/r.height)*2+1;
+      ray.setFromCamera(ptr,activeMainCam());
+      var hits=ray.intersectObjects(ccHandles,false);
+      if(hits.length){ e.stopPropagation(); e.preventDefault();
+        var ud=hits[0].object.userData.ccPt;
+        ccPtSel={oid:ud.oid,cid:ud.cid,idx:ud.idx};
+        var cam=ccObjById(ud.oid), clip=null;
+        if(cam&&cam.camclips)cam.camclips.forEach(function(x){ if(x.id===ud.cid)clip=x; });
+        if(clip){ ccPtDrag={c:clip,idx:ud.idx,moved:false}; orbit.enabled=false; ccSelClip={oid:ud.oid,id:ud.cid}; buildPaths(); renderInspector(); } }
+    }
+  },true);
+  window.addEventListener('pointermove',function(e){
+    if(!ccPtDrag)return;
+    var v=moGroundPt(e); if(!v)return;
+    var c=ccPtDrag.c; if(!c.path)return;
+    c.path[ccPtDrag.idx]=[+THREE.MathUtils.clamp(v.x,-11.5,11.5).toFixed(2),+THREE.MathUtils.clamp(v.z,-7.5,7.5).toFixed(2)];
+    ccPtDrag.moved=true; ccTouchPathC(c);
+  });
+  window.addEventListener('pointerup',function(){
+    if(!ccPtDrag)return;
+    var wasMoved=ccPtDrag.moved; ccPtDrag=null;
+    orbit.enabled=(viewMode==='dir');
+    if(wasMoved)histPushSoon();
+    renderInspector();
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&ccDraw){ var t=e.target;
+      if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable))return;
+      ccSetDraw(null); }
+  });
+})();
+/* ---------- 第一人称操控机位（桌面端键鼠专属） ---------- */
+var fp=null;
+function fpDirVec(){ var cp=Math.cos(fp.pitch); return new THREE.Vector3(Math.sin(fp.yaw)*cp,Math.sin(fp.pitch),Math.cos(fp.yaw)*cp); }
+function fpSyncLook(){ if(!fp)return; var cam=fp.cam, eye=ccEyeOf(cam), d=fpDirVec();
+  cam.lookPt=eye.clone().addScaledVector(d,6);
+  cam.group.rotation.y=Math.atan2(d.x,d.z)+Math.PI; }
+function fpEnter(cam){
+  if(!IS_DESK||!cam||cam.type!=='camera')return;
+  if(fp)fpExit();
+  if(anim.playing){ anim.playing=false; setPlayLabel(); }
+  if(ccDraw)ccSetDraw(null);
+  if(sel!==cam)select(cam);
+  var eye=ccEyeOf(cam), d;
+  if(cam.lookPt){ d=cam.lookPt.clone().sub(eye); if(d.lengthSq()<0.001)d=new THREE.Vector3(0,0,-1); }
+  else { var f=facingOf(cam); d=new THREE.Vector3(f[0],-0.03,f[1]); }
+  d.normalize();
+  fp={cam:cam, yaw:Math.atan2(d.x,d.z), pitch:Math.max(-1.35,Math.min(1.35,Math.asin(THREE.MathUtils.clamp(d.y,-1,1)))),
+      keys:{}, spd:1, prevView:viewMode, lastT:performance.now(), lookDrag:null};
+  fpSyncLook();
+  setView('cam');
+  var bar=document.getElementById('fpBar'); if(bar)bar.hidden=false;
+  var sp=document.getElementById('fpSpd'); if(sp)sp.textContent='×1.0';
+  alertMsg('第一人称操控「'+cam.name+'」：WASD 平移、Q / E 升降、按住鼠标拖拽转向、滚轮调进退速度；Esc 或右上按钮退出并把当前位姿写回机位。');
+}
+function fpExit(){
+  if(!fp)return;
+  var cam=fp.cam, prev=fp.prevView||'dir'; fp=null;
+  var bar=document.getElementById('fpBar'); if(bar)bar.hidden=true;
+  setView(prev==='cam'?'dir':prev);
+  if(cam&&objs.indexOf(cam)>=0){ fpClampCam(cam); }
+  histPushSoon(); renderInspector();
+}
+function fpClampCam(cam){ var p=cam.group.position;
+  p.x=THREE.MathUtils.clamp(p.x,-11.5,11.5); p.z=THREE.MathUtils.clamp(p.z,-8.5,8.5); p.y=THREE.MathUtils.clamp(p.y,0,6); }
+(function(){
+  var ex=document.getElementById('fpExit'); if(ex)ex.addEventListener('click',function(){ fpExit(); });
+  document.addEventListener('keydown',function(e){
+    if(!fp)return;
+    var t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;
+    var k=(e.key||'').toLowerCase();
+    if(k==='escape'){ e.preventDefault(); e.stopPropagation(); fpExit(); return; }
+    if(['w','a','s','d','q','e'].indexOf(k)>=0){ fp.keys[k]=true; e.preventDefault(); e.stopPropagation(); }
+  },true);
+  document.addEventListener('keyup',function(e){ if(!fp)return; var k=(e.key||'').toLowerCase(); if(fp.keys[k])fp.keys[k]=false; },true);
+  var cv=renderer.domElement, wrap=cv.parentNode;
+  if(wrap){ wrap.addEventListener('pointerdown',function(e){
+      if(!fp||e.target!==cv)return;
+      e.stopPropagation(); e.preventDefault();
+      fp.lookDrag={x:e.clientX,y:e.clientY};
+    },true);
+    wrap.addEventListener('wheel',function(e){
+      if(!fp)return;
+      e.preventDefault();
+      fp.spd=THREE.MathUtils.clamp(fp.spd*(e.deltaY<0?1.2:0.83),0.2,5);
+      var sp=document.getElementById('fpSpd'); if(sp)sp.textContent='×'+fp.spd.toFixed(1);
+    },{capture:true,passive:false}); }
+  window.addEventListener('pointermove',function(e){
+    if(!fp||!fp.lookDrag)return;
+    var dx=e.clientX-fp.lookDrag.x, dy=e.clientY-fp.lookDrag.y;
+    fp.lookDrag={x:e.clientX,y:e.clientY};
+    fp.yaw-=dx*0.0042; fp.pitch=THREE.MathUtils.clamp(fp.pitch-dy*0.0042,-1.35,1.35);
+    fpSyncLook();
+  });
+  window.addEventListener('pointerup',function(){ if(fp)fp.lookDrag=null; });
+  (function fpTick(){
+    requestAnimationFrame(fpTick);
+    if(!fp)return;
+    var now=performance.now(), dt=Math.min(0.05,(now-fp.lastT)/1000); fp.lastT=now;
+    var cam=fp.cam; if(!cam||objs.indexOf(cam)<0){ fpExit(); return; }
+    var f=new THREE.Vector3(Math.sin(fp.yaw),0,Math.cos(fp.yaw));
+    var r=new THREE.Vector3(f.z,0,-f.x);
+    var mv=new THREE.Vector3(), sp=3.2*fp.spd*dt;
+    if(fp.keys.w)mv.addScaledVector(fpDirVec(),sp);
+    if(fp.keys.s)mv.addScaledVector(fpDirVec(),-sp);
+    if(fp.keys.a)mv.addScaledVector(r,-sp);
+    if(fp.keys.d)mv.addScaledVector(r,sp);
+    if(fp.keys.q)mv.y-=sp; if(fp.keys.e)mv.y+=sp;
+    if(mv.lengthSq()>0){ cam.group.position.add(mv); fpClampCam(cam); fpSyncLook(); shadowDirty(); }
+  })();
+})();
 
 /* white-model (clay) mode */
 var whiteState=null;
@@ -4489,9 +5685,9 @@ function vgShowVideo(box,url,dlName){
 }
 function vgCapture(){
   var cam=activeCam(); if(!cam)return null;
-  updatePreviewCam(); cam.group.visible=false; var gv2=gzGroup.visible; gzGroup.visible=false;
+  updatePreviewCam(); cam.group.visible=false; var gv2=gzGroup.visible; gzGroup.visible=false; var tjv2=(typeof trajGroup!=='undefined'&&trajGroup)?trajGroup.visible:null; if(tjv2!==null)trajGroup.visible=false; var mpv2=moHidePaths();
   try{ pipR.render(scene,previewCam); }catch(e){}
-  gzGroup.visible=gv2; cam.group.visible=true;
+  gzGroup.visible=gv2; if(tjv2!==null)trajGroup.visible=tjv2; moShowPaths(mpv2); cam.group.visible=true;
   return pipR.domElement.toDataURL('image/jpeg',0.9);
 }
 function vgDataToBlob(u){
@@ -5139,6 +6335,750 @@ if(typeof planCv!=='undefined'&&planCv)planCv.addEventListener('pointerup',histP
 document.querySelectorAll('[data-shot]').forEach(function(b){ b.addEventListener('click',histPushSoon); });
 if(typeof glbFileEl!=='undefined'&&glbFileEl)glbFileEl.addEventListener('change',function(){ setTimeout(histPush,1200); setTimeout(histPush,3000); });
 histPush(); /* 初始帧：起始场景 */
+
+/* ---------- 场景双通道（v44 · 借鉴清单 A5） ----------
+   搭景两条路：通道二「导入外部白模」（准）+ 通道一「一图生成」（快），
+   外加无配置 / 失败时的降级「背景图对位」。
+   存储架构（红线）：模型与图片字节只进浏览器 IndexedDB 本机资产库
+   （库名 tx17-assets），场景 JSON / 撤销史 / 自动存档只存资产引用
+   （id + 名称 + 包围尺寸 + 归一化参数），绝不把字节塞进 localStorage。
+   换设备 / 换浏览器打开同一场景：资产缺失的白模显示为带名称与尺寸的
+   占位块并提示重新导入，场景其余部分照常恢复、不报错。
+   .skp 不直读（须先经 SketchUp / Blender 转 GLB / OBJ）；.gltf 若引用
+   外部 .bin / 贴图文件会解析失败并如实提示改导嵌入式 GLB。
+   白模与块体都是静态几何：只在导入 / 改尺寸 / 换材质时重建，渲染循环
+   零新增开销，不碰 v40 阴影体制；参考包导出时它们就是场景实物，照常出镜。 */
+
+/* ===== 本机资产库（IndexedDB） ===== */
+var WM_MEM={}, WM_DB=null, WM_IDB_OK=true;
+function wmDbOpen(){
+  return new Promise(function(res,rej){
+    if(WM_DB){ res(WM_DB); return; }
+    if(!window.indexedDB){ WM_IDB_OK=false; rej(new Error('no-idb')); return; }
+    var rq;
+    try{ rq=indexedDB.open('tx17-assets',1); }catch(e){ WM_IDB_OK=false; rej(e); return; }
+    rq.onupgradeneeded=function(){ try{ rq.result.createObjectStore('assets'); }catch(e){} };
+    rq.onsuccess=function(){ WM_DB=rq.result; res(WM_DB); };
+    rq.onerror=function(){ WM_IDB_OK=false; rej(rq.error||new Error('idb-open')); };
+  });
+}
+function wmDbPut(id,blob){
+  WM_MEM[id]=blob;
+  return wmDbOpen().then(function(db){
+    return new Promise(function(res,rej){
+      var tx=db.transaction('assets','readwrite');
+      tx.objectStore('assets').put(blob,id);
+      tx.oncomplete=function(){ res(true); };
+      tx.onerror=function(){ rej(tx.error||new Error('idb-put')); };
+    });
+  }).catch(function(){ WM_IDB_OK=false; return false; }); /* 存不进库也放行：本会话靠内存副本，界面会如实提示刷新后需重导 */
+}
+function wmDbGet(id){
+  if(WM_MEM[id])return Promise.resolve(WM_MEM[id]);
+  return wmDbOpen().then(function(db){
+    return new Promise(function(res){
+      var out=null, tx;
+      try{ tx=db.transaction('assets','readonly'); }catch(e){ res(null); return; }
+      var rq=tx.objectStore('assets').get(id);
+      rq.onsuccess=function(){ out=rq.result||null; if(out)WM_MEM[id]=out; res(out); };
+      rq.onerror=function(){ res(null); };
+    });
+  }).catch(function(){ return null; });
+}
+function wmNewAssetId(){ return 'a'+Date.now().toString(36)+Math.floor(Math.random()*1679616).toString(36); }
+function wmFmtOf(name){ var m=String(name||'').toLowerCase().match(/\.([a-z0-9]+)$/); return m?m[1]:''; }
+function sAssetRef(v,imgOk){
+  if(!v||typeof v!=='object')return null;
+  if(typeof v.id!=='string'||!/^[a-zA-Z0-9_-]{1,64}$/.test(v.id))return null;
+  var fmt=String(v.fmt||'').toLowerCase();
+  var ok=imgOk?['glb','gltf','obj','img'] : ['glb','gltf','obj'];
+  if(ok.indexOf(fmt)<0)return null;
+  return {id:v.id,name:sName(v.name||('资产.'+fmt)),fmt:fmt};
+}
+
+/* ===== OBJ 解析（极简自带解析器：v / vn + f 面扇形三角化，不读 .mtl） ===== */
+function wmParseOBJ(text){
+  var pos=[],nor=[],faces=[];
+  var lines=String(text||'').split(/\r?\n/);
+  function ri(tok,count){ var n=parseInt(tok,10); if(!isFinite(n)||n===0)return -1; return n<0?(count+n):(n-1); }
+  for(var li=0;li<lines.length;li++){
+    var line=lines[li].trim(); if(!line||line.charAt(0)==='#')continue;
+    var p=line.split(/\s+/), kw=p[0];
+    if(kw==='v'){ pos.push(parseFloat(p[1])||0,parseFloat(p[2])||0,parseFloat(p[3])||0); }
+    else if(kw==='vn'){ nor.push(parseFloat(p[1])||0,parseFloat(p[2])||0,parseFloat(p[3])||0); }
+    else if(kw==='f'){
+      var vs=[];
+      for(var i=1;i<p.length;i++){ if(!p[i])continue; var seg=p[i].split('/'); vs.push([ri(seg[0],pos.length/3),(seg.length>2&&seg[2]!=='')?ri(seg[2],nor.length/3):-1]); }
+      for(var f=1;f+1<vs.length;f++)faces.push(vs[0],vs[f],vs[f+1]);
+    }
+  }
+  var P=[],N=[],hasN=nor.length>0;
+  faces.forEach(function(v){
+    if(v[0]<0)return;
+    P.push(pos[v[0]*3],pos[v[0]*3+1],pos[v[0]*3+2]);
+    if(hasN&&v[1]>=0)N.push(nor[v[1]*3],nor[v[1]*3+1],nor[v[1]*3+2]);
+  });
+  var geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(P,3));
+  if(N.length===P.length&&P.length)geo.setAttribute('normal',new THREE.Float32BufferAttribute(N,3));
+  else if(P.length)geo.computeVertexNormals();
+  var mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xd9d9d9,roughness:0.9,metalness:0}));
+  var root=new THREE.Group(); root.add(mesh);
+  return {root:root,tris:Math.round(P.length/9)}; /* P 每顶点 3 个分量、每面 3 个顶点 */
+}
+
+/* ===== 模型解析分发（GLB / glTF 走台子现行 GLTFLoader） ===== */
+function wmCountTris(root){ var t=0; root.traverse(function(n){ if(n.isMesh&&n.geometry){ var g=n.geometry; t+=((g.index?g.index.count:(g.attributes.position?g.attributes.position.count:0))/3); } }); return Math.round(t); }
+function wmParseModel(name,buf){
+  var fmt=wmFmtOf(name);
+  if(fmt==='obj'){
+    var text; try{ text=new TextDecoder('utf-8').decode(buf); }catch(e){ text=''; }
+    var r=wmParseOBJ(text);
+    if(!r.tris)return Promise.reject(new Error('OBJ 里没解析出任何三角面（文件可能损坏，或不是文本 OBJ）。'));
+    return Promise.resolve({root:r.root,tris:r.tris,fmt:'obj'});
+  }
+  if(fmt==='glb'||fmt==='gltf'){
+    return new Promise(function(res,rej){
+      if(!THREE.GLTFLoader){ rej(new Error('GLTFLoader 未就绪，刷新页面再试。')); return; }
+      var data=buf;
+      if(fmt==='gltf'){ try{ data=new TextDecoder('utf-8').decode(buf); }catch(e){} }
+      try{
+        new THREE.GLTFLoader().parse(data,'',function(g){ res({root:g.scene,tris:wmCountTris(g.scene),fmt:fmt}); },
+          function(err){ rej(new Error(fmt==='gltf'?'glTF 解析失败：若它引用了外部 .bin / 贴图文件，本台读不到——请在导出时选「嵌入」或直接导 GLB 再导入。':'GLB 解析失败：文件可能损坏，或不是 glTF 2.0 二进制。')); });
+      }catch(e){ rej(e); }
+    });
+  }
+  return Promise.reject(new Error('只收 .glb / .gltf / .obj 三种格式（.skp 请先经 SketchUp / Blender 转出）。'));
+}
+function wmDimsOf(root,zup){
+  var wrap=new THREE.Group(); if(zup)wrap.rotation.x=-Math.PI/2;
+  wrap.add(root); wrap.updateMatrixWorld(true);
+  var box=new THREE.Box3().setFromObject(wrap);
+  wrap.remove(root);
+  if(!isFinite(box.min.x))return [0,0,0];
+  return [+(box.max.x-box.min.x).toFixed(3),+(box.max.y-box.min.y).toFixed(3),+(box.max.z-box.min.z).toFixed(3)];
+}
+
+/* ===== 白模材质：纯白哑光 / 原始 二选一 ===== */
+var WM_WHITE_MAT=null;
+function wmWhiteMat(){ if(!WM_WHITE_MAT)WM_WHITE_MAT=new THREE.MeshStandardMaterial({color:0xf4f4f2,roughness:0.92,metalness:0}); return WM_WHITE_MAT; }
+function wmStashOrig(root){ root.traverse(function(n){ if(n.isMesh&&n.userData._wmOrig===undefined)n.userData._wmOrig=n.material; }); }
+function wmApplyMatMode(o){
+  if(!o.wmHolder)return;
+  o.wmHolder.traverse(function(n){
+    if(n.isMesh&&n.name!=='__wmPh')n.material=(o.wmMat==='white')?wmWhiteMat():(n.userData._wmOrig||n.material);
+  });
+}
+
+/* ===== 白模对象：工厂 / 归一化重建 / 占位块 / 资产回填 ===== */
+function wmShowPlaceholder(o){
+  while(o.wmHolder.children.length)o.wmHolder.remove(o.wmHolder.children[0]);
+  var s=(o.wmSize&&o.wmSize.length===3)?o.wmSize:[2,2,2];
+  var geo=new THREE.BoxGeometry(Math.max(0.05,s[0]),Math.max(0.05,s[1]),Math.max(0.05,s[2]));
+  var mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x8f959e,roughness:0.9,transparent:true,opacity:0.38}));
+  mesh.name='__wmPh'; mesh.position.y=s[1]/2; mesh.castShadow=false; mesh.receiveShadow=false;
+  var edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xd8dce2}));
+  edges.name='__wmPh'; edges.position.y=s[1]/2;
+  o.wmHolder.add(mesh); o.wmHolder.add(edges);
+  o.group.traverse(function(n){ n.userData.oid=o.id; });
+}
+function wmCreateObject(assetRef,norm,size,name){
+  idc++;
+  var g=new THREE.Group();
+  var o={id:idc,type:'prop',kind:'wm',group:g,color:0xd8d8d8,pose:'站立',fov:42,
+    name:name||assetRef.name||'白模',
+    wmAsset:assetRef, wmNorm:norm||{mode:'h',meters:2.6,zup:false},
+    wmSize:(size&&size.length===3)?size.slice():[2,2,2], wmMat:'white', wmTri:0,
+    wmLoaded:false, wmMissing:false, wmRawRoot:null};
+  o.wmHolder=new THREE.Group(); g.add(o.wmHolder);
+  wmShowPlaceholder(o);
+  var spr=labelSprite(o.name); spr.name='__label'; spr.position.y=labY(o); g.add(spr);
+  var ring=new THREE.Mesh(new THREE.TorusGeometry(.55,.028,8,36),new THREE.MeshBasicMaterial({color:0xff3524}));
+  ring.rotation.x=Math.PI/2; ring.position.y=.025; ring.name='__ring'; ring.visible=false; g.add(ring);
+  g.traverse(function(n){ n.userData.oid=idc; });
+  scene.add(g); objs.push(o); select(o); refreshList();
+  return o;
+}
+function wmRebuild(o){
+  if(!o.wmRawRoot)return;
+  while(o.wmHolder.children.length)o.wmHolder.remove(o.wmHolder.children[0]);
+  var wrap=new THREE.Group(); if(o.wmNorm.zup)wrap.rotation.x=-Math.PI/2;
+  wrap.add(o.wmRawRoot);
+  var inner=new THREE.Group(); inner.add(wrap); inner.updateMatrixWorld(true);
+  var box=new THREE.Box3().setFromObject(inner);
+  var dims=[box.max.x-box.min.x,box.max.y-box.min.y,box.max.z-box.min.z];
+  var base=(o.wmNorm.mode==='max')?Math.max(dims[0],dims[1],dims[2]):dims[1];
+  var k=(isFinite(base)&&base>1e-6)?(o.wmNorm.meters/base):1;
+  inner.scale.setScalar(k); inner.updateMatrixWorld(true);
+  var box2=new THREE.Box3().setFromObject(inner);
+  if(isFinite(box2.min.x)){
+    inner.position.x-=(box2.min.x+box2.max.x)/2;
+    inner.position.z-=(box2.min.z+box2.max.z)/2;
+    inner.position.y-=box2.min.y; /* 底部贴地、中心归位 */
+  }
+  o.wmHolder.add(inner);
+  o.wmSize=[+(dims[0]*k).toFixed(2),+(dims[1]*k).toFixed(2),+(dims[2]*k).toFixed(2)];
+  o.group.traverse(function(n){ n.userData.oid=o.id; });
+  markShadow(o.group); wmApplyMatMode(o); shadowDirty();
+  var sp=o.group.getObjectByName('__label'); if(sp)sp.position.y=labY(o);
+}
+function wmAttach(o,parsed,norm){
+  o.wmRawRoot=parsed.root; o.wmTri=parsed.tris; if(norm)o.wmNorm=norm;
+  wmStashOrig(parsed.root);
+  o.wmLoaded=true; o.wmMissing=false;
+  wmRebuild(o);
+}
+var WM_MISS_NOTED={};
+function wmMissingNote(o){
+  var id=o.wmAsset?o.wmAsset.id:'?';
+  if(WM_MISS_NOTED[id])return; WM_MISS_NOTED[id]=1;
+  alertMsg('白模「'+o.name+'」的模型文件不在这台设备的资产库里（换设备 / 换浏览器都会这样）：已用带名称与尺寸的占位块顶上，场景其余部分不受影响；选中它、在属性面板点「重新导入模型文件」即可补回。');
+}
+function wmLoadInto(o){
+  var ref=o.wmAsset; if(!ref||!ref.id){ o.wmMissing=true; return; }
+  wmDbGet(ref.id).then(function(blob){
+    if(objs.indexOf(o)<0)return;
+    if(!blob){ o.wmMissing=true; wmMissingNote(o); if(sel===o)renderInspector(); return; }
+    return blob.arrayBuffer().then(function(buf){
+      if(objs.indexOf(o)<0)return;
+      return wmParseModel(ref.name||('model.'+(ref.fmt||'glb')),buf).then(function(parsed){
+        if(objs.indexOf(o)<0)return;
+        wmAttach(o,parsed,o.wmNorm);
+        if(sel===o)renderInspector();
+      });
+    });
+  }).catch(function(){ if(objs.indexOf(o)>=0){ o.wmMissing=true; wmMissingNote(o); if(sel===o)renderInspector(); } });
+}
+function wmDuplicate(o){
+  var n=wmCreateObject(o.wmAsset,JSON.parse(JSON.stringify(o.wmNorm)),o.wmSize.slice(),o.name+' 副本');
+  n.wmMat=o.wmMat;
+  n.group.position.set(o.group.position.x+0.9,0,o.group.position.z+0.9);
+  n.group.rotation.set(o.group.rotation.x,o.group.rotation.y,o.group.rotation.z);
+  if(o.wmRawRoot){ wmAttach(n,{root:o.wmRawRoot.clone(true),tris:o.wmTri},n.wmNorm); }
+  else wmLoadInto(n);
+  return n;
+}
+
+/* ===== 白模存档：序列化（只存引用）与白名单清洗 / 恢复 ===== */
+function wmSceneOut(o){
+  return {asset:{id:o.wmAsset.id,name:o.wmAsset.name,fmt:o.wmAsset.fmt},
+    size:o.wmSize, mat:o.wmMat, tri:o.wmTri||0,
+    norm:{mode:o.wmNorm.mode,meters:o.wmNorm.meters,zup:!!o.wmNorm.zup}};
+}
+function sWM(v){
+  if(!v||typeof v!=='object')return null;
+  var asset=sAssetRef(v.asset,false); if(!asset)return null;
+  var size=null;
+  if(Array.isArray(v.size)&&v.size.length>=3)size=[sNum(v.size[0],2,0.05,300),sNum(v.size[1],2,0.05,300),sNum(v.size[2],2,0.05,300)];
+  var norm={mode:(v.norm&&v.norm.mode==='max')?'max':'h',meters:sNum(v.norm?v.norm.meters:2.6,2.6,0.05,500),zup:!!(v.norm&&v.norm.zup)};
+  return {asset:asset,size:size,norm:norm,mat:(v.mat==='orig')?'orig':'white',tri:sNum(v.tri,0,0,1e9)};
+}
+function wmRestoreObject(sd,x,z,ry,name){
+  var w=sWM(sd.wm); if(!w)return null;
+  var o=wmCreateObject(w.asset,w.norm,w.size,name||w.asset.name);
+  o.wmMat=w.mat; o.wmTri=w.tri;
+  o.group.position.set(x,0,z); if(ry)o.group.rotation.y=ry;
+  wmLoadInto(o);
+  return o;
+}
+
+/* ===== AI 生成块体（kind=block）：普通方块几何 + 独立尺寸 ===== */
+function wmAddBlock(size,label,x,z,ry,ai,colorHex){
+  idc++;
+  var g=new THREE.Group();
+  var o={id:idc,type:'prop',kind:'block',group:g,color:(colorHex!=null?colorHex:0xb9bec7),pose:'站立',fov:42,
+    name:label||'块体',blkSize:size.slice(),blkAi:!!ai};
+  var mesh=new THREE.Mesh(new THREE.BoxGeometry(size[0],size[1],size[2]),mat(o.color,.9));
+  mesh.name='__blk'; mesh.position.y=size[1]/2; g.add(mesh);
+  var spr=labelSprite(o.name); spr.name='__label'; spr.position.y=labY(o); g.add(spr);
+  var ring=new THREE.Mesh(new THREE.TorusGeometry(.55,.028,8,36),new THREE.MeshBasicMaterial({color:0xff3524}));
+  ring.rotation.x=Math.PI/2; ring.position.y=.025; ring.name='__ring'; ring.visible=false; g.add(ring);
+  g.position.set(x||0,0,z||0); if(ry)g.rotation.y=ry;
+  g.traverse(function(n){ n.userData.oid=idc; });
+  markShadow(g); scene.add(g); objs.push(o);
+  return o;
+}
+function wmBlockResize(o){
+  var m=o.group.getObjectByName('__blk'); if(!m)return;
+  m.geometry.dispose();
+  m.geometry=new THREE.BoxGeometry(o.blkSize[0],o.blkSize[1],o.blkSize[2]);
+  m.position.y=o.blkSize[1]/2;
+  var sp=o.group.getObjectByName('__label'); if(sp)sp.position.y=labY(o);
+  shadowDirty();
+}
+function wmBlockRestore(sd,x,z,ry,name){
+  if(!sd.blk||!Array.isArray(sd.blk.size))return null;
+  var size=[sNum(sd.blk.size[0],1,0.05,60),sNum(sd.blk.size[1],1,0.05,60),sNum(sd.blk.size[2],1,0.05,60)];
+  var col=sColor(sd.color);
+  var o=wmAddBlock(size,name||'块体',x,z,ry,sd.blk.ai===1,col);
+  if(col!==undefined){ o.color=col; var m=o.group.getObjectByName('__blk'); if(m)m.material=mat(col,.9); }
+  return o;
+}
+function wmBlockDuplicate(o){
+  var n=wmAddBlock(o.blkSize.slice(),o.name+' 副本',o.group.position.x+0.9,o.group.position.z+0.9,o.group.rotation.y,o.blkAi,o.color);
+  n.group.scale.copy(o.group.scale);
+  select(n); refreshList();
+  return n;
+}
+
+/* ===== 属性面板：白模 / 块体区 ===== */
+function wmTriText(t){ if(!t)return '—'; return t>=10000?('约 '+(t/10000).toFixed(1)+' 万面'):('约 '+t+' 面'); }
+function wmInspectorHTML(o){
+  var h='';
+  if(o.kind==='wm'){
+    var st=o.wmLoaded?'模型已载入（本机资产库）':(o.wmMissing?'占位块显示中：模型文件不在这台设备的资产库里':'正在从本机资产库载入…');
+    h+='<div class="field"><label><span class="label-ic">'+ico('glb')+'白模 · 导入的外部模型</span></label>'
+      +'<div style="font-size:12px;line-height:1.65">文件：<b>'+escHtml(o.wmAsset.name)+'</b>（.'+escHtml(o.wmAsset.fmt)+'）<br>尺寸：宽 '+o.wmSize[0]+' × 高 '+o.wmSize[1]+' × 深 '+o.wmSize[2]+' 米 · '+wmTriText(o.wmTri)+'<br>状态：'+st+'<br><span style="color:var(--muted)">模型字节存这台设备的本机资产库，场景只存引用；换设备打开会先显示同尺寸占位块，重新导入一次即补回。</span></div></div>';
+    h+='<div class="field"><label>材质显示</label><select id="wmMatSel" style="width:100%"><option value="white"'+(o.wmMat==='white'?' selected':'')+'>纯白白模（默认 · 哑光）</option><option value="orig"'+(o.wmMat==='orig'?' selected':'')+'>原始材质（OBJ 无 .mtl 时为单色）</option></select></div>';
+    h+='<div class="field"><label>按真实尺寸重新落位</label><div class="row2"><select id="wmRsMode" style="flex:1"><option value="h"'+(o.wmNorm.mode==='h'?' selected':'')+'>按高度</option><option value="max"'+(o.wmNorm.mode==='max'?' selected':'')+'>按最长边</option></select><input type="text" class="txtin" id="wmRsMeters" inputmode="decimal" value="'+o.wmNorm.meters+'" style="flex:1"></div>'
+      +'<label style="display:flex;gap:8px;align-items:center;font-size:12px;margin-top:6px"><input type="checkbox" id="wmRsZup"'+(o.wmNorm.zup?' checked':'')+'> Z 轴向上 → 自动转正</label>'
+      +'<button class="btn" id="wmRsGo" type="button" style="width:100%;margin-top:6px"'+(o.wmLoaded?'':' disabled')+'>按此尺寸重新落位</button>'
+      +(o.wmLoaded?'':'<div style="font-size:11px;color:var(--muted);margin-top:4px">占位块的尺寸已按存档显示；补回模型文件后才能改尺寸。</div>')+'</div>';
+    h+='<div class="row2"><button class="btn" id="wmReimp" type="button">'+ico('upload')+(o.wmMissing?'重新导入模型文件':'更换模型文件')+'</button></div>';
+  }
+  if(o.kind==='block'){
+    var lab=['左右宽 W（米）','高度 H（米）','前后深 D（米）'];
+    h+='<div class="field"><label><span class="label-ic">'+ico('box')+'块体尺寸 · 逐块可改</span></label>'
+      +[0,1,2].map(function(i){ return '<div class="jrow"><span>'+lab[i]+'</span><input type="range" data-wmblk="'+i+'" min="0.1" max="15" step="0.05" value="'+o.blkSize[i]+'"><output>'+o.blkSize[i].toFixed(2)+'</output></div>'; }).join('')
+      +'<div style="font-size:11px;color:var(--muted);margin-top:4px">'+(o.blkAi?'这块是「一图生成」摆的：AI 近似估算，只供站位与空间关系参考，尺寸在这里逐块修正。':'手动块体：拖滑杆改长宽高，位置在舞台上拖或用上方滑杆调。')+'</div></div>';
+    h+='<div class="field"><label>颜色</label><input type="color" id="wmBlkC" value="#'+new THREE.Color(o.color).getHexString()+'"></div>';
+  }
+  return h;
+}
+var WM_RETARGET=null;
+function wmBindInspector(o,el){
+  if(o.kind==='wm'){
+    var ms=document.getElementById('wmMatSel');
+    if(ms)ms.addEventListener('change',function(){ o.wmMat=ms.value; wmApplyMatMode(o); shadowDirty(); histPushSoon(); });
+    var rg=document.getElementById('wmRsGo');
+    if(rg)rg.addEventListener('click',function(){
+      var mode=document.getElementById('wmRsMode').value;
+      var meters=parseFloat(document.getElementById('wmRsMeters').value);
+      if(!isFinite(meters)||meters<0.05||meters>500){ alertMsg('尺寸填一个 0.05–500 之间的米数。'); return; }
+      o.wmNorm={mode:mode,meters:+meters.toFixed(2),zup:!!document.getElementById('wmRsZup').checked};
+      wmRebuild(o); histPushSoon(); renderInspector();
+      alertMsg('「'+o.name+'」已按'+(mode==='max'?'最长边':'高度')+' '+meters+' 米重新落位：现尺寸 '+o.wmSize[0]+' × '+o.wmSize[1]+' × '+o.wmSize[2]+' 米。');
+    });
+    var rb=document.getElementById('wmReimp');
+    if(rb)rb.addEventListener('click',function(){ WM_RETARGET=o; document.getElementById('wmReFile').click(); });
+  }
+  if(o.kind==='block'){
+    el.querySelectorAll('[data-wmblk]').forEach(function(inp){
+      inp.addEventListener('input',function(){
+        var i=parseInt(inp.getAttribute('data-wmblk'),10);
+        o.blkSize[i]=parseFloat(inp.value);
+        inp.parentElement.querySelector('output').textContent=o.blkSize[i].toFixed(2);
+        wmBlockResize(o);
+      });
+      inp.addEventListener('change',function(){ histPushSoon(); });
+    });
+    var bc=document.getElementById('wmBlkC');
+    if(bc)bc.addEventListener('input',function(){
+      o.color=new THREE.Color(bc.value).getHex();
+      var m=o.group.getObjectByName('__blk'); if(m)m.material=mat(o.color,.9);
+      refreshList();
+    });
+  }
+}
+document.getElementById('wmReFile').addEventListener('change',function(){
+  var f=this.files[0]; this.value='';
+  var o=WM_RETARGET; WM_RETARGET=null;
+  if(!f||!o||objs.indexOf(o)<0)return;
+  var fmt=wmFmtOf(f.name);
+  if(['glb','gltf','obj'].indexOf(fmt)<0){ alertMsg('只收 .glb / .gltf / .obj：这个文件是 .'+(fmt||'?')+'，没导入。'); return; }
+  f.arrayBuffer().then(function(buf){
+    return wmParseModel(f.name,buf).then(function(parsed){
+      return wmDbPut(o.wmAsset.id,f).then(function(stored){
+        o.wmAsset.name=f.name; o.wmAsset.fmt=fmt;
+        wmAttach(o,parsed,o.wmNorm);
+        histPushSoon(); renderInspector();
+        alertMsg('已补回「'+o.name+'」的模型文件（'+f.name+'）：'+wmTriText(parsed.tris)+'，按 '+o.wmSize[0]+' × '+o.wmSize[1]+' × '+o.wmSize[2]+' 米落位。'+(stored?'':'（本机资产库写入失败，本次打开期间可用，刷新后需再导一次）'));
+      });
+    });
+  }).catch(function(e){ alertMsg('重新导入失败：'+(e&&e.message?e.message:e)); });
+});
+
+/* ===== 通道二 · 导入对话框（先解析看数据，再定尺寸落位） ===== */
+var WM_IMP={file:null,parsed:null,dims:null};
+function wmImpOpenWith(file,parsed){
+  WM_IMP.file=file; WM_IMP.parsed=parsed; WM_IMP.dims=wmDimsOf(parsed.root,false);
+  var d=WM_IMP.dims, tri=parsed.tris;
+  var body='文件：<b>'+escHtml(file.name)+'</b>（.'+parsed.fmt+'）<br>面数：'+wmTriText(tri)+(tri>500000?' · <span style="color:#ff5147;font-weight:700">超过 50 万面，手机上可能明显卡顿——仍可导入，建议先在 Blender 里减面</span>':'')+'<br>原始包围尺寸：宽 '+d[0]+' × 高 '+d[1]+' × 深 '+d[2]+'（原始单位，按下方给的米数换算）<br><span style="font-size:11px">导入后底部贴地、水平中心归位，落在舞台中央附近；位置 / 朝向 / 整体缩放之后照常拖。</span>';
+  document.getElementById('wmImpBody').innerHTML=body;
+  var mode=document.getElementById('wmImpMode'); mode.value='h';
+  var sug=(d[1]>0.01&&d[1]<500)?+d[1].toFixed(2):2.6;
+  document.getElementById('wmImpMeters').value=sug;
+  document.getElementById('wmImpZup').checked=(d[1]>0.01&&d[1]<Math.min(d[0],d[2])*0.6); /* 高度明显最小 → 多半是 Z 轴向上的文件，预勾转正 */
+  document.getElementById('wmImpStatus').textContent='';
+  document.getElementById('wmImpModal').hidden=false;
+}
+document.getElementById('wmImpMode').addEventListener('change',function(){
+  if(!WM_IMP.dims)return;
+  var d=WM_IMP.dims, v=(this.value==='max')?Math.max(d[0],d[1],d[2]):d[1];
+  if(v>0.01&&v<500)document.getElementById('wmImpMeters').value=+v.toFixed(2);
+});
+document.getElementById('wmImpCancel').addEventListener('click',function(){
+  document.getElementById('wmImpModal').hidden=true; WM_IMP={file:null,parsed:null,dims:null};
+});
+document.getElementById('wmImpOk').addEventListener('click',function(){
+  if(!WM_IMP.file||!WM_IMP.parsed)return;
+  var meters=parseFloat(document.getElementById('wmImpMeters').value);
+  var st=document.getElementById('wmImpStatus');
+  if(!isFinite(meters)||meters<0.05||meters>500){ st.textContent='尺寸填一个 0.05–500 之间的米数。'; st.className='wm-status err'; return; }
+  var norm={mode:document.getElementById('wmImpMode').value,meters:+meters.toFixed(2),zup:!!document.getElementById('wmImpZup').checked};
+  var file=WM_IMP.file, parsed=WM_IMP.parsed, id=wmNewAssetId();
+  var asset={id:id,name:file.name,fmt:parsed.fmt};
+  wmDbPut(id,file).then(function(stored){
+    var o=wmCreateObject(asset,norm,null,file.name.replace(/\.(glb|gltf|obj)$/i,''));
+    var off=(Math.random()*1.2-0.6);
+    o.group.position.set(off,0,1.0+off);
+    wmAttach(o,parsed,norm);
+    document.getElementById('wmImpModal').hidden=true;
+    WM_IMP={file:null,parsed:null,dims:null};
+    histPushSoon();
+    alertMsg('白模「'+o.name+'」已导入：'+wmTriText(parsed.tris)+'，现尺寸 '+o.wmSize[0]+' × '+o.wmSize[1]+' × '+o.wmSize[2]+' 米，底部贴地。'+(stored?'模型已存本机资产库，关掉重开自动恢复。':'（本机资产库不可用：本次打开期间可用，刷新后需重新导入）'));
+  });
+});
+document.getElementById('wmModelFile').addEventListener('change',function(){
+  var f=this.files[0]; this.value='';
+  if(!f)return;
+  var fmt=wmFmtOf(f.name);
+  if(['glb','gltf','obj'].indexOf(fmt)<0){ alertMsg('只收 .glb / .gltf / .obj：这个文件是 .'+(fmt||'?')+'。.skp 请先经 SketchUp / Blender 转成 GLB 或 OBJ 再导入。'); return; }
+  alertMsg('正在解析「'+f.name+'」…');
+  f.arrayBuffer().then(function(buf){ return wmParseModel(f.name,buf); })
+    .then(function(parsed){ document.getElementById('wmModal').hidden=true; wmImpOpenWith(f,parsed); })
+    .catch(function(e){ alertMsg('导入失败：'+(e&&e.message?e.message:e)); });
+});
+
+/* ===== 通道一 · 一图生成（视觉模型 → 结构化布局 JSON → 块体组） ===== */
+var WM_AI_PROMPT='你是场景布局解析器。看这张场景参考图，估算图中主要墙体、家具、建筑的块体布局，只输出一个 JSON 对象，不要任何说明文字、不要代码围栏。格式：{"blocks":[{"label":"名称","x":0,"z":0,"w":2,"d":1,"h":1,"ry":0}]}。坐标约定：单位为米；原点在画面中心地面；x 向右为正；z 朝向镜头（观众）为正、远离镜头为负；w=左右宽，d=前后深，h=高；ry=朝向角度（度，0=正对镜头）。墙体用薄块表示（厚度约 0.15、高约 2.8）。只放主要块体，总数不超过 24 个。尺寸按透视与常见真实尺寸估算（沙发长约 2 米、单人床 2×0.9 米、门高约 2.1 米、层高约 2.8 米、餐桌 1.4×0.8 米）。';
+var WM_AI={img:null,busy:false};
+function wmAiCfg(){
+  var keyEl=document.getElementById('aiKeyCx'), baseEl=document.getElementById('aiBaseCx'), modelEl=document.getElementById('aiModelCx');
+  return { key:keyEl?keyEl.value.trim():'', base:vgBaseNorm(baseEl?baseEl.value:'',AI_DEF.openai.defBase), model:modelEl?modelEl.value.trim():'' };
+}
+function wmAiStatSync(){
+  var el=document.getElementById('wmAiStat'); if(!el)return;
+  var c=wmAiCfg();
+  if(c.key&&c.model)el.innerHTML='当前视觉通道：<b>'+escHtml(c.base)+'</b> · 模型 <b>'+escHtml(c.model)+'</b>（钥匙已填）。生成前会再弹一次费用预估确认。';
+  else el.innerHTML='<span style="color:#ff5147;font-weight:700">视觉通道未配置</span>：到顶栏「AI 助手」→「OpenAI 兼容」里填钥匙、接口地址与<b>支持看图的视觉模型名</b>（如 GPT / Qwen-VL 类；DeepSeek 官方接口不支持看图）。没配置也能用下方「背景图对位」兜底（本地处理 ¥0）。缺：'+(!c.key?'钥匙 ':'')+(!c.model?'模型名':'');
+}
+function wmAiApplyLayout(layout){
+  if(!layout||!Array.isArray(layout.blocks))throw new Error('返回里没有 blocks 数组');
+  var created=[];
+  layout.blocks.slice(0,60).forEach(function(b){
+    if(!b||typeof b!=='object')return;
+    var size=[sNum(b.w,1,0.1,30),sNum(b.h,1,0.05,15),sNum(b.d,1,0.1,30)];
+    var o=wmAddBlock(size,sName(b.label||'块体').slice(0,24)||'块体',sNum(b.x,0,-30,30),sNum(b.z,0,-30,30),THREE.MathUtils.degToRad(sNum(b.ry,0,-360,360)),true);
+    created.push(o);
+  });
+  if(created.length){ select(created[0]); refreshList(); histPushSoon(); }
+  return created.length;
+}
+document.getElementById('wmAiFile').addEventListener('change',function(){
+  var f=this.files[0]; this.value='';
+  if(!f)return;
+  var url=URL.createObjectURL(f);
+  var img=new Image();
+  img.onload=function(){
+    var mx=1024, k=Math.min(1,mx/Math.max(img.width,img.height));
+    var cv=document.createElement('canvas'); cv.width=Math.max(1,Math.round(img.width*k)); cv.height=Math.max(1,Math.round(img.height*k));
+    cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+    URL.revokeObjectURL(url);
+    var dataUrl=cv.toDataURL('image/jpeg',0.85);
+    WM_AI.img={dataUrl:dataUrl,kb:Math.round(dataUrl.length*3/4/1024)};
+    var pv=document.getElementById('wmAiPrev'); pv.src=dataUrl; pv.style.display='';
+    document.getElementById('wmAiGo').disabled=false;
+    var st=document.getElementById('wmAiStatus'); st.textContent='参考图已就绪（'+cv.width+'×'+cv.height+'，约 '+WM_AI.img.kb+' KB）。点「生成白模布局」会先弹费用预估确认，确认后才发送。'; st.className='wm-status';
+  };
+  img.onerror=function(){ URL.revokeObjectURL(url); alertMsg('这张图读不出来，换一张 JPG / PNG 试试。'); };
+  img.src=url;
+});
+document.getElementById('wmAiGo').addEventListener('click',function(){
+  if(WM_AI.busy)return;
+  var st=document.getElementById('wmAiStatus');
+  if(!WM_AI.img){ st.textContent='先选一张场景参考图。'; st.className='wm-status err'; return; }
+  var c=wmAiCfg();
+  if(!c.key||!c.model){
+    st.textContent='视觉通道未配置（缺'+(!c.key?'钥匙':'')+(!c.model?'模型名':'')+'）：到「AI 助手 · OpenAI 兼容」里补齐，或改用下方「背景图对位」。本次没有发送任何请求。';
+    st.className='wm-status err'; wmAiStatSync(); return;
+  }
+  txConfirmShow('一图生成 · 发送前确认',
+    '将把这张参考图（约 '+WM_AI.img.kb+' KB，已压缩到最长边 1024）发送到 '+c.base+' 的模型 '+c.model+'，解析成白模布局。\n预估费用：视觉模型按图片 + 文字 token 计费，本台未查到该模型的公开单价，金额以服务商账单为准。\n结果是 AI 近似估算：块体只供站位与空间关系参考，生成后可逐块拖改 / 改尺寸 / 删除，整组一步撤销。',
+    '确认发送生成',function(ok){ if(ok)wmAiRun(c); });
+});
+async function wmAiRun(c){
+  var st=document.getElementById('wmAiStatus');
+  WM_AI.busy=true; st.className='wm-status'; st.textContent='生成中…（'+c.base+' · '+c.model+'）';
+  try{
+    var msgs=[{role:'user',content:[{type:'text',text:WM_AI_PROMPT},{type:'image_url',image_url:{url:WM_AI.img.dataUrl}}]}];
+    var r=await vgFetch(c.base+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+c.key},body:JSON.stringify({model:c.model,messages:msgs,temperature:0.2})},120000);
+    var txt=await r.text();
+    if(!r.ok)throw new Error('HTTP '+r.status+'：'+txt.slice(0,300));
+    var j; try{ j=JSON.parse(txt); }catch(e){ throw new Error('服务商返回不是 JSON'); }
+    var content=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+    if(!content)throw new Error('返回里没有内容');
+    var m=String(content).match(/\{[\s\S]*\}/);
+    if(!m)throw new Error('模型没有按约定返回布局 JSON');
+    var layout; try{ layout=JSON.parse(m[0]); }catch(e){ throw new Error('模型返回的 JSON 解析失败'); }
+    var n=wmAiApplyLayout(layout);
+    if(!n)throw new Error('模型返回的布局里没有可用块体');
+    st.textContent='已生成 '+n+' 个白模块体（AI 近似估算，供站位与空间关系参考）。逐块可拖改、改尺寸、删除；整组一步撤销。';
+    document.getElementById('wmModal').hidden=true;
+    alertMsg('一图生成完成：已按估算布局摆出 '+n+' 个白模块体。提醒：这是 AI 近似估算，不是精确建模。');
+  }catch(e){
+    st.textContent='生成失败：'+vgErrHint(e)+'。没有摆任何块体；可重试，或改用下方「背景图对位」。';
+    st.className='wm-status err';
+  }
+  WM_AI.busy=false;
+}
+
+/* ===== 降级 · 背景图对位（照片作大幕，本地处理 ¥0） ===== */
+var WM_BG={asset:null,w:9,h:5,x:0,z:-6,y:0,ry:0,mesh:null};
+function wmBgSceneOut(){
+  if(!WM_BG.asset)return null;
+  return {asset:{id:WM_BG.asset.id,name:WM_BG.asset.name,fmt:'img'},w:WM_BG.w,h:WM_BG.h,x:WM_BG.x,z:WM_BG.z,y:WM_BG.y,ry:WM_BG.ry};
+}
+function wmBgApply(){
+  var m=WM_BG.mesh; if(!m)return;
+  m.scale.set(WM_BG.w,WM_BG.h,1);
+  m.position.set(WM_BG.x,WM_BG.y+WM_BG.h/2,WM_BG.z);
+  m.rotation.y=THREE.MathUtils.degToRad(WM_BG.ry||0);
+  shadowDirty();
+}
+function wmBgCtrlsSync(){
+  var box=document.getElementById('wmBgCtrls'); if(!box)return;
+  box.style.display=WM_BG.asset?'':'none';
+  function set(id,v){ var n=document.getElementById(id); if(n)n.value=v; }
+  function out(id,t){ var n=document.getElementById(id); if(n)n.textContent=t; }
+  set('wmBgW',WM_BG.w); out('wmBgWOut',WM_BG.w.toFixed(1));
+  set('wmBgH',WM_BG.h); out('wmBgHOut',WM_BG.h.toFixed(1));
+  set('wmBgX',WM_BG.x); out('wmBgXOut',WM_BG.x.toFixed(1));
+  set('wmBgZ',WM_BG.z); out('wmBgZOut',WM_BG.z.toFixed(1));
+  set('wmBgY',WM_BG.y); out('wmBgYOut',WM_BG.y.toFixed(2));
+  set('wmBgR',WM_BG.ry); out('wmBgROut',Math.round(WM_BG.ry)+'°');
+  var st=document.getElementById('wmBgStatus');
+  if(st)st.textContent=WM_BG.asset?('当前幕布：'+WM_BG.asset.name+'（'+WM_BG.w.toFixed(1)+' × '+WM_BG.h.toFixed(1)+' 米）。拖下方滑杆对位，角色在它前面摆。'):'';
+}
+function wmBgSetTexture(tex){
+  if(tex&&THREE.sRGBEncoding!==undefined)tex.encoding=THREE.sRGBEncoding;
+  if(WM_BG.mesh){ WM_BG.mesh.material.map=tex; WM_BG.mesh.material.needsUpdate=true; }
+  else{
+    WM_BG.mesh=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));
+    WM_BG.mesh.name='__backdrop'; WM_BG.mesh.castShadow=false; WM_BG.mesh.receiveShadow=false;
+    scene.add(WM_BG.mesh);
+  }
+  wmBgApply(); wmBgCtrlsSync();
+}
+function wmBgLoadBlob(blob){
+  var url=URL.createObjectURL(blob);
+  new THREE.TextureLoader().load(url,function(tex){ wmBgSetTexture(tex); },undefined,function(){ URL.revokeObjectURL(url); alertMsg('背景图加载失败，换一张图试试。'); });
+}
+function wmBgClear(){
+  if(WM_BG.mesh){
+    scene.remove(WM_BG.mesh);
+    if(WM_BG.mesh.material.map)WM_BG.mesh.material.map.dispose();
+    WM_BG.mesh.material.dispose(); WM_BG.mesh.geometry.dispose(); WM_BG.mesh=null;
+  }
+  WM_BG.asset=null; wmBgCtrlsSync(); shadowDirty();
+}
+function wmBgFromScene(v){
+  if(!v||typeof v!=='object'){ if(WM_BG.asset)wmBgClear(); return; }
+  var a=sAssetRef(v.asset,true); if(!a||a.fmt!=='img'){ if(WM_BG.asset)wmBgClear(); return; }
+  WM_BG.asset=a;
+  WM_BG.w=sNum(v.w,9,1,60); WM_BG.h=sNum(v.h,5,0.5,30); WM_BG.x=sNum(v.x,0,-30,30); WM_BG.z=sNum(v.z,-6,-30,30); WM_BG.y=sNum(v.y,0,0,10); WM_BG.ry=sNum(v.ry,0,-360,360);
+  wmDbGet(a.id).then(function(blob){
+    if(!blob){ wmBgClear(); alertMsg('场景里的背景图不在这台设备的资产库里，已跳过幕布（其余对象不受影响）；需要时用「背景图对位」重新选图。'); return; }
+    wmBgLoadBlob(blob);
+  });
+}
+document.getElementById('wmBgFile').addEventListener('change',function(){
+  var f=this.files[0]; this.value='';
+  if(!f)return;
+  var id=wmNewAssetId();
+  wmDbPut(id,f).then(function(stored){
+    WM_BG.asset={id:id,name:f.name,fmt:'img'};
+    var url=URL.createObjectURL(f), img=new Image();
+    img.onload=function(){
+      if(img.width&&img.height){ WM_BG.h=5; WM_BG.w=Math.min(30,Math.max(2,+(5*img.width/img.height).toFixed(1))); }
+      URL.revokeObjectURL(url);
+      wmBgLoadBlob(f); histPushSoon();
+      var st=document.getElementById('wmBgStatus');
+      if(st)st.textContent='幕布已立上：'+f.name+'。拖滑杆缩放 / 平移 / 转向对位，底边贴地一键对齐地面。'+(stored?'':'（本机资产库不可用：本次打开期间可用，刷新后需重选）');
+    };
+    img.onerror=function(){ URL.revokeObjectURL(url); wmBgLoadBlob(f); histPushSoon(); };
+    img.src=url;
+  });
+});
+[['wmBgW','w'],['wmBgH','h'],['wmBgX','x'],['wmBgZ','z'],['wmBgY','y'],['wmBgR','ry']].forEach(function(pair){
+  var n=document.getElementById(pair[0]); if(!n)return;
+  n.addEventListener('input',function(){
+    WM_BG[pair[1]]=parseFloat(n.value);
+    var out=document.getElementById(pair[0]+'Out');
+    if(out)out.textContent=(pair[1]==='ry')?(Math.round(WM_BG.ry)+'°'):WM_BG[pair[1]].toFixed(pair[1]==='y'?2:1);
+    wmBgApply();
+  });
+  n.addEventListener('change',function(){ histPushSoon(); });
+});
+document.getElementById('wmBgGround').addEventListener('click',function(){
+  if(!WM_BG.asset){ alertMsg('先选一张背景图，幕布立上之后才能对位。'); return; }
+  WM_BG.y=0; wmBgApply(); wmBgCtrlsSync(); histPushSoon();
+  alertMsg('幕布底边已贴地（底边离地 0 米）：角色站在它前面，脚底和画面地平线对齐着摆。');
+});
+document.getElementById('wmBgRemove').addEventListener('click',function(){
+  if(!WM_BG.asset)return;
+  wmBgClear(); histPushSoon(); alertMsg('背景幕布已移除。');
+});
+
+/* ===== 面板入口接线 ===== */
+function wmOpenModal(){
+  document.getElementById('wmModal').hidden=false;
+  wmAiStatSync(); wmBgCtrlsSync();
+}
+document.getElementById('wmImpBtn').addEventListener('click',wmOpenModal);
+document.getElementById('wmAiBtn').addEventListener('click',wmOpenModal);
+document.getElementById('wmBgBtn').addEventListener('click',wmOpenModal);
+document.getElementById('wmClose').addEventListener('click',function(){ document.getElementById('wmModal').hidden=true; });
+document.getElementById('wmModal').addEventListener('click',function(e){ if(e.target===this)this.hidden=true; });
+document.getElementById('wmImpModal').addEventListener('click',function(e){ if(e.target===this)document.getElementById('wmImpCancel').click(); });
+document.getElementById('wmImpGo').addEventListener('click',function(){ document.getElementById('wmModelFile').click(); });
+document.getElementById('wmAiPick').addEventListener('click',function(){ document.getElementById('wmAiFile').click(); });
+document.getElementById('wmBgPick').addEventListener('click',function(){ document.getElementById('wmBgFile').click(); });
+
+/* 自动化 / 探针测试面：与界面同一条管线（导入字节 → 资产库 → 对象；布局 JSON → 块体） */
+window.TX17WM={version:'v44',
+  applyLayout:function(j){ return wmAiApplyLayout(typeof j==='string'?JSON.parse(j):j); },
+  importBytes:function(name,arrayBuffer,opts){
+    opts=opts||{};
+    return wmParseModel(name,arrayBuffer).then(function(parsed){
+      var id=wmNewAssetId(), asset={id:id,name:name,fmt:parsed.fmt};
+      var norm=opts.norm||{mode:'h',meters:(opts.meters||2.6),zup:!!opts.zup};
+      return wmDbPut(id,new Blob([arrayBuffer])).then(function(){
+        var o=wmCreateObject(asset,norm,null,opts.objName||name);
+        o.group.position.set(opts.x||0,0,opts.z||1.2);
+        wmAttach(o,parsed,norm);
+        histPushSoon();
+        return o;
+      });
+    });
+  },
+  dbGet:function(id){ return wmDbGet(id); },
+  bgState:function(){ return WM_BG; }
+};
+
+/* ---------- 截图库（v45 · 借鉴清单 A6）：随手截图按机位自动命名 + 台内归档 ----------
+   命名：场次名（取参考包场次名输入，未填记「未命名场次」）_机位名（导演视角记
+   「导演视角」）_两位序号（同场次同机位递增、永不重名）.png。
+   字节存本机资产库 IndexedDB（与 A5 白模同一库 tx17-assets、同一 assets 仓），
+   元数据（清单 + 计数器）存 localStorage 专用键 tx17.shotlib.v1——两者都不进
+   场景 JSON / 撤销史 / 自动存档。渲染走现行路径：机位视角走 pipR 预览渲染、
+   导演视角走主渲染（含 v40 后期管线），不碰 v40 阴影体制。
+   与分镜板、参考包相互独立：分镜板照旧，参考包命名（场次_镜号）零改动。 */
+var SL_KEY='tx17.shotlib.v1', SL={items:[],seq:{}}, SL_URLS={};
+function slLoad(){ try{ var s=JSON.parse(localStorage.getItem(SL_KEY)||'null'); if(s&&Object.prototype.toString.call(s.items)==='[object Array]'){ SL.items=s.items; SL.seq=s.seq||{}; } }catch(e){} }
+function slSave(){ try{ localStorage.setItem(SL_KEY,JSON.stringify(SL)); }catch(e){} }
+function slSceneName(){ var el=document.getElementById('packScene'); var v=el?String(el.value||'').trim():''; return v||'未命名场次'; }
+function slFileFor(scene,cam,n){ return packSafeName(scene)+'_'+packSafeName(cam)+'_'+packPad(n)+'.png'; }
+function slDbDel(id){
+  if(typeof WM_MEM!=='undefined'&&WM_MEM)delete WM_MEM[id];
+  if(typeof wmDbOpen!=='function')return;
+  wmDbOpen().then(function(db){ try{ var tx=db.transaction('assets','readwrite'); tx.objectStore('assets').delete(id); }catch(e){} }).catch(function(){});
+}
+function slCaptureCamPNG(cam){
+  updatePreviewCam();
+  pipR.setSize(960,540); previewCam.aspect=960/540; previewCam.updateProjectionMatrix();
+  cam.group.visible=false; var gv=gzGroup.visible; gzGroup.visible=false;
+  var tjv=(typeof trajGroup!=='undefined'&&trajGroup)?trajGroup.visible:null; if(tjv!==null)trajGroup.visible=false;
+  var mpv=moHidePaths(), url='';
+  try{ pipR.render(scene,previewCam); url=pipR.domElement.toDataURL('image/png'); }catch(e){}
+  gzGroup.visible=gv; if(tjv!==null)trajGroup.visible=tjv; moShowPaths(mpv); cam.group.visible=true;
+  resize();
+  return url;
+}
+function slCaptureDirPNG(){
+  var gv=gzGroup.visible; gzGroup.visible=false;
+  var tjv=(typeof trajGroup!=='undefined'&&trajGroup)?trajGroup.visible:null; if(tjv!==null)trajGroup.visible=false;
+  var mpv=moHidePaths(), url='';
+  try{
+    var done=false;
+    if((UI.bloom||UI.ao)&&typeof txInteracting==='function'&&!txInteracting()&&typeof renderPost==='function'){ try{ done=renderPost(dirCam); }catch(e){} }
+    if(!done)renderer.render(scene,dirCam);
+    url=renderer.domElement.toDataURL('image/png');
+  }catch(e){}
+  gzGroup.visible=gv; if(tjv!==null)trajGroup.visible=tjv; moShowPaths(mpv);
+  return url;
+}
+function slAdd(dataUrl,camName){
+  if(!dataUrl){ alertMsg('截图没截成，再试一次。'); return null; }
+  var scene=slSceneName(), key=scene+'|'+camName, n=(SL.seq[key]||0)+1, file='';
+  do{ file=slFileFor(scene,camName,n); n++; }while(SL.items.some(function(it){ return it.file===file; }));
+  SL.seq[key]=n-1;
+  var item={id:'shot'+wmNewAssetId(),file:file,scene:scene,cam:camName,seq:n-1,t:Date.now()};
+  SL.items.push(item); slSave();
+  wmDbPut(item.id,vgDataToBlob(dataUrl)).then(function(ok){ if(!ok)alertMsg('截图已存进截图库，但本机库没存下：本会话内可看可下，刷新后会缺这一张。'); });
+  slRender();
+  alertMsg('截图已归档：'+file+'（分镜板下方的截图库）。');
+  return item;
+}
+function slZip(items,label){
+  var jobs=items.map(function(it){ return wmDbGet(it.id).then(function(blob){ return blob?blobToBytes(blob).then(function(data){ return {name:it.file,data:data}; }):null; }); });
+  Promise.all(jobs).then(function(fs){
+    var files=fs.filter(Boolean);
+    if(!files.length){ alertMsg('这一组截图在本机都缺失，没法打包。'); return; }
+    var zip=buildZip(files);
+    var a=document.createElement('a'); a.href=URL.createObjectURL(zip); a.download=packSafeName(label)+'_截图.zip'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },4000);
+    alertMsg('已打包 '+files.length+' 张截图：'+a.download+'（包内文件名与截图库里一致）。');
+  });
+}
+function slRender(){
+  var box=document.getElementById('slGroups'); if(!box)return;
+  Object.keys(SL_URLS).forEach(function(k){ URL.revokeObjectURL(SL_URLS[k]); }); SL_URLS={};
+  var cnt=document.getElementById('slCount'); if(cnt)cnt.textContent=SL.items.length?('共 '+SL.items.length+' 张 · 存本机浏览器，换设备不跟随'):'';
+  var zipAll=document.getElementById('slZipAll'); if(zipAll)zipAll.disabled=!SL.items.length;
+  if(!SL.items.length){ box.innerHTML='<span class="none">还没有截图。摆好画面点「截导演视角 / 截机位视角」，截图会按 场次_机位_序号 自动命名存进这里。</span>'; return; }
+  box.innerHTML='';
+  var order=[], byCam={};
+  SL.items.forEach(function(it){ if(!byCam[it.cam]){ byCam[it.cam]=[]; order.push(it.cam); } byCam[it.cam].push(it); });
+  order.forEach(function(camName){
+    var items=byCam[camName].slice().sort(function(a,b){ return a.seq-b.seq; });
+    var gd=document.createElement('div'); gd.className='sl-group';
+    var hd=document.createElement('div'); hd.className='sl-group-head';
+    hd.innerHTML='<b></b><span></span>';
+    hd.querySelector('b').textContent=camName;
+    hd.querySelector('span').textContent=items.length+' 张';
+    var zb=document.createElement('button'); zb.className='btn'; zb.type='button'; zb.textContent='打包本组';
+    zb.onclick=function(){ slZip(items,camName); };
+    hd.appendChild(zb); gd.appendChild(hd);
+    var row=document.createElement('div'); row.className='sl-items';
+    items.forEach(function(it){
+      var f=document.createElement('figure'); f.className='shot'; f.style.margin='0';
+      f.innerHTML='<span class="sl-thumb"></span><figcaption><b></b><span class="ops"><button data-a="dl" type="button">下载</button><button data-a="del" type="button">删除</button></span></figcaption>';
+      f.querySelector('b').textContent=it.file;
+      var th=f.querySelector('.sl-thumb'), dlBtn=f.querySelector('[data-a="dl"]');
+      if(typeof wmDbGet==='function'){
+        wmDbGet(it.id).then(function(blob){
+          if(!blob){ th.innerHTML='<span class="sl-missing">本机缺这张图<br>（换过设备或清过浏览器数据）</span>'; dlBtn.disabled=true; return; }
+          var u=URL.createObjectURL(blob); SL_URLS[it.id]=u;
+          var img=document.createElement('img'); img.alt=it.file; img.src=u; th.replaceWith(img);
+          dlBtn.onclick=function(){ var a=document.createElement('a'); a.href=u; a.download=it.file; a.click(); };
+        });
+      }
+      f.querySelector('[data-a="del"]').onclick=function(){
+        SL.items=SL.items.filter(function(x){ return x!==it; }); slSave(); slDbDel(it.id); slRender();
+        alertMsg('已从截图库删除 '+it.file+'。');
+      };
+      row.appendChild(f);
+    });
+    gd.appendChild(row); box.appendChild(gd);
+  });
+}
+document.getElementById('slCapDir').onclick=function(){ slAdd(slCaptureDirPNG(),'导演视角'); };
+document.getElementById('slCapCam').onclick=function(){ var cam=activeCam(); if(!cam){ alertMsg('还没有机位：先加一个机位再截机位视角（导演视角不用机位）。'); return; } slAdd(slCaptureCamPNG(cam),cam.name); };
+document.getElementById('slZipAll').onclick=function(){ if(SL.items.length)slZip(SL.items.slice(),'截图库'); };
+slLoad(); slRender();
+/* 自动化 / 探针测试面：与界面同一条管线 */
+window.TX17SL={version:'v45',list:function(){ return SL.items.slice(); },fileFor:slFileFor,sceneName:slSceneName,render:slRender};
 
 /* ---------- 自动保存 + 开机恢复 + 破坏性操作确认（v33；v34 起存档连导演视角一起存） ----------
    自动保存：每次撤销快照落帧后（histPush / histGo 都以 histBtns 收尾，
